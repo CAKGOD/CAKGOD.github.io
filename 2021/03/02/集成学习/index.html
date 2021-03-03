@@ -214,7 +214,16 @@ mjx-container[display="true"] + br {
 <p>（3）使用一些健壮的损失函数，对异常值的鲁棒性非常强。比如 Huber损失函数和Quantile损失函数。</p>
 <p>GBDT的主要缺点有：</p>
 <p>（1）由于弱学习器之间存在依赖关系，难以并行训练数据。不过可以通过自采样的SGBT来达到部分并行。</p>
-<h3 id="3-Xgboost"><a href="#3-Xgboost" class="headerlink" title="3.Xgboost"></a>3.Xgboost</h3><h2 id="四、集成学习之bagging"><a href="#四、集成学习之bagging" class="headerlink" title="四、集成学习之bagging"></a>四、集成学习之bagging</h2><p><img src="https://images2015.cnblogs.com/blog/1042406/201612/1042406-20161204200000787-1988863729.png" alt="img"></p>
+<h3 id="3-XGBoost"><a href="#3-XGBoost" class="headerlink" title="3.XGBoost"></a>3.XGBoost</h3><h4 id="3-1-从GBDT到XGBoost"><a href="#3-1-从GBDT到XGBoost" class="headerlink" title="3.1.从GBDT到XGBoost"></a>3.1.从GBDT到XGBoost</h4><p>作为GBDT的高效实现，XGBoost是一个上限特别高的算法，因此在算法竞赛中比较受欢迎。简单来说，对比原算法GBDT，XGBoost主要从下面三个方面做了优化：</p>
+<p>一是算法本身的优化：在算法的弱学习器模型选择上，对比GBDT只支持决策树，还可以直接很多其他的弱学习器。在算法的损失函数上，除了本身的损失，还加上了正则化部分。在算法的优化方式上，GBDT的损失函数只对误差部分做负梯度（一阶泰勒）展开，而XGBoost损失函数对误差部分做二阶泰勒展开，更加准确。算法本身的优化是我们后面讨论的重点。</p>
+<p>二是算法运行效率的优化：对每个弱学习器，比如决策树建立的过程做并行选择，找到合适的子树分裂特征和特征值。在并行选择之前，先对所有的特征的值进行排序分组，方便前面说的并行选择。对分组的特征，选择合适的分组大小，使用CPU缓存进行读取加速。将各个分组保存到多个硬盘以提高IO速度。</p>
+<p>三是算法健壮性的优化：对于缺失值的特征，通过枚举所有缺失值在当前节点是进入左子树还是右子树来决定缺失值的处理方式。算法本身加入了L1和L2正则化项，可以防止过拟合，泛化能力更强。</p>
+<h4 id="3-2-XGBoost损失函数"><a href="#3-2-XGBoost损失函数" class="headerlink" title="3.2.XGBoost损失函数"></a>3.2.XGBoost损失函数</h4><p>回顾下GBDT的回归算法迭代的流程，对于GBDT的第t颗决策树，主要是走下面4步：</p>
+<p>（1）对样本i=1,2，…m，计算负梯度<br>$$<br>\begin{equation}<br>r_{ti} = -\bigg[\frac{\partial L(y_i, f(x_i)))}{\partial f(x_i)}\bigg]<em>{f(x) = f</em>{t-1};; (x)}<br>\end{equation}<br>$$</p>
+<p>（2）</p>
+<p>（3）</p>
+<p>（4）</p>
+<h2 id="四、集成学习之bagging"><a href="#四、集成学习之bagging" class="headerlink" title="四、集成学习之bagging"></a>四、集成学习之bagging</h2><p><img src="https://images2015.cnblogs.com/blog/1042406/201612/1042406-20161204200000787-1988863729.png" alt="img"></p>
 <p>从上图可以看出，bagging的个体弱学习器的训练集是通过随机采样得到的。通过T次的随机采样，就可以得到T个采样集，对于这T个采样集，我们可以分别独立的训练出T个弱学习器，再对这T个弱学习器通过集合策略来得到最终的强学习器。</p>
 <p>对于这里的随机采样有必要做进一步的介绍，这里一般采用的是自助采样法（Bootstrap sampling）,即对于m个样本的原始训练集，每次先随机采集一个样本放入采样集，接着把该样本放回，也就是说下次采样时该样本仍有可能被采集到，这样采集m次，最终可以得到m个样本的采样集，由于是随机采样，这样每次的采样集是和原始训练集不同的，和其他采样集也是不同的，这样得到多个不同的弱学习器。</p>
 <p>随机森林是bagging的一个特化进阶版，所谓的特化是因为随机森林的弱学习器都是决策树。所谓的进阶是随机森林在bagging的样本随机采样基础上，又加上了特征的随机选择，其基本思想没有脱离bagging的范畴。</p>
