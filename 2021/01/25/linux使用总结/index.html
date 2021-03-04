@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="google-site-verification" content="TZE0rZyIqLl10trYu3BWBWa1Vmz6HFwhb2OcNEK4u-s" />
+     <link rel="shortcut icon" href= /img/favicon.ico >
+    <title>
+        Hexo
+    </title>
+    <meta name="description" content= Hi! Welcome to CAKGOD's website! Thank you! >
+    <meta name="keywords" content=  >
+    
+<link rel="stylesheet" href="/libs/highlight/styles/monokai-sublime.css">
+
+    
+<link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+<body id="bodyx">
+    <div class="hd posts">
+    <a href="/index.html"><i class="fa fa-home
+ replay-btn" aria-hidden="true"></i></a>
+    <div class="post-title">
+        <p>
+            linux使用总结
+        </p>
+        <hr>
+    </div>
+    <div class="post-content">
+        <h1 id="一、打印JSON文件"><a href="#一、打印JSON文件" class="headerlink" title="一、打印JSON文件"></a>一、打印JSON文件</h1><p>JSON 文件非常棒，因为它们以人类可读的格式存储数据集合。然而，如果 JSON 文件被最小化过，那么阅读 JSON 文件可能会很痛苦。以下面的JSON文件为例。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&quot;login&quot;: &quot;gperinazzo&quot;, &quot;id&quot;: 9922687, &quot;node_id&quot;: &quot;MDQ6VXNlcjk5MjI2ODc&#x3D;&quot;, &quot;avatar_url&quot;: &quot;https:&#x2F;&#x2F;avatars0.githubusercontent.com&#x2F;u&#x2F;9922687?v&#x3D;4&quot;, &quot;gravatar_id&quot;: &quot;&quot;, &quot;url&quot;: &quot;https:&#x2F;&#x2F;api.github.com&#x2F;users&#x2F;gperinazzo&quot;, &quot;html_url&quot;: &quot;https:&#x2F;&#x2F;github.com&#x2F;gperinazzo&quot;, &quot;followers_url&quot;: &quot;https:&#x2F;&#x2F;api.github.com&#x2F;users&#x2F;gperinazzo&#x2F;followers&quot;, &quot;following_url&quot;: &quot;https:&#x2F;&#x2F;api.github.com&#x2F;users&#x2F;gperinazzo&#x2F;following&#123;&#x2F;other_user&#125;&quot;, &quot;gists_url&quot;: &quot;https:&#x2F;&#x2F;api.github.com&#x2F;users&#x2F;gperinazzo&#x2F;gists&#123;&#x2F;gist_id&#125;&quot;, &quot;starred_url&quot;: &quot;https:&#x2F;&#x2F;api.github.com&#x2F;users&#x2F;gperinazzo&#x2F;starred&#123;&#x2F;owner&#125;&#123;&#x2F;repo&#125;&quot;, &quot;subscriptions_url&quot;: &quot;https:&#x2F;&#x2F;api.github.com&#x2F;users&#x2F;gperinazzo&#x2F;subscriptions&quot;, &quot;organizations_url&quot;: &quot;https:&#x2F;&#x2F;api.github.com&#x2F;users&#x2F;gperinazzo&#x2F;orgs&quot;, &quot;repos_url&quot;: &quot;https:&#x2F;&#x2F;api.github.com&#x2F;users&#x2F;gperinazzo&#x2F;repos&quot;, &quot;events_url&quot;: &quot;https:&#x2F;&#x2F;api.github.com&#x2F;users&#x2F;gperinazzo&#x2F;events&#123;&#x2F;privacy&#125;&quot;, &quot;received_events_url&quot;: &quot;https:&#x2F;&#x2F;api.github.com&#x2F;users&#x2F;gperinazzo&#x2F;received_events&quot;, &quot;type&quot;: &quot;User&quot;, &quot;site_admin&quot;: false, &quot;name&quot;: null, &quot;company&quot;: null, &quot;blog&quot;: &quot;&quot;, &quot;location&quot;: null, &quot;email&quot;: &quot;gperinazzo@gmail.com&quot;, &quot;hireable&quot;: null, &quot;bio&quot;: null, &quot;twitter_username&quot;: null, &quot;public_repos&quot;: 21, &quot;public_gists&quot;: 0, &quot;followers&quot;: 4, &quot;following&quot;: 0, &quot;created_at&quot;: &quot;2014-11-24T01:48:29Z&quot;, &quot;updated_at&quot;: &quot;2020-11-08T00:34:34Z&quot;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>计算机可以很容易地读取它。即使是人也能读，但如果 JSON 文件以合适的格式显示，那么阅读就会简单很多。理想中的 JSON 文件应该是这样读的：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;login&quot;: &quot;gperinazzo&quot;,</span><br><span class="line">  &quot;id&quot;: 9922687,</span><br><span class="line">  &quot;node_id&quot;: &quot;MDQ6VXNlcjk5MjI2ODc&#x3D;&quot;,</span><br><span class="line">  &quot;avatar_url&quot;: &quot;https:&#x2F;&#x2F;avatars0.githubusercontent.com&#x2F;u&#x2F;9922687?v&#x3D;4&quot;,</span><br><span class="line">  &quot;gravatar_id&quot;: &quot;&quot;,</span><br><span class="line">  &quot;url&quot;: &quot;https:&#x2F;&#x2F;api.github.com&#x2F;users&#x2F;gperinazzo&quot;,</span><br><span class="line">  &quot;html_url&quot;: &quot;https:&#x2F;&#x2F;github.com&#x2F;gperinazzo&quot;,</span><br><span class="line">  &quot;followers_url&quot;: &quot;https:&#x2F;&#x2F;api.github.com&#x2F;users&#x2F;gperinazzo&#x2F;followers&quot;,</span><br><span class="line">  &quot;following_url&quot;: &quot;https:&#x2F;&#x2F;api.github.com&#x2F;users&#x2F;gperinazzo&#x2F;following&#123;&#x2F;other_user&#125;&quot;,</span><br><span class="line">  &quot;gists_url&quot;: &quot;https:&#x2F;&#x2F;api.github.com&#x2F;users&#x2F;gperinazzo&#x2F;gists&#123;&#x2F;gist_id&#125;&quot;,</span><br><span class="line">  &quot;starred_url&quot;: &quot;https:&#x2F;&#x2F;api.github.com&#x2F;users&#x2F;gperinazzo&#x2F;starred&#123;&#x2F;owner&#125;&#123;&#x2F;repo&#125;&quot;,</span><br><span class="line">  &quot;subscriptions_url&quot;: &quot;https:&#x2F;&#x2F;api.github.com&#x2F;users&#x2F;gperinazzo&#x2F;subscriptions&quot;,</span><br><span class="line">  &quot;organizations_url&quot;: &quot;https:&#x2F;&#x2F;api.github.com&#x2F;users&#x2F;gperinazzo&#x2F;orgs&quot;,</span><br><span class="line">  &quot;repos_url&quot;: &quot;https:&#x2F;&#x2F;api.github.com&#x2F;users&#x2F;gperinazzo&#x2F;repos&quot;,</span><br><span class="line">  &quot;events_url&quot;: &quot;https:&#x2F;&#x2F;api.github.com&#x2F;users&#x2F;gperinazzo&#x2F;events&#123;&#x2F;privacy&#125;&quot;,</span><br><span class="line">  &quot;received_events_url&quot;: &quot;https:&#x2F;&#x2F;api.github.com&#x2F;users&#x2F;gperinazzo&#x2F;received_events&quot;,</span><br><span class="line">  &quot;type&quot;: &quot;User&quot;,</span><br><span class="line">  &quot;site_admin&quot;: false,</span><br><span class="line">  &quot;name&quot;: null,</span><br><span class="line">  &quot;company&quot;: null,</span><br><span class="line">  &quot;blog&quot;: &quot;&quot;,</span><br><span class="line">  &quot;location&quot;: null,</span><br><span class="line">  &quot;email&quot;: &quot;gperinazzo@gmail.com&quot;,</span><br><span class="line">  &quot;hireable&quot;: null,</span><br><span class="line">  &quot;bio&quot;: null,</span><br><span class="line">  &quot;twitter_username&quot;: null,</span><br><span class="line">  &quot;public_repos&quot;: 21,</span><br><span class="line">  &quot;public_gists&quot;: 0,</span><br><span class="line">  &quot;followers&quot;: 4,</span><br><span class="line">  &quot;following&quot;: 0,</span><br><span class="line">  &quot;created_at&quot;: &quot;2014-11-24T01:48:29Z&quot;,</span><br><span class="line">  &quot;updated_at&quot;: &quot;2020-11-08T00:34:34Z&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以使用大多数的文本编辑器和一些插件以合适的格式显示它。然而，如果在终端中，或者想在 shell 脚本中这么做，事情会有所不同。对于一个已最小化过的 JSON 文件，有同样的办法在 Linux 终端中漂亮地输出它。</p>
+<p>jq 是一个命令行 JSON 处理器。可以用它来切分、过滤、映射和转换结构化数据。可以使用 apt 命令在 Ubuntu 上安装它：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install jq</span><br><span class="line">jq . ***.json</span><br></pre></td></tr></table></figure>
+
+<p>或者</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat ***.json | jq</span><br></pre></td></tr></table></figure>
+
+<p>如果想用漂亮的格式修改原来的 JSON 文件，可以把解析后的输出结果用管道传送到一个新的文件中，然后覆盖原来的 JSON 文件。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jq . ***.json &gt; ###.json</span><br></pre></td></tr></table></figure>
+
+<p>对一个格式良好的 JSON 文件进行最小化，可以使用选项 -c。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jq -c &lt; ###.json</span><br></pre></td></tr></table></figure>
+
+<p>如果系统中安装有python3，可以再终端中使用以下命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 -m json.tool ***.json</span><br></pre></td></tr></table></figure>
+
+<h1 id="二、Vim"><a href="#二、Vim" class="headerlink" title="二、Vim"></a>二、Vim</h1><h2 id="1-在vim中多开窗口并切换"><a href="#1-在vim中多开窗口并切换" class="headerlink" title="1.在vim中多开窗口并切换"></a>1.在vim中多开窗口并切换</h2><h2 id="2-Markdown"><a href="#2-Markdown" class="headerlink" title="2.Markdown"></a>2.Markdown</h2><p>安装<code>markdown-preview.vim</code>插件，使用<code>:MarkdownPreview</code>进行预览</p>
+<h2 id="3-光标移动"><a href="#3-光标移动" class="headerlink" title="3.光标移动"></a>3.光标移动</h2><h3 id="3-1-将光标移到文件第一行"><a href="#3-1-将光标移到文件第一行" class="headerlink" title="3.1.将光标移到文件第一行"></a>3.1.将光标移到文件第一行</h3><p><code>:0</code>or<code>:1</code>or<code>gg</code></p>
+<h3 id="3-2-将光标移到文件最后一行"><a href="#3-2-将光标移到文件最后一行" class="headerlink" title="3.2.将光标移到文件最后一行"></a>3.2.将光标移到文件最后一行</h3><p><code>G</code>or<code>shift+g</code> </p>
+<h3 id="3-3-将光标移到一行开头"><a href="#3-3-将光标移到一行开头" class="headerlink" title="3.3.将光标移到一行开头"></a>3.3.将光标移到一行开头</h3><p><code>Home</code>or<code>^</code>+<code>shift+6</code>or<code>0</code></p>
+<h3 id="3-4-将光标移到一行末尾"><a href="#3-4-将光标移到一行末尾" class="headerlink" title="3.4.将光标移到一行末尾"></a>3.4.将光标移到一行末尾</h3><p><code>End</code>or<code>shift+4</code> </p>
+<h3 id="3-5-搜索"><a href="#3-5-搜索" class="headerlink" title="3.5.搜索"></a>3.5.搜索</h3><p><code>/</code></p>
+<h3 id="3-6-打开文件"><a href="#3-6-打开文件" class="headerlink" title="3.6.打开文件"></a>3.6.打开文件</h3><p>如果没有打开的vim，<code>vim &lt;file1_name&gt; &lt;file2_name&gt; &lt;file3_name&gt; ...</code>；如果有的话，<code>:open &lt;file_name&gt;</code>，并使用以下命令切换窗口：<code>ctrl + 6</code>来切换最近的两个文件，<code>:bn</code>切换到下一个文件，<code>:bp</code>切换到上一个文件。</p>
+<h3 id="3-7-撤销"><a href="#3-7-撤销" class="headerlink" title="3.7.撤销"></a>3.7.撤销</h3><p><code>:n</code>or<code>n</code>or<code>u</code>，撤销撤销操作<code>ctrl + r</code>。</p>
+
+    </div>
+
+    
+        <hr class="fhr">
+        <div id="vcomments"></div>
+    
+</div>
+    <div class="footer" id="footer">
+    <p><h4>Copyright © 2020 | Author: CAKGOD | Theme By <a class="theme-author" target="_blank" rel="noopener" href="https://github.com/Xunzhuo/hexo-theme-coder" style="font-size:14px; color: #969696">Coder</a></h4>
+    
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+        <span id="busuanzi_container_site_pv">Page Views: <span id="busuanzi_value_site_pv"></span></span>
+        <span class="post-meta-divider">|</span>
+        <span id="busuanzi_container_site_uv">Unique Visitors: <span id="busuanzi_value_site_uv"></span></span>
+    
+    <label class="el-switch el-switch-blue el-switch-sm" style="vertical-align: sub;">
+        <input type="checkbox" name="switch" id="update_style">
+        <span class="el-switch-style"></span>
+    </label>
+
+    <!--         <script type="text/javascript">
+    var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");
+    document.write(unescape("%3Cspan id='cnzz_stat_icon_1278548644'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "v1.cnzz.com/stat.php%3Fid%3D1278548644%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));
+    </script> -->
+</p>
+</div>
+
+<input type="hidden" id="web_style" value="black">
+<input type="hidden" id="valine_appid" value="NOsswOncKgc8HOxqo9oxIWlX-gzGzoHsz">
+<input type="hidden" id="valine_appKey" value="z1FihjWEbS8uIfUQdmCtK7zz">
+
+<script src="/libs/jquery.min.js"></script>
+
+
+<script src="/libs/highlight/highlight.pack.js"></script>
+
+<script src='//cdn.jsdelivr.net/npm/valine@1.3.10/dist/Valine.min.js'></script>
+
+<script src="/js/js.js"></script>
+
+<style type="text/css">
+.v * {
+color: #698fca;
+}
+.v .vlist .vcard .vhead .vsys {
+color: #3a3e4a;
+}
+.v .vlist .vcard .vh .vmeta .vat {
+color: #638fd5;
+}
+.v .vlist .vcard .vhead .vnick {
+color: #6ba1ff;
+}
+.v a {
+color: #8696b1;
+}
+.v .vlist .vcard .vhead .vnick:hover {
+color: #669bfc;
+}
+</style>
+    <script type="text/javascript" color="173,174,173" opacity='1' zIndex="-2" count="99" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>
