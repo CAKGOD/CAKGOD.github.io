@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="google-site-verification" content="TZE0rZyIqLl10trYu3BWBWa1Vmz6HFwhb2OcNEK4u-s" />
+     <link rel="shortcut icon" href= /img/favicon.ico >
+    <title>
+        Hexo
+    </title>
+    <meta name="description" content= Hi! Welcome to CAKGOD's website! Thank you! >
+    <meta name="keywords" content=  >
+    
+<link rel="stylesheet" href="/libs/highlight/styles/monokai-sublime.css">
+
+    
+<link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+<body id="bodyx">
+    <div class="hd posts">
+    <a href="/index.html"><i class="fa fa-home
+ replay-btn" aria-hidden="true"></i></a>
+    <div class="post-title">
+        <p>
+            爬虫总结
+        </p>
+        <hr>
+    </div>
+    <div class="post-content">
+        <h1 id="一、IM聊天记录爬取"><a href="#一、IM聊天记录爬取" class="headerlink" title="一、IM聊天记录爬取"></a>一、IM聊天记录爬取</h1><h2 id="1-1-Zulip"><a href="#1-1-Zulip" class="headerlink" title="1.1.Zulip"></a>1.1.Zulip</h2><p>出于团队rust洞察任务需求，需要研发出zulip聊天记录抓取和提取工具。我的系统是ubuntu20，按照网上的教程搜索安装zulip，注意配置rc文件即可。</p>
+<p>接下来需要导出zulip的聊天记录。以rust治理组的zulip聊天室为例，首先设定一个channel列表，代表不同的聊天频道。</p>
+<p>接下来调用python的zulip包，首先调用<code>zulip.client(config_file)</code>，之后调用client.get_messages(request)来获得返回值。这里request中可以修改获取聊天记录的数量和起止时间。将这些聊天记录根据聊天室名称分别保存。</p>
+<p>将聊天记录保存为文件之后，根据词匹配、切分等方法，将信息提取为“发送者姓名”，“发送者邮箱”，“时间”，“主题”，“内容”五个维度，并将其存入json文件中。</p>
+<p>整体下来，获取过程还是比较简单的。由于zulip python库的存在，我们不需要另外去请求连接了。信息获取下来之后，可以使用关键词提取等方法，获取聊天记录热词等。</p>
+<h2 id="1-2-Slack"><a href="#1-2-Slack" class="headerlink" title="1.2.Slack"></a>1.2.Slack</h2><h2 id="1-3-Discord"><a href="#1-3-Discord" class="headerlink" title="1.3.Discord"></a>1.3.Discord</h2><h1 id="二、简历网站"><a href="#二、简历网站" class="headerlink" title="二、简历网站"></a>二、简历网站</h1><h2 id="1-Boss"><a href="#1-Boss" class="headerlink" title="1.Boss"></a>1.Boss</h2><p>非出于本心，需要获得用户的简历（内心一百万个不愿意）。。。本人绝不使用这些数据用于任何研究，手中也绝不留存任何信息，仅当技术学习，如有侵权，务必直接联系本人。</p>
+<ul>
+<li>第一步登录boss直聘企业账号，发布职位，即可获取推荐牛人。</li>
+<li>首先直接考虑访问url，不过boss直聘的反扒策略肯定不允许如此简单的方法，页面内容都是由Cookie生成的，所以此方法行不通。</li>
+<li>其次考虑selenium控制浏览器，不过这种方法每次都需要打开新页面，就得重复扫码登录，无法完成自动化运行，舍弃该方法。</li>
+<li>最后经过M老师指点，采用TamperMonkey的方法，在其中编写JavaScript脚本，截取相关代码，并模拟点击行为，最后在chrome的console中成功获取所需内容。为了将console中的内容保存到本地，采用了命令行<code>google-chrome --enable-logging --v=1</code>保存chrome console log文件，这样就可以下一步的数据提取了，使用Xml、BeautifulSoup等方法。为了保护相关人员权益，避免风险，不公开JavaScript脚本，恳请见谅。</li>
+</ul>
+<p>在整个过程中，还是学习到JavaScript、TamperMonkey的知识，感谢M老师和震哥的指点。</p>
+<h2 id="2-拉勾网"><a href="#2-拉勾网" class="headerlink" title="2.拉勾网"></a>2.拉勾网</h2><h2 id="3-51job前程无忧"><a href="#3-51job前程无忧" class="headerlink" title="3.51job前程无忧"></a>3.51job前程无忧</h2><h2 id="4-智联"><a href="#4-智联" class="headerlink" title="4.智联"></a>4.智联</h2><h1 id="三、Github"><a href="#三、Github" class="headerlink" title="三、Github"></a>三、Github</h1><h2 id="1-用户信息"><a href="#1-用户信息" class="headerlink" title="1.用户信息"></a>1.用户信息</h2><h3 id="1-1-用户api"><a href="#1-1-用户api" class="headerlink" title="1.1.用户api"></a>1.1.用户api</h3><p>鉴于Github用户过多，进行全量的分析是不现实的。由于最近团队在洞察Rust社区，选择对其中的贡献者进行分析。首先需要获得所有的Rust贡献者，这里有两种方法获得。</p>
+<p>（1）爬取Crates.io（Rust社区所有crates的介绍网站）上的所有贡献者信息，可以有API来获取。不过这种方法需要进行长时间的爬取，比较繁琐。</p>
+<p>（2）Rust官方有一个<a target="_blank" rel="noopener" href="https://github.com/rust-lang/thanks">thanks</a>仓库，里面可以获得所有的贡献者名称。可以按照该仓库的使用介绍来获得ALL-TIME的贡献者名称。</p>
+<p>得到具体的用户login后，可以调用Github API来获得贡献者的基本信息和相关关系。其中用户间的的关系我首先使用了following关系（后续可以添加follows、sponsors、sponsoring关系等），使用<code>https://api.github.com/users/&lt;user-login&gt;/following</code>来下载关系信息，使用<code>https://api.github.com/users/&lt;user-login&gt;</code>来下载基本信息。</p>
+<p>从基本信息文件中抽取用户信息，提取id、node_id、name、compony、blog、location、email、twitter_username、public_repos、public_gists、followers、following、bio、created_at、updated_at、avatar_url、html_url这些维度。</p>
+<h3 id="1-2-个人主页"><a href="#1-2-个人主页" class="headerlink" title="1.2.个人主页"></a>1.2.个人主页</h3><p>从Github的用户个人主页可以看到用户公开的信息，也可以体现出用户的技术栈、兴趣爱好、最近的动态等等。为了完整地对一个用户进行画像，需要有完整的数据来进行支撑，这就需要对Github的个人主页进行信息提取。本次我仅仅解析了个人的主页部分，就是一打开某个人的Github的那个页面。</p>
+<p>Github提供了相应的api可以访问用户的一些信息，但是本次使用了BeautifulSoup来进行解析。首先使用requests模块访问Github主页，这里有一个注意点，如果只是想获得用户的基本信息，直接访问url：<a target="_blank" rel="noopener" href="https://github.com/CAKGOD%EF%BC%9B%E5%A6%82%E6%9E%9C%E9%9C%80%E8%A6%81%E8%8E%B7%E5%8F%96%E7%94%A8%E6%88%B7%E7%9A%84Activity%E4%BE%8B%E5%A6%82pr%E3%80%81commit%E7%AD%89%E4%BF%A1%E6%81%AF%EF%BC%8C%E9%9C%80%E8%A6%81%E8%AE%BF%E9%97%AEurl%EF%BC%9Ahttps://github.com/CAKGOD?tab=overview&amp;from=2019-12-01&amp;to=2019-12-31%EF%BC%8C%E5%85%B6%E4%B8%AD%E7%9A%84%E6%97%A5%E6%9C%9F%E6%A0%B9%E6%8D%AE%E8%87%AA%E5%B7%B1%E7%9A%84%E9%9C%80%E8%A6%81%E8%BF%9B%E8%A1%8C%E4%BF%AE%E6%94%B9%E3%80%82%E4%BE%8B%E5%A6%82%E6%88%91%E6%83%B3%E6%A0%B9%E6%8D%AE%E6%9F%90%E4%B8%AA%E7%94%A8%E6%88%B7%E7%9A%84%E6%9C%88%E5%BA%A6%E8%B4%A1%E7%8C%AE%E6%9D%A5%E8%BF%9B%E8%A1%8C%E7%BB%9F%E8%AE%A1%EF%BC%8C%E5%B0%B1%E6%8A%8A%E4%B8%8A%E9%9D%A2from%E5%92%8Cto%E7%9A%84%E5%80%BC%E9%97%B4%E9%9A%94%E6%94%B9%E6%88%90%E4%B8%80%E4%B8%AA%E6%9C%88%E3%80%82">https://github.com/CAKGOD；如果需要获取用户的Activity例如pr、commit等信息，需要访问url：https://github.com/CAKGOD?tab=overview&amp;from=2019-12-01&amp;to=2019-12-31，其中的日期根据自己的需要进行修改。例如我想根据某个用户的月度贡献来进行统计，就把上面from和to的值间隔改成一个月。</a></p>
+<p>获得request的返回网页后，使用BeautifulSoup进行解析，其中涉及到一些标签选择、属性值抽取的操作，这些操作按照自己的需求和BeautifulSoup使用文档操作即可。最终我将整个页面归纳为一个dict，其中第一层key为basic和activity，其中basic的二层key有ava、name、id、slogan、followers、following、star、worksFor、homeLocation、email、url、twitter、highlight、Organizations、Sponsoring、pin_popular，Activity的二层key根据月份来对五种活动进行统计。</p>
+<p>具体的代码见<a target="_blank" rel="noopener" href="https://github.com/CAKGOD/myCode/blob/master/examples/github/github_homepage_extract.ipynb">https://github.com/CAKGOD/myCode/blob/master/examples/github/github_homepage_extract.ipynb</a></p>
+<p>这次的解析效果还是不错的，不过还是有一些不足之处。例如基本信息的统计维度不完整，用户Activity的类型种类不完整，pinned的项目的语言、star数量、fork数量没有提取。不过这些可以后续完善。</p>
+<h2 id="2-项目信息"><a href="#2-项目信息" class="headerlink" title="2.项目信息"></a>2.项目信息</h2><h3 id="2-1-项目api"><a href="#2-1-项目api" class="headerlink" title="2.1.项目api"></a>2.1.项目api</h3><p>Github也提供了一些项目的api，可以获得项目的一些信息。下面简单举几个例子。</p>
+<p>（1）得到某个仓库的贡献者</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">api.github.com&#x2F;repos&#x2F;&lt;项目所属组织或个人&gt;&#x2F;&lt;项目名称&gt;&#x2F;contributors</span><br></pre></td></tr></table></figure>
+
+<p>返回的json中contributions即为commit次数。</p>
+<p>（2）得到某一用户在github上面贡献了多少库  </p>
+<p><a target="_blank" rel="noopener" href="https://github.com/benjycui">benjycui</a>编写了一个实现该功能的<a target="_blank" rel="noopener" href="https://github.com/benjycui/open-source-hero">工具</a>。</p>
+<h3 id="2-2-项目主页"><a href="#2-2-项目主页" class="headerlink" title="2.2.项目主页"></a>2.2.项目主页</h3><p>之前对Github用户主页进行了信息提取，这次对Github项目信息进行提取。由于项目的特殊性，不仅存在基本信息，也存在贡献者、commit等信息。这些信息如果通过url访问将是非常巨大的工作量，因此可以采用将仓库克隆到本地使用git解析的方法来进行这类信息的提取。综上，对于一个项目的信息提取包括以下步骤。</p>
+<p>（1）访问仓库网页地址，例如<a target="_blank" rel="noopener" href="https://github.com/rust-lang/rust%EF%BC%8C%E5%B9%B6%E4%BD%BF%E7%94%A8BeautifulSoup%E5%AF%B9%E8%BF%94%E5%9B%9E%E7%9A%84%E7%BD%91%E9%A1%B5%E8%BF%9B%E8%A1%8C%E8%A7%A3%E6%9E%90%E3%80%82">https://github.com/rust-lang/rust，并使用BeautifulSoup对返回的网页进行解析。</a></p>
+<p>（2）将仓库使用<code>git clone</code>命令保存到本地，然后使用<code>git --no-pager log --stat &gt;&gt; commit_file.txt</code>命令保存commit记录，然后从这个文件中提取贡献者和具体的贡献记录。</p>
+<p>解析网页的内容相对比较简单，使用BeautifulSoup提取标签内容、标签属性等即可，跟之前提取用户主页信息类似。</p>
+<p>解析commit信息相对复杂一些，需要使用关键词筛选和正则匹配等方法，将包含commit信息的行提取出来，并根据不同的贡献者、不同的文件路径（注意不仅仅是文件名，要更高级一点）分别统计总体的代码贡献行数。这里有个有趣的发现，commit信息中包含了非常重要的开发者联系方式，即邮箱，这个可是在外面难以搜索到的。emmmmmm。。。</p>
+<p>最终将所有的信息存储到project字典中，一级字段包括summary、contributors、file_commits。该dict可以另存为json文件，方便进行其他操作。具体的代码见<a target="_blank" rel="noopener" href="https://github.com/CAKGOD/myCode/blob/master/examples/github/github_project_homepage_extraction.ipynb%E3%80%82">https://github.com/CAKGOD/myCode/blob/master/examples/github/github_project_homepage_extraction.ipynb。</a></p>
+<p>本次Github项目信息提取的效果还是不错的，不过还是有一些可以改进的地方。例如可以添加根据时间进行统计的功能，毕竟有时候我们只是想统计最近一段时间的贡献历史。这个项目信息统计出来之后，可以用来找出关键贡献者（例如使用半衰期排名算法，明后天更新一下）、关键代码文件等。</p>
+<h2 id="3-Api使用总结"><a href="#3-Api使用总结" class="headerlink" title="3.Api使用总结"></a>3.Api使用总结</h2><h3 id="3-1-github-search-api"><a href="#3-1-github-search-api" class="headerlink" title="3.1.github search api"></a>3.1.github search api</h3><p>（1）找到过去一段时间内最热的几个项目</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ curl -G https:&#x2F;&#x2F;api.github.com&#x2F;search&#x2F;repositories       \</span><br><span class="line">    --data-urlencode &quot;q&#x3D;created:2021-01-01&quot; \</span><br><span class="line">    --data-urlencode &quot;sort&#x3D;stars&quot;                          \</span><br><span class="line">    --data-urlencode &quot;order&#x3D;desc&quot;                          \</span><br><span class="line">    -H &quot;Accept: application&#x2F;vnd.github.preview&quot;            \</span><br><span class="line">    | jq &quot;.items[0,1,2] | &#123;name, description, language, watchers_count, html_url&#125;&quot;</span><br></pre></td></tr></table></figure>
+
+<p>（2）找到最早的用户账号并且没有人follow的github账号（人类清除计划hhh）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ curl -G https:&#x2F;&#x2F;api.github.com&#x2F;search&#x2F;users   \</span><br><span class="line">    --data-urlencode &#39;q&#x3D;followers:0&#39;            \</span><br><span class="line">    --data-urlencode &#39;sort&#x3D;joined&#39;              \</span><br><span class="line">    --data-urlencode &#39;order&#x3D;asc&#39;                \</span><br><span class="line">    -H &#39;Accept: application&#x2F;vnd.github.preview&#39; \</span><br><span class="line">    | jq &#39;.items[0,1,2] | &#123;html_url, login, id&#125;&#39;</span><br></pre></td></tr></table></figure>
+
+<h1 id="四、"><a href="#四、" class="headerlink" title="四、"></a>四、</h1>
+    </div>
+
+    
+        <hr class="fhr">
+        <div id="vcomments"></div>
+    
+</div>
+    <div class="footer" id="footer">
+    <p><h4>Copyright © 2020 | Author: CAKGOD | Theme By <a class="theme-author" target="_blank" rel="noopener" href="https://github.com/Xunzhuo/hexo-theme-coder" style="font-size:14px; color: #969696">Coder</a></h4>
+    
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+        <span id="busuanzi_container_site_pv">Page Views: <span id="busuanzi_value_site_pv"></span></span>
+        <span class="post-meta-divider">|</span>
+        <span id="busuanzi_container_site_uv">Unique Visitors: <span id="busuanzi_value_site_uv"></span></span>
+    
+    <label class="el-switch el-switch-blue el-switch-sm" style="vertical-align: sub;">
+        <input type="checkbox" name="switch" id="update_style">
+        <span class="el-switch-style"></span>
+    </label>
+
+    <!--         <script type="text/javascript">
+    var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");
+    document.write(unescape("%3Cspan id='cnzz_stat_icon_1278548644'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "v1.cnzz.com/stat.php%3Fid%3D1278548644%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));
+    </script> -->
+</p>
+</div>
+
+<input type="hidden" id="web_style" value="black">
+<input type="hidden" id="valine_appid" value="NOsswOncKgc8HOxqo9oxIWlX-gzGzoHsz">
+<input type="hidden" id="valine_appKey" value="z1FihjWEbS8uIfUQdmCtK7zz">
+
+<script src="/libs/jquery.min.js"></script>
+
+
+<script src="/libs/highlight/highlight.pack.js"></script>
+
+<script src='//cdn.jsdelivr.net/npm/valine@1.3.10/dist/Valine.min.js'></script>
+
+<script src="/js/js.js"></script>
+
+<style type="text/css">
+.v * {
+color: #698fca;
+}
+.v .vlist .vcard .vhead .vsys {
+color: #3a3e4a;
+}
+.v .vlist .vcard .vh .vmeta .vat {
+color: #638fd5;
+}
+.v .vlist .vcard .vhead .vnick {
+color: #6ba1ff;
+}
+.v a {
+color: #8696b1;
+}
+.v .vlist .vcard .vhead .vnick:hover {
+color: #669bfc;
+}
+</style>
+    <script type="text/javascript" color="173,174,173" opacity='1' zIndex="-2" count="99" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>
