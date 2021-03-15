@@ -34,6 +34,8 @@
     </div>
     <div class="post-content">
         <h2 id="一、背景"><a href="#一、背景" class="headerlink" title="一、背景"></a>一、背景</h2><p>Attention 机制作为近年来自然处理领域最重要的理念之一，在许多 NLP 子领域中得到了广泛应用。以注意力机制为核心的 Transformer、BERT、GPT 等模型也在各类任务 benchmark 不断屠榜。其中，Luong Attention 和 Bahdanau Attention 是最经典的两种注意力机制。二者在理念上大致相同，但在实现细节上存在许多区别。</p>
+<img src="/.com//03/01/Attention%E6%9C%BA%E5%88%B6/Attention%E6%9C%BA%E5%88%B6_1.jpg" class title="This is an test image">
+
 <p><img src="https://pic2.zhimg.com/v2-03e243612c755bce746bc8a84e675a94_1440w.jpg?source=172ae18b"></p>
 <p>简单来说，Luong Attention 相较 Bahdanau Attention 主要有以下几点区别：</p>
 <p>1.注意力的计算方式不同<br>在Luong Attention机制中，第t步的注意力$c_t$是由decoder第t步的hidden state ${h}<em>t$与 encoder 中的每一个 hidden state $\overline{h}<em>s$加权计算得出的。而在Bahdanau Attention机制中，第t步的注意力$c_t$是由decoder第t-1步的hidden state ${h}</em>{t-1}$与 encoder 中的每一个hidden state ${h}<em>s$加权计算得出的。<br>2.decoder的输入输出不同<br>在Bahdanau Attention机制中，decoder在第t步时，输入是由注意力$c_t$与前一步的hidden state ${h}</em>{t-1}$拼接（concatenate）得出的，得到第t步的hidden state ${h}</em>{t}$并直接输出$\hat{y}_{t+1}$。而 Luong Attention 机制在 decoder 部分建立了一层额外的网络结构，以注意力$c_t$与原decoder第t步的hidden state ${h}_t$拼接作为输入，得到第t步的 hidden state $\widetilde{h}_t$并输出$\widetilde{y}_t$。</p>
