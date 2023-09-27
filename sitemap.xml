@@ -11,6 +11,24 @@
   </url>
   
   <url>
+    <loc>http://cakgod.github.io/categories/index.html</loc>
+    
+    <lastmod>2023-09-27</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://cakgod.github.io/search/index.html</loc>
+    
+    <lastmod>2023-09-27</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>http://cakgod.github.io/tags/index.html</loc>
     
     <lastmod>2023-09-27</lastmod>
@@ -28,15 +46,6 @@
     <priority>0.6</priority>
   </url>
   
-  <url>
-    <loc>http://cakgod.github.io/2023/09/27/hello-world/</loc>
-    
-    <lastmod>2023-09-27</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
 
   <url>
     <loc>http://cakgod.github.io/</loc>
@@ -46,13 +55,13 @@
   </url>
 
   
+
+  
   <url>
-    <loc>http://cakgod.github.io/tags/test/</loc>
+    <loc>http://cakgod.github.io/categories/essay/</loc>
     <lastmod>2023-09-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
-  
-
   
 </urlset>
