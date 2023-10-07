@@ -2,18 +2,9 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://cakgod.github.io/2023/09/28/interesting-thing/</loc>
+    <loc>http://cakgod.github.io/2023/09/28/interesting-website/</loc>
     
     <lastmod>2023-10-07</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>http://cakgod.github.io/2023/09/27/first-article/</loc>
-    
-    <lastmod>2023-09-27</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -65,12 +56,5 @@
 
   
 
-  
-  <url>
-    <loc>http://cakgod.github.io/categories/essay/</loc>
-    <lastmod>2023-10-07</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
   
 </urlset>
