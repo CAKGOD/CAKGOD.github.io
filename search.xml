@@ -42,6 +42,27 @@
     
     
     <entry>
+      <title>现代微处理器</title>
+      <link href="/2023/01/07/modern-microprocessor/"/>
+      <url>/2023/01/07/modern-microprocessor/</url>
+      
+        <content type="html"><![CDATA[<h1 id="1-参考文章"><a href="#1-参考文章" class="headerlink" title="1. 参考文章"></a>1. 参考文章</h1><p><a href="https://www.lighterra.com/papers/modernmicroprocessors/">Modern Microprocessors. A 90-Minute Guide!</a></p><p>本文绝对是一篇非常好的文章，以本人的垃圾水平暂时只能读懂部分，并且有点看不下去，先挖个坑。</p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> 读后感 </tag>
+            
+            <tag> 硬件 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>分支对性能的影响以及分支优化</title>
       <link href="/2022/10/07/branch-and-optimization/"/>
       <url>/2022/10/07/branch-and-optimization/</url>
@@ -52,7 +73,9 @@
       
         <tags>
             
-            <tag> 软件优化 </tag>
+            <tag> 优化 </tag>
+            
+            <tag> 读后感 </tag>
             
         </tags>
       
