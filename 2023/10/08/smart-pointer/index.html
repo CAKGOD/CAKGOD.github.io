@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="1. 概述在实际的C++开发中，我们经常会遇到诸如程序运行中突然崩溃、程序运行所用内存越来越多最终不得不重启等问题，这些问题往往都是内存资源管理不当造成的。比如：  有些内存资源已经被释放，但指向它的指针并没有改变指向（成为了野指针），并且后续还在使用； 有些内存资源已经被释放，后期又试图再释放一次（重复释放同一块内存会导致程序运行崩溃）； 没有及时释放不再使用的内存资源，造成内存泄漏，程序占用的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="智能指针">
+<meta property="og:url" content="http://cakgod.github.io/2023/10/08/smart-pointer/index.html">
+<meta property="og:site_name" content="CAKGOD&#39;s blog">
+<meta property="og:description" content="1. 概述在实际的C++开发中，我们经常会遇到诸如程序运行中突然崩溃、程序运行所用内存越来越多最终不得不重启等问题，这些问题往往都是内存资源管理不当造成的。比如：  有些内存资源已经被释放，但指向它的指针并没有改变指向（成为了野指针），并且后续还在使用； 有些内存资源已经被释放，后期又试图再释放一次（重复释放同一块内存会导致程序运行崩溃）； 没有及时释放不再使用的内存资源，造成内存泄漏，程序占用的">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2023-10-08T03:56:20.000Z">
+<meta property="article:modified_time" content="2023-10-09T02:15:51.005Z">
+<meta property="article:author" content="CAKGOD">
+<meta property="article:tag" content="c++">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>智能指针</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="CAKGOD's blog" type="application/atom+xml">
+</head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tag</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2023/09/28/interesting-website/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://cakgod.github.io/2023/10/08/smart-pointer/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://cakgod.github.io/2023/10/08/smart-pointer/&text=智能指针"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://cakgod.github.io/2023/10/08/smart-pointer/&title=智能指针"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://cakgod.github.io/2023/10/08/smart-pointer/&is_video=false&description=智能指针"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=智能指针&body=Check out this article: http://cakgod.github.io/2023/10/08/smart-pointer/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://cakgod.github.io/2023/10/08/smart-pointer/&title=智能指针"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://cakgod.github.io/2023/10/08/smart-pointer/&title=智能指针"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://cakgod.github.io/2023/10/08/smart-pointer/&title=智能指针"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://cakgod.github.io/2023/10/08/smart-pointer/&title=智能指针"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://cakgod.github.io/2023/10/08/smart-pointer/&name=智能指针&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://cakgod.github.io/2023/10/08/smart-pointer/&t=智能指针"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-%E6%A6%82%E8%BF%B0"><span class="toc-number">1.</span> <span class="toc-text">1. 概述</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-shared-ptr"><span class="toc-number">2.</span> <span class="toc-text">2. shared_ptr</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-%E5%88%9B%E5%BB%BA"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. 创建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-%E9%87%8A%E6%94%BE"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. 释放</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-3-%E6%96%B9%E6%B3%95"><span class="toc-number">2.3.</span> <span class="toc-text">2.3. 方法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-unique-ptr"><span class="toc-number">3.</span> <span class="toc-text">3. unique_ptr</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-1-%E5%88%9B%E5%BB%BA"><span class="toc-number">3.1.</span> <span class="toc-text">3.1. 创建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-2-%E9%87%8A%E6%94%BE"><span class="toc-number">3.2.</span> <span class="toc-text">3.2. 释放</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-3-%E6%96%B9%E6%B3%95"><span class="toc-number">3.3.</span> <span class="toc-text">3.3. 方法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-weak-ptr"><span class="toc-number">4.</span> <span class="toc-text">4. weak_ptr</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#4-1-%E5%88%9B%E5%BB%BA"><span class="toc-number">4.1.</span> <span class="toc-text">4.1. 创建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-2-%E6%96%B9%E6%B3%95"><span class="toc-number">4.2.</span> <span class="toc-text">4.2. 方法</span></a></li></ol></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        智能指针
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">CAKGOD</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2023-10-08T03:56:20.000Z" class="dt-published" itemprop="datePublished">2023-10-08</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/c/" rel="tag">c++</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h1 id="1-概述"><a href="#1-概述" class="headerlink" title="1. 概述"></a>1. 概述</h1><p>在实际的C++开发中，我们经常会遇到诸如程序运行中突然崩溃、程序运行所用内存越来越多最终不得不重启等问题，这些问题往往都是内存资源管理不当造成的。比如：</p>
+<ul>
+<li>有些内存资源已经被释放，但指向它的指针并没有改变指向（成为了野指针），并且后续还在使用；</li>
+<li>有些内存资源已经被释放，后期又试图再释放一次（重复释放同一块内存会导致程序运行崩溃）；</li>
+<li>没有及时释放不再使用的内存资源，造成内存泄漏，程序占用的内存资源越来越多。</li>
+</ul>
+<p>C++98&#x2F;03标准中，支持使用<code>auto_ptr</code>智能指针来实现堆内存的自动回收；C++11新标准在废弃<code>auto_ptr</code>的同时，增添了<code>unique_ptr</code>、<code>shared_ptr</code>以及<code>weak_ptr</code>这3个智能指针来实现堆内存的自动回收。</p>
+<p>C++智能指针底层是采用引用计数的方式实现的。简单理解，智能指针在申请堆内存空间的同时，会为其配备一个整型值（初始值为1），每当有新对象使用此堆内存时，该整形值加1；反之，每当使用此堆内存的对象被释放时，该整型值减1。当堆空间对应的整型值为0时，即表明不再有对象使用它，该堆空间就会被释放掉。</p>
+<p>下面介绍三种智能指针，注意：每种智能指针都是以类模板的方式实现的，定义位于<code>&lt;memory&gt;</code>头文件，并位于<code>std</code>命名空&gt;间中，因此在使用该类型指针时，程序中应包含如下2行代码：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;memory&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br></pre></td></tr></table></figure>
+
+<h1 id="2-shared-ptr"><a href="#2-shared-ptr" class="headerlink" title="2. shared_ptr"></a>2. shared_ptr</h1><p>和<code>unique_ptr</code>、<code>weak_ptr</code>不同之处在于，多个<code>shared_ptr</code>智能指针可以共同使用同一块堆内存。并且，由于该类型智能指针在实现上采用的是引用计数机制，即便有一个shared_ptr&#96;指针放弃了堆内存的“使用权”（引用计数减1），也不会影响其他指向同一堆内存的shared_ptr指针（只有引用计数为 0 时，堆内存才会被自动释放）。</p>
+<h2 id="2-1-创建"><a href="#2-1-创建" class="headerlink" title="2.1. 创建"></a>2.1. 创建</h2><p>介绍一下几种创建方式：</p>
+<p>（1）创建空智能指针</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">std::shared_ptr&lt;<span class="type">int</span>&gt; p1;             <span class="comment">// 不传入任何实参</span></span><br><span class="line"><span class="function">std::shared_ptr&lt;<span class="type">int</span>&gt; <span class="title">p2</span><span class="params">(<span class="literal">nullptr</span>)</span></span>;    <span class="comment">// 传入空指针nullptr</span></span><br></pre></td></tr></table></figure>
+
+<p>注意，空的<code>shared_ptr</code>指针，其初始引用计数为0，而不是1。</p>
+<p>（2）创建非空<code>shared_ptr</code>智能指针，明确其指向。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">std::shared_ptr&lt;<span class="type">int</span>&gt; <span class="title">p3</span><span class="params">(<span class="keyword">new</span> <span class="type">int</span>(<span class="number">10</span>))</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>这样就成功构建了一个<code>shared_ptr</code>智能指针，其指向一块存有10个int类型数据的堆内存空间。</p>
+<p>同时，C++11标准中还提供了<code>std::make_shared&lt;T&gt;</code>模板函数，其可以用于初始化<code>shared_ptr</code>智能指针，例如：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">std::shared_ptr&lt;<span class="type">int</span>&gt; p3 = std::<span class="built_in">make_shared</span>&lt;<span class="type">int</span>&gt;(<span class="number">10</span>);</span><br></pre></td></tr></table></figure>
+
+<p>以上2种方式创建的p3是完全相同。</p>
+<p>（3）拷贝构造和移动构造</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//调用拷贝构造函数</span></span><br><span class="line"><span class="function">std::shared_ptr&lt;<span class="type">int</span>&gt; <span class="title">p4</span><span class="params">(p3)</span></span>;</span><br><span class="line">std::shared_ptr&lt;<span class="type">int</span>&gt; p4 = p3;</span><br><span class="line"><span class="comment">//调用移动构造函数</span></span><br><span class="line"><span class="function">std::shared_ptr&lt;<span class="type">int</span>&gt; <span class="title">p5</span><span class="params">(std::move(p4))</span></span>;</span><br><span class="line">std::shared_ptr&lt;<span class="type">int</span>&gt; p5 = std::<span class="built_in">move</span>(p4);</span><br></pre></td></tr></table></figure>
+
+<p>如上所示，p3和p4都是<code>shared_ptr</code>类型的智能指针，因此可以用p3来初始化p4，由于p3是左值，因此会调用拷贝构造函数。需要注意的是，如果p3为空智能指针，则p4也为空智能指针，其引用计数初始值为0；反之，则表明p4和p3指向同一块堆内存，同时该堆空间的引用计数会加1。</p>
+<p>而对于<code>std::move(p4)</code>来说，该函数会强制将p4转换成对应的右值，因此初始化p5调用的是移动构造函数。另外和调用拷贝构造函数不同，用<code>std::move(p4)</code>初始化p5，会使得p5拥有了p4的堆内存，而p4则变成了空智能指针。</p>
+<p>注意，同一普通指针不能同时为多个<code>shared_ptr</code>对象赋值，否则会导致程序发生异常。例如：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span>* ptr = <span class="keyword">new</span> <span class="type">int</span>;</span><br><span class="line"><span class="function">std::shared_ptr&lt;<span class="type">int</span>&gt; <span class="title">p1</span><span class="params">(ptr)</span></span>;</span><br><span class="line"><span class="function">std::shared_ptr&lt;<span class="type">int</span>&gt; <span class="title">p2</span><span class="params">(ptr)</span></span>;<span class="comment">//错误</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="2-2-释放"><a href="#2-2-释放" class="headerlink" title="2.2. 释放"></a>2.2. 释放</h2><p>再介绍一下<code>shared_ptr</code>的自定义释放规则，在初始化时可以自定义所指堆内存的释放规则，这样当堆内存的引用计数为0时，会优先调用自定义的释放规则。在某些场景中，自定义释放规则是很有必要的。比如，对于申请的动态数组来说，<code>shared_ptr</code>指针默认的释放规则是不支持释放数组的，只能自定义对应的释放规则，才能正确地释放申请的堆内存。</p>
+<p>对于申请的动态数组，释放规则可以使用C++11标准中提供的<code>default_delete&lt;T&gt;</code>模板类，也可以自定义释放规则：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//指定 default_delete 作为释放规则</span></span><br><span class="line"><span class="function">std::shared_ptr&lt;<span class="type">int</span>&gt; <span class="title">p6</span><span class="params">(<span class="keyword">new</span> <span class="type">int</span>[<span class="number">10</span>], std::default_delete&lt;<span class="type">int</span>[]&gt;())</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//自定义释放规则</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">deleteInt</span><span class="params">(<span class="type">int</span>*p)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">delete</span> []p;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//初始化智能指针，并自定义释放规则</span></span><br><span class="line"><span class="function">std::shared_ptr&lt;<span class="type">int</span>&gt; <span class="title">p7</span><span class="params">(<span class="keyword">new</span> <span class="type">int</span>[<span class="number">10</span>], deleteInt)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>借助lambda表达式，还可以像如下这样初始化p7：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">std::shared_ptr&lt;<span class="type">int</span>&gt; <span class="title">p7</span><span class="params">(<span class="keyword">new</span> <span class="type">int</span>[<span class="number">10</span>], [](<span class="type">int</span>* p) &#123; <span class="keyword">delete</span> []p; &#125;)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-3-方法"><a href="#2-3-方法" class="headerlink" title="2.3. 方法"></a>2.3. 方法</h2><p>总结一下<code>shared_ptr</code>的成员方法：</p>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>operator=()</code></td>
+<td>重载赋值号，使得同一类型的<code>shared_ptr</code>智能指针可以相互赋值。</td>
+</tr>
+<tr>
+<td><code>operator*()</code></td>
+<td>重载<code>*</code>号，获取当前<code>shared_ptr</code>智能指针对象指向的数据。</td>
+</tr>
+<tr>
+<td><code>operator-&gt;()</code></td>
+<td>重载<code>-&gt;</code>号，当智能指针指向的数据类型为自定义的结构体时，通过<code>-&gt;</code>运算符可以获取其内部的指定成员。</td>
+</tr>
+<tr>
+<td><code>swap()</code></td>
+<td>交换2个相同类型<code>shared_ptr</code>智能指针的内容。</td>
+</tr>
+<tr>
+<td><code>reset()</code></td>
+<td>当函数没有实参时，该函数会使当前<code>shared_ptr</code>所指堆内存的引用计数减1，同时将当前对象重置为一个空指针；当为函数传递一个新申请的堆内存时，则调用该函数的<code>shared_ptr</code>对象会获得该存储空间的所有权，并且引用计数的初始值为1。</td>
+</tr>
+<tr>
+<td><code>get()</code></td>
+<td>获得<code>shared_ptr</code>对象内部包含的普通指针。</td>
+</tr>
+<tr>
+<td><code>use_count()</code></td>
+<td>返回同当前<code>shared_ptr</code>对象（包括它）指向相同的所有<code>shared_ptr</code>对象的数量。</td>
+</tr>
+<tr>
+<td><code>unique()</code></td>
+<td>判断当前<code>shared_ptr</code>对象指向的堆内存，是否不再有其它<code>shared_ptr</code>对象再指向它。</td>
+</tr>
+<tr>
+<td><code>operator bool()</code></td>
+<td>判断当前<code>shared_ptr</code>对象是否为空智能指针，如果是空指针，返回false；反之，返回true。</td>
+</tr>
+</tbody></table>
+<h1 id="3-unique-ptr"><a href="#3-unique-ptr" class="headerlink" title="3. unique_ptr"></a>3. unique_ptr</h1><p>作为智能指针的一种，<code>unique_ptr</code>指针也具备“在适当时机自动释放堆内存空间”的能力。和<code>shared_ptr</code>指针最大的不同之处在于，<code>unique_ptr</code>指针指向的堆内存无法同其它<code>unique_ptr</code>共享，也就是说，每个<code>unique_ptr</code>指针都独自拥有对其所指堆内存空间的所有权。</p>
+<p>这也就意味着，每个<code>unique_ptr</code>指针指向的堆内存空间的引用计数，都只能为1，一旦该<code>unique_ptr</code>指针放弃对所指堆内存空间的所有权，则该空间会被立即释放回收。</p>
+<h2 id="3-1-创建"><a href="#3-1-创建" class="headerlink" title="3.1. 创建"></a>3.1. 创建</h2><p>（1）创建空<code>unique_ptr</code>指针</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">std::unique_ptr&lt;<span class="type">int</span>&gt; <span class="title">p1</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function">std::unique_ptr&lt;<span class="type">int</span>&gt; <span class="title">p2</span><span class="params">(<span class="literal">nullptr</span>)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>（2）创建非空<code>unique_ptr</code>指针</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">std::unique_ptr&lt;<span class="type">int</span>&gt; <span class="title">p3</span><span class="params">(<span class="keyword">new</span> <span class="type">int</span>)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>（3）移动构造</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">std::unique_ptr&lt;<span class="type">int</span>&gt; <span class="title">p4</span><span class="params">(<span class="keyword">new</span> <span class="type">int</span>)</span></span>;</span><br><span class="line"><span class="function">std::unique_ptr&lt;<span class="type">int</span>&gt; <span class="title">p5</span><span class="params">(p4)</span></span>;<span class="comment">//错误，堆内存不共享</span></span><br><span class="line"><span class="function">std::unique_ptr&lt;<span class="type">int</span>&gt; <span class="title">p5</span><span class="params">(std::move(p4))</span></span>;<span class="comment">//正确，调用移动构造函数</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="3-2-释放"><a href="#3-2-释放" class="headerlink" title="3.2. 释放"></a>3.2. 释放</h2><p>默认情况下，<code>unique_ptr</code>指针采用<code>std::default_delete&lt;T&gt;</code>方法释放堆内存。当然，我们也可以自定义符合实际场景的释放规则。值得一提的是，和<code>shared_ptr</code>指针不同，为<code>unique_ptr</code>自定义释放规则，只能采用函数对象的方式。例如：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//自定义的释放规则</span></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">myDel</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">operator</span><span class="params">()</span><span class="params">(<span class="type">int</span> *p)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">delete</span> p;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function">std::unique_ptr&lt;<span class="type">int</span>, myDel&gt; <span class="title">p6</span><span class="params">(<span class="keyword">new</span> <span class="type">int</span>)</span></span>;</span><br><span class="line"><span class="comment">//std::unique_ptr&lt;int, myDel&gt; p6(new int, myDel());</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="3-3-方法"><a href="#3-3-方法" class="headerlink" title="3.3. 方法"></a>3.3. 方法</h2><p>总结一下<code>unique_ptr</code>的成员方法：</p>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>operator=()</code></td>
+<td>重载赋值号，从而可以将nullptr或者一个右值<code>unique_ptr</code>指针直接赋值给当前同类型的<code>unique_ptr</code>指针。</td>
+</tr>
+<tr>
+<td><code>operator*()</code></td>
+<td>重载<code>*</code>号，获取当前<code>unique_ptr</code>智能指针对象指向的数据。</td>
+</tr>
+<tr>
+<td><code>operator-&gt;()</code></td>
+<td>重载<code>-&gt;</code>号，当智能指针指向的数据类型为自定义的结构体时，通过<code>-&gt;</code>运算符可以获取其内部的指定成员。</td>
+</tr>
+<tr>
+<td><code>operator[]()</code></td>
+<td>重载<code>[]</code>号，当<code>unique_ptr</code>指针指向一个数组时，可以直接通过<code>[]</code>获取指定下标位置处的数据。</td>
+</tr>
+<tr>
+<td><code>swap(x)</code></td>
+<td>交换当前<code>unique_ptr</code>指针和同类型的<code>x</code>指针。</td>
+</tr>
+<tr>
+<td><code>reset(p)</code></td>
+<td>其中p表示一个普通指针，如果p为nullptr，则当前<code>unique_ptr</code>也变成空指针；反之，则该函数会释放当前<code>unique_ptr</code>指针指向的堆内存（如果有），然后获取<code>p</code>所指堆内存的所有权（p为nullptr）。</td>
+</tr>
+<tr>
+<td><code>get()</code></td>
+<td>获得<code>unique_ptr</code>对象内部包含的普通指针。</td>
+</tr>
+<tr>
+<td><code>get_deleter()</code></td>
+<td>获取当前<code>unique_ptr</code>指针释放堆内存空间所用的规则。</td>
+</tr>
+<tr>
+<td><code>release()</code></td>
+<td>释放当前<code>unique_ptr</code>指针对所指堆内存的所有权，但该存储空间并不会被销毁。</td>
+</tr>
+<tr>
+<td><code>operator bool()</code></td>
+<td><code>unique_ptr</code>指针可直接作为<code>if</code>语句的判断条件，以判断该指针是否为空，如果为空，则为false；反之为true。</td>
+</tr>
+</tbody></table>
+<h1 id="4-weak-ptr"><a href="#4-weak-ptr" class="headerlink" title="4. weak_ptr"></a>4. weak_ptr</h1><p>C++11标准虽然将<code>weak_ptr</code>定位为智能指针的一种，但该类型指针通常不单独使用（没有实际用处），只能和<code>shared_ptr</code>类型指针搭配使用。甚至于，我们可以将<code>weak_ptr</code>类型指针视为<code>shared_ptr</code>指针的一种辅助工具，借助<code>weak_ptr</code>类型指针，我们可以获取<code>shared_ptr</code>指针的一些状态信息，比如有多少指向相同的<code>shared_ptr</code>指针、<code>shared_ptr</code>指针指向的堆内存是否已经被释放等等。</p>
+<p>需要注意的是，当<code>weak_ptr</code>类型指针的指向和某一<code>shared_ptr</code>指针相同时，<code>weak_ptr</code>指针并不会使所指堆内存的引用计数加1；同样，当<code>weak_ptr</code>指针被释放时，之前所指堆内存的引用计数也不会因此而减1。也就是说，<code>weak_ptr</code>类型指针并不会影响所指堆内存空间的引用计数。</p>
+<p>除此之外，<code>weak_ptr&lt;T&gt;</code>模板类中没有重载<code>*</code>和<code>-&gt;</code>运算符，这也就意味着，<code>weak_ptr</code>类型指针只能访问所指的堆内存，而无法修改它。</p>
+<h2 id="4-1-创建"><a href="#4-1-创建" class="headerlink" title="4.1. 创建"></a>4.1. 创建</h2><p>（1）创建空<code>weak_ptr</code>指针</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">std::weak_ptr&lt;<span class="type">int</span>&gt; wp1;</span><br></pre></td></tr></table></figure>
+
+<p>（2）根据已有<code>weak_ptr</code>指针创建</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">std::weak_ptr&lt;<span class="type">int</span>&gt; <span class="title">wp2</span> <span class="params">(wp1)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>（3）根据已有<code>shared_ptr</code>指针创建</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">std::shared_ptr&lt;<span class="type">int</span>&gt; <span class="title">sp</span> <span class="params">(<span class="keyword">new</span> <span class="type">int</span>)</span></span>;</span><br><span class="line"><span class="function">std::weak_ptr&lt;<span class="type">int</span>&gt; <span class="title">wp3</span> <span class="params">(sp)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-2-方法"><a href="#4-2-方法" class="headerlink" title="4.2. 方法"></a>4.2. 方法</h2><p>总结一下<code>weak_ptr</code>的成员方法：</p>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>operator=()</code></td>
+<td>重载赋值号，使得<code>weak_ptr</code>指针可以直接被<code>weak_ptr</code>或者<code>shared_ptr</code>类型指针赋值。</td>
+</tr>
+<tr>
+<td><code>swap(x)</code></td>
+<td>其中<code>x</code>表示一个同类型的<code>weak_ptr</code>类型指针，该函数可以互换2个同类型<code>weak_ptr</code>指针的内容。</td>
+</tr>
+<tr>
+<td><code>reset()</code></td>
+<td>将当前 weak_ptr 指针置为空指针。</td>
+</tr>
+<tr>
+<td><code>use_count()</code></td>
+<td>查看指向和当前<code>weak_ptr</code>指针相同的<code>shared_ptr</code>指针的数量。</td>
+</tr>
+<tr>
+<td><code>expired()</code></td>
+<td>判断当前<code>weak_ptr</code>指针为否过期（指针为空，或者指向的堆内存已经被释放）。</td>
+</tr>
+<tr>
+<td><code>lock()</code></td>
+<td>如果当前<code>weak_ptr</code>已经过期，则该函数会返回一个空的<code>shared_ptr</code>指针；反之，该函数返回一个和当前<code>weak_ptr</code>指向相同的<code>shared_ptr</code>指针。</td>
+</tr>
+</tbody></table>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a href="/tags/">Tag</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/search/">Search</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-%E6%A6%82%E8%BF%B0"><span class="toc-number">1.</span> <span class="toc-text">1. 概述</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-shared-ptr"><span class="toc-number">2.</span> <span class="toc-text">2. shared_ptr</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-%E5%88%9B%E5%BB%BA"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. 创建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-%E9%87%8A%E6%94%BE"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. 释放</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-3-%E6%96%B9%E6%B3%95"><span class="toc-number">2.3.</span> <span class="toc-text">2.3. 方法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-unique-ptr"><span class="toc-number">3.</span> <span class="toc-text">3. unique_ptr</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-1-%E5%88%9B%E5%BB%BA"><span class="toc-number">3.1.</span> <span class="toc-text">3.1. 创建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-2-%E9%87%8A%E6%94%BE"><span class="toc-number">3.2.</span> <span class="toc-text">3.2. 释放</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-3-%E6%96%B9%E6%B3%95"><span class="toc-number">3.3.</span> <span class="toc-text">3.3. 方法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-weak-ptr"><span class="toc-number">4.</span> <span class="toc-text">4. weak_ptr</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#4-1-%E5%88%9B%E5%BB%BA"><span class="toc-number">4.1.</span> <span class="toc-text">4.1. 创建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-2-%E6%96%B9%E6%B3%95"><span class="toc-number">4.2.</span> <span class="toc-text">4.2. 方法</span></a></li></ol></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://cakgod.github.io/2023/10/08/smart-pointer/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://cakgod.github.io/2023/10/08/smart-pointer/&text=智能指针"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://cakgod.github.io/2023/10/08/smart-pointer/&title=智能指针"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://cakgod.github.io/2023/10/08/smart-pointer/&is_video=false&description=智能指针"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=智能指针&body=Check out this article: http://cakgod.github.io/2023/10/08/smart-pointer/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://cakgod.github.io/2023/10/08/smart-pointer/&title=智能指针"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://cakgod.github.io/2023/10/08/smart-pointer/&title=智能指针"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://cakgod.github.io/2023/10/08/smart-pointer/&title=智能指针"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://cakgod.github.io/2023/10/08/smart-pointer/&title=智能指针"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://cakgod.github.io/2023/10/08/smart-pointer/&name=智能指针&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://cakgod.github.io/2023/10/08/smart-pointer/&t=智能指针"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2023
+    CAKGOD
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tag</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
