@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="1. 概述在前东家参加了一个robocup2d的比赛，感兴趣的可以搜索一下这个比赛。主要是通过代码控制二维足球员踢球对抗。这篇文章记录一下比赛中的资料和感悟。 2. 详述2.1. 关键问题 无球队员的跑位 截球问题 射门技术 铲球模型 动作决策搜索  2.2. 仿真模型2.2.1. 感知模型 听觉模型：接受球员、教练喊话，或裁判发送的信息。 视觉模型：视觉范围和视觉质量。 身体感知模型：球员自身（">
+<meta property="og:type" content="article">
+<meta property="og:title" content="记一次robocup2d比赛">
+<meta property="og:url" content="http://cakgod.github.io/2022/10/09/robocup-2d/index.html">
+<meta property="og:site_name" content="CAKGOD&#39;s blog">
+<meta property="og:description" content="1. 概述在前东家参加了一个robocup2d的比赛，感兴趣的可以搜索一下这个比赛。主要是通过代码控制二维足球员踢球对抗。这篇文章记录一下比赛中的资料和感悟。 2. 详述2.1. 关键问题 无球队员的跑位 截球问题 射门技术 铲球模型 动作决策搜索  2.2. 仿真模型2.2.1. 感知模型 听觉模型：接受球员、教练喊话，或裁判发送的信息。 视觉模型：视觉范围和视觉质量。 身体感知模型：球员自身（">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-10-09T09:12:27.000Z">
+<meta property="article:modified_time" content="2023-10-09T09:34:12.025Z">
+<meta property="article:author" content="CAKGOD">
+<meta property="article:tag" content="比赛">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>记一次robocup2d比赛</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="CAKGOD's blog" type="application/atom+xml">
+</head>
+
+<body class="max-width mx-auto px3 ltr">    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tag</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2023/01/07/modern-microprocessor/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2022/10/09/video-stabilization/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://cakgod.github.io/2022/10/09/robocup-2d/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://cakgod.github.io/2022/10/09/robocup-2d/&text=记一次robocup2d比赛"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://cakgod.github.io/2022/10/09/robocup-2d/&title=记一次robocup2d比赛"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://cakgod.github.io/2022/10/09/robocup-2d/&is_video=false&description=记一次robocup2d比赛"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=记一次robocup2d比赛&body=Check out this article: http://cakgod.github.io/2022/10/09/robocup-2d/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://cakgod.github.io/2022/10/09/robocup-2d/&title=记一次robocup2d比赛"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://cakgod.github.io/2022/10/09/robocup-2d/&title=记一次robocup2d比赛"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://cakgod.github.io/2022/10/09/robocup-2d/&title=记一次robocup2d比赛"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://cakgod.github.io/2022/10/09/robocup-2d/&title=记一次robocup2d比赛"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://cakgod.github.io/2022/10/09/robocup-2d/&name=记一次robocup2d比赛&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://cakgod.github.io/2022/10/09/robocup-2d/&t=记一次robocup2d比赛"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-%E6%A6%82%E8%BF%B0"><span class="toc-number">1.</span> <span class="toc-text">1. 概述</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-%E8%AF%A6%E8%BF%B0"><span class="toc-number">2.</span> <span class="toc-text">2. 详述</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-%E5%85%B3%E9%94%AE%E9%97%AE%E9%A2%98"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. 关键问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-%E4%BB%BF%E7%9C%9F%E6%A8%A1%E5%9E%8B"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. 仿真模型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-1-%E6%84%9F%E7%9F%A5%E6%A8%A1%E5%9E%8B"><span class="toc-number">2.2.1.</span> <span class="toc-text">2.2.1. 感知模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-2-%E8%BF%90%E5%8A%A8%E6%A8%A1%E5%9E%8B"><span class="toc-number">2.2.2.</span> <span class="toc-text">2.2.2. 运动模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-3-%E5%8A%A8%E4%BD%9C%E6%A8%A1%E5%9E%8B%E5%92%8C%E4%BD%93%E8%83%BD%E6%A8%A1%E5%9E%8B"><span class="toc-number">2.2.3.</span> <span class="toc-text">2.2.3. 动作模型和体能模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-4-%E7%90%83%E5%91%98%E5%BC%82%E6%9E%84%E6%A8%A1%E5%9E%8B"><span class="toc-number">2.2.4.</span> <span class="toc-text">2.2.4. 球员异构模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-5-%E8%A3%81%E5%88%A4%E6%A8%A1%E5%9E%8B"><span class="toc-number">2.2.5.</span> <span class="toc-text">2.2.5. 裁判模型</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E9%98%B5%E5%9E%8B%E8%AE%BE%E8%AE%A1%E5%92%8C%E8%B7%91%E4%BD%8D"><span class="toc-number">2.3.</span> <span class="toc-text">3. 阵型设计和跑位</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E9%98%B5%E5%9E%8B%E5%BB%BA%E6%A8%A1%E6%96%B9%E6%B3%95"><span class="toc-number">2.3.1.</span> <span class="toc-text">3.1. 阵型建模方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E9%98%B5%E5%9E%8B%E5%8F%82%E6%95%B0"><span class="toc-number">2.3.2.</span> <span class="toc-text">3.2. 阵型参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-%E8%B7%91%E4%BD%8D%E7%82%B9"><span class="toc-number">2.3.3.</span> <span class="toc-text">3.3. 跑位点</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E4%BB%A3%E7%A0%81%E8%A7%A3%E8%AF%BB"><span class="toc-number">2.4.</span> <span class="toc-text">4. 代码解读</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-librcsc"><span class="toc-number">2.4.1.</span> <span class="toc-text">4.1. librcsc</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-src"><span class="toc-number">2.4.2.</span> <span class="toc-text">4.2. src</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-formations-dt"><span class="toc-number">2.4.3.</span> <span class="toc-text">4.3. formations-dt</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-chain-action"><span class="toc-number">2.4.4.</span> <span class="toc-text">4.4. chain_action</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-5-%E7%90%83%E5%91%98%E8%A7%92%E8%89%B2%E5%88%86%E9%85%8D"><span class="toc-number">2.4.5.</span> <span class="toc-text">4.5. 球员角色分配</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-6-%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B"><span class="toc-number">2.4.6.</span> <span class="toc-text">4.6. 代码执行流程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E7%A4%BA%E4%BE%8B"><span class="toc-number">2.5.</span> <span class="toc-text">5. 示例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E7%9B%B8%E5%85%B3%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE%E5%92%8C%E5%BC%80%E5%8F%91%E4%BA%BA%E5%91%98"><span class="toc-number">2.6.</span> <span class="toc-text">6. 相关开源项目和开发人员</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-%E4%BF%AE%E6%94%B9%E6%96%B9%E5%90%91"><span class="toc-number">2.7.</span> <span class="toc-text">7. 修改方向</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-%E5%8F%82%E8%80%83%E6%96%87%E7%AB%A0"><span class="toc-number">2.8.</span> <span class="toc-text">8. 参考文章</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9-%E6%80%BB%E7%BB%93"><span class="toc-number">2.9.</span> <span class="toc-text">9. 总结</span></a></li></ol></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        记一次robocup2d比赛
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">CAKGOD</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2022-10-09T09:12:27.000Z" class="dt-published" itemprop="datePublished">2022-10-09</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/%E6%AF%94%E8%B5%9B/" rel="tag">比赛</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h1 id="1-概述"><a href="#1-概述" class="headerlink" title="1. 概述"></a>1. 概述</h1><p>在前东家参加了一个robocup2d的比赛，感兴趣的可以搜索一下这个比赛。主要是通过代码控制二维足球员踢球对抗。这篇文章记录一下比赛中的资料和感悟。</p>
+<h1 id="2-详述"><a href="#2-详述" class="headerlink" title="2. 详述"></a>2. 详述</h1><h2 id="2-1-关键问题"><a href="#2-1-关键问题" class="headerlink" title="2.1. 关键问题"></a>2.1. 关键问题</h2><ul>
+<li>无球队员的跑位</li>
+<li>截球问题</li>
+<li>射门技术</li>
+<li>铲球模型</li>
+<li>动作决策搜索</li>
+</ul>
+<h2 id="2-2-仿真模型"><a href="#2-2-仿真模型" class="headerlink" title="2.2. 仿真模型"></a>2.2. 仿真模型</h2><h3 id="2-2-1-感知模型"><a href="#2-2-1-感知模型" class="headerlink" title="2.2.1. 感知模型"></a>2.2.1. 感知模型</h3><ul>
+<li>听觉模型：接受球员、教练喊话，或裁判发送的信息。</li>
+<li>视觉模型：视觉范围和视觉质量。</li>
+<li>身体感知模型：球员自身（位置、速度、身体方向等）。</li>
+</ul>
+<h3 id="2-2-2-运动模型"><a href="#2-2-2-运动模型" class="headerlink" title="2.2.2. 运动模型"></a>2.2.2. 运动模型</h3><ul>
+<li>全局坐标系：以球场中心为（0，0），右边为x轴正方向，长度为52.5；下边为y轴正方向，长度为34.0。</li>
+<li>球员坐标系：以身体方向为y轴正方向。</li>
+</ul>
+<h3 id="2-2-3-动作模型和体能模型"><a href="#2-2-3-动作模型和体能模型" class="headerlink" title="2.2.3. 动作模型和体能模型"></a>2.2.3. 动作模型和体能模型</h3><p>动作包括互斥动作和非互斥动作。</p>
+<ul>
+<li>互斥动作包括：Kick、Dash、Turn、Tackle、Catch、Move</li>
+<li>非互斥动作包括：Say、AttentionTo、PointTo、TurnNeck、ChangeView、Score、SenseBody</li>
+</ul>
+<h3 id="2-2-4-球员异构模型"><a href="#2-2-4-球员异构模型" class="headerlink" title="2.2.4. 球员异构模型"></a>2.2.4. 球员异构模型</h3><p>18种异构类型，每场server随机11种</p>
+<h3 id="2-2-5-裁判模型"><a href="#2-2-5-裁判模型" class="headerlink" title="2.2.5. 裁判模型"></a>2.2.5. 裁判模型</h3><p>判断出界、角球、越位等情形的判断</p>
+<ul>
+<li>Before_kick_off 比赛开始之前</li>
+<li>Play_on 比赛进行中</li>
+<li>Time_over 比赛结束</li>
+<li>Kick_off_side 声明比赛开始</li>
+<li>Kick_in_side</li>
+<li>Free_kick</li>
+<li>Corner_kick_side</li>
+<li>CGoal_kick_side</li>
+<li>Drop_ball</li>
+<li>Offside_side</li>
+<li>Goal_side_n</li>
+<li>Foul_side</li>
+<li>Goalie_catch_ball_side</li>
+<li>Back_pass_side</li>
+<li>Free_kick_fault_side</li>
+<li>Time_up_without_a_team</li>
+<li>Half_time</li>
+<li>Time_up</li>
+<li>Time_extented</li>
+</ul>
+<h2 id="3-阵型设计和跑位"><a href="#3-阵型设计和跑位" class="headerlink" title="3. 阵型设计和跑位"></a>3. 阵型设计和跑位</h2><h3 id="3-1-阵型建模方法"><a href="#3-1-阵型建模方法" class="headerlink" title="3.1. 阵型建模方法"></a>3.1. 阵型建模方法</h3><p>UVA的阵型因子建模、agent2d的Delaunay三角剖分法</p>
+<h3 id="3-2-阵型参数"><a href="#3-2-阵型参数" class="headerlink" title="3.2. 阵型参数"></a>3.2. 阵型参数</h3><ul>
+<li>Formation_id 阵型编号</li>
+<li>Player_num 球员编号，1~11</li>
+<li>Player_role 球员角色</li>
+<li>Player_x 球员初始状态x坐标</li>
+<li>Player_y 球员初始状态y坐标</li>
+<li>Attr_x 球对球员x坐标的吸引因子</li>
+<li>Attr_y 球对球员y坐标的吸引因子</li>
+<li>Behind_ball 是否限制球员位于球的后方</li>
+<li>X_min 球员x坐标的最小值</li>
+<li>X_max 球员x坐标的最大值</li>
+</ul>
+<h3 id="3-3-跑位点"><a href="#3-3-跑位点" class="headerlink" title="3.3. 跑位点"></a>3.3. 跑位点</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">x=min(max(Player_x+(Ball_x*Attr_x), X_min), X_max)</span><br><span class="line">if Behind_ball=True Then x=min(x,Ball_x)</span><br><span class="line">y=Player_y+(Ball_y*Attr_y)</span><br></pre></td></tr></table></figure>
+<p>其中(Ball_x, Ball_y)表示球的位置</p>
+<h2 id="4-代码解读"><a href="#4-代码解读" class="headerlink" title="4. 代码解读"></a>4. 代码解读</h2><h3 id="4-1-librcsc"><a href="#4-1-librcsc" class="headerlink" title="4.1. librcsc"></a>4.1. librcsc</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">rcsc/action         动作类（重点）   </span><br><span class="line">rcsc/ann            人工神经网络类   </span><br><span class="line">rcsc/coach          在线教练类   </span><br><span class="line">rcsc/common         公共的类   </span><br><span class="line">rcsc/formation      一些阵型类（agent2d只使用了DT跑位）   </span><br><span class="line">rcsc/geom           一些几何类   </span><br><span class="line">rcsc/net            一些与server交换数据的类   </span><br><span class="line">rcsc/param          一些参数类   </span><br><span class="line">rcsc/player         一些球员类（重点）   </span><br><span class="line">rcsc/time           时间类（一般用不到）   </span><br><span class="line">rcsc/trainer        一些离线教练类   </span><br><span class="line">rcsc/util           game_mode math  version</span><br></pre></td></tr></table></figure>
+<h3 id="4-2-src"><a href="#4-2-src" class="headerlink" title="4.2. src"></a>4.2. src</h3><ul>
+<li>以bhv开头的都是在各种情况下的动作执行类（重要）</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">bhv_basic_move 球员基本跑位</span><br><span class="line">bhv_basic_offensive_kick 基本进攻踢球</span><br><span class="line">bhv_basic_tackle 阻截对手的球（铲球）</span><br><span class="line">bhv_custom_before_kick_off 开球前的习惯（模式）</span><br><span class="line">bhv_go_to_static_ball 跑向静态球</span><br><span class="line">bhv_goalie_basic_move 守门员基本跑位</span><br><span class="line">bhv_goalie_chase_ball 守门员追球</span><br><span class="line">bhv_goalie_free_kick 守门员任意球</span><br><span class="line">bhv_penalty_kick 罚球</span><br><span class="line">bhv_prepare_set_play_kick 准备踢比赛</span><br><span class="line">bhv_set_play_free_kick 设置任意球</span><br><span class="line">bhv_set_play_goal_kick 设置踢球门球</span><br><span class="line">bhv_set_play_indirect_free_kick 设置打间接任意球</span><br><span class="line">bhv_set_play_kick_in 设置踢界外球</span><br><span class="line">bhv_set_play_kick_off 设置开球</span><br><span class="line">bhv_their_goal_kick_move 对手踢球跑位</span><br></pre></td></tr></table></figure>
+<ul>
+<li>以role开头的都是角色类   </li>
+<li>以sample开头的都是示例，可以模仿其结构修改代码       </li>
+<li>以intertion开头的是意图类       </li>
+<li>以neck开头的是转脖子动作</li>
+</ul>
+<h3 id="4-3-formations-dt"><a href="#4-3-formations-dt" class="headerlink" title="4.3. formations-dt"></a>4.3. formations-dt</h3><p>保存了一些阵型的数据</p>
+<h3 id="4-4-chain-action"><a href="#4-4-chain-action" class="headerlink" title="4.4. chain_action"></a>4.4. chain_action</h3><p>agent2d底层的决策核心</p>
+<h3 id="4-5-球员角色分配"><a href="#4-5-球员角色分配" class="headerlink" title="4.5. 球员角色分配"></a>4.5. 球员角色分配</h3><p>具体代码在<code>“ROLE_角色名”</code>中查看；具体角色划分在strategy.cpp里面；异构球员的顺序在<code>sample_coach.cpp</code>里面；具体的阵型角色文件通常以Begin Roles开始，以End Roles结束。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">CenterForward 中锋      （11号）</span><br><span class="line">SideForward   边锋      （9，10号）</span><br><span class="line">SideBack      边后卫    （2，5号）</span><br><span class="line">CenterBack    中后卫    （3，4号）</span><br><span class="line">DefensiveHalf 防守型中场 （6号）</span><br><span class="line">OffensiveHalf 进攻型中场 （7，8号）</span><br></pre></td></tr></table></figure>
+<h3 id="4-6-代码执行流程"><a href="#4-6-代码执行流程" class="headerlink" title="4.6. 代码执行流程"></a>4.6. 代码执行流程</h3><ul>
+<li>由Main()函数开始</li>
+<li>首先是一些环境变量设置，启动球员类。</li>
+<li>进入BasicClient类中，执行Run()函数。</li>
+<li>RunOnline()调用PlayerAgent类的 HandleMessage()函数处理获得的信息。</li>
+<li>HandleMessage()函数调用在PlayerAgent类中的Action()函数进行动作决策和Server参数的解析parse()函数。</li>
+<li>在Action()函数中依次执行ActionImpl()函数，DoArmAction()函数，DoViewAction()函数，DoNeckAction()函数以及CommunicationImpl()函数。</li>
+<li>其中ActionImpl()函数是主要的决策函数的框架。基于球员在场上的角色（Role）以及场上位置（Home Position），执行相应的Role策略，这种基于角色的策略增加了球员的灵活性，使不同类型的球员具有不同的策略，对于球场动态环境具有更强的自适应性。</li>
+</ul>
+<h2 id="5-示例"><a href="#5-示例" class="headerlink" title="5. 示例"></a>5. 示例</h2><p>（1）bhv_basic_move.cpp</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// agent代表一个智能体 球员</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 执行函数  判断BasicMove是否执行</span></span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">Bhv_BasicMove::execute</span><span class="params">( PlayerAgent * agent )</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">/*Logger类：为了输出玩家代理的动作内容，特别是有关决策的记录，</span></span><br><span class="line"><span class="comment">    通过使用Logger，可以在比赛时间的同时将任意消息输出到外部文件，</span></span><br><span class="line"><span class="comment">    可以设置日志级别（具体看开发文档）</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">        </span><br><span class="line">    <span class="comment">// dlog是logger.&#123;h，cpp&#125;中宣布的全局变量，是Logger类的实体。</span></span><br><span class="line">    <span class="comment">// addText（）的第一参数中指定了日志级别的Id</span></span><br><span class="line">    dlog.<span class="built_in">addText</span>( Logger::TEAM,</span><br><span class="line">                  __FILE__<span class="string">&quot;: Bhv_BasicMove&quot;</span> );<span class="comment">//输出TEAM的日志信息</span></span><br><span class="line">    <span class="comment">//-----------------------------------------------</span></span><br><span class="line">    <span class="comment">// tackle拦截（铲球）</span></span><br><span class="line">    <span class="keyword">if</span> ( <span class="built_in">Bhv_BasicTackle</span>( <span class="number">0.8</span>, <span class="number">80.0</span> ).<span class="built_in">execute</span>( agent ) )</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">const</span> WorldModel &amp; wm = agent-&gt;<span class="built_in">world</span>();</span><br><span class="line">    <span class="comment">/*--------------------------------------------------------*/</span></span><br><span class="line">    <span class="comment">// chase ball 追球--&gt;拦截</span></span><br><span class="line">    <span class="comment">// InterceptTable类是根据保存在World Model内的信息，</span></span><br><span class="line">    <span class="comment">// 来预测各玩家捕捉球所需的循环数，并将其结果保存起来的</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// SelfObject（播放器代理自身）的预测球捕捉周期数。(自己到达球的周期)</span></span><br><span class="line">    <span class="type">const</span> <span class="type">int</span> self_min = wm.<span class="built_in">interceptTable</span>()-&gt;<span class="built_in">selfReachCycle</span>();</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 我方玩家的预测球捕捉周期数中最小的值。（队友到达球的周期）</span></span><br><span class="line">    <span class="type">const</span> <span class="type">int</span> mate_min = wm.<span class="built_in">interceptTable</span>()-&gt;<span class="built_in">teammateReachCycle</span>();</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 敌玩家的预测球捕捉周期数中最小的值。（对手到达球的周期）</span></span><br><span class="line">    <span class="type">const</span> <span class="type">int</span> opp_min = wm.<span class="built_in">interceptTable</span>()-&gt;<span class="built_in">opponentReachCycle</span>();</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// bool existKickableTeammate() const;</span></span><br><span class="line">    <span class="comment">// 如果队里估计有一个可以踢球的玩家，返回真。</span></span><br><span class="line">    <span class="keyword">if</span> ( ! wm.<span class="built_in">existKickableTeammate</span>()</span><br><span class="line">         &amp;&amp; ( self_min &lt;= <span class="number">3</span></span><br><span class="line">              || ( self_min &lt;= mate_min</span><br><span class="line">                   &amp;&amp; self_min &lt; opp_min + <span class="number">3</span> )</span><br><span class="line">              )</span><br><span class="line">         )</span><br><span class="line">    &#123;</span><br><span class="line">        </span><br><span class="line">        dlog.<span class="built_in">addText</span>( Logger::TEAM,</span><br><span class="line">                      __FILE__<span class="string">&quot;: intercept&quot;</span> );</span><br><span class="line">        <span class="comment">// 执行 球员去追逐（截断）球</span></span><br><span class="line">        <span class="built_in">Body_Intercept</span>().<span class="built_in">execute</span>( agent );</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 转向函数，猜测是拦截成功后调整转向为进攻方向</span></span><br><span class="line">        agent-&gt;<span class="built_in">setNeckAction</span>( <span class="keyword">new</span> <span class="built_in">Neck_OffensiveInterceptNeck</span>() );</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 获取目标点（球）的位置</span></span><br><span class="line">    <span class="type">const</span> Vector2D target_point =</span><br><span class="line">        Strategy::<span class="built_in">i</span>().<span class="built_in">getPosition</span>( wm.<span class="built_in">self</span>().<span class="built_in">unum</span>() );</span><br><span class="line">        </span><br><span class="line">    <span class="comment">// 获取冲刺力（冲刺功率）</span></span><br><span class="line">    <span class="type">const</span> <span class="type">double</span> dash_power =</span><br><span class="line">        Strategy::<span class="built_in">get_normal_dash_power</span>( wm );</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 运球时与球的距离</span></span><br><span class="line">    <span class="type">double</span> dist_thr = wm.<span class="built_in">ball</span>().<span class="built_in">distFromSelf</span>() * <span class="number">0.1</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 调节球与球员之间的距离</span></span><br><span class="line">    <span class="keyword">if</span> ( dist_thr &lt; <span class="number">1.0</span> ) dist_thr = <span class="number">1.0</span>;</span><br><span class="line">    </span><br><span class="line">    dlog.<span class="built_in">addText</span>( Logger::TEAM,</span><br><span class="line">                  __FILE__<span class="string">&quot;: Bhv_BasicMove target=(%.1f %.1f) dist_thr=%.2f&quot;</span>,</span><br><span class="line">                  target_point.x, target_point.y,</span><br><span class="line">                  dist_thr );</span><br><span class="line">                  </span><br><span class="line">    <span class="comment">// debugClient类 会向调试服务器发送信息作为第一个客户端功能的实现</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 添加球员信息</span></span><br><span class="line">    agent-&gt;<span class="built_in">debugClient</span>().<span class="built_in">addMessage</span>( <span class="string">&quot;BasicMove%.0f&quot;</span>, dash_power );</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 设定球员行动目标位置.一个周期只能使用一次。</span></span><br><span class="line">    agent-&gt;<span class="built_in">debugClient</span>().<span class="built_in">setTarget</span>( target_point );</span><br><span class="line">    agent-&gt;<span class="built_in">debugClient</span>().<span class="built_in">addCircle</span>( target_point, dist_thr );</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> ( ! <span class="built_in">Body_GoToPoint</span>( target_point, dist_thr, dash_power</span><br><span class="line">                           ).<span class="built_in">execute</span>( agent ) )</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 身体转向球可以联系设置的体力直接冲向球（动作执行）</span></span><br><span class="line">        <span class="built_in">Body_TurnToBall</span>().<span class="built_in">execute</span>( agent );</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> ( wm.<span class="built_in">existKickableOpponent</span>()</span><br><span class="line">         &amp;&amp; wm.<span class="built_in">ball</span>().<span class="built_in">distFromSelf</span>() &lt; <span class="number">18.0</span> )</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// Neck_TurnToBall是将视角对向球，把视线投向下一个循环的预测球位置。</span></span><br><span class="line">        agent-&gt;<span class="built_in">setNeckAction</span>( <span class="keyword">new</span> <span class="built_in">Neck_TurnToBall</span>() );</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// Neck_TurnToBallOrScan是将视角对向球或者进行扫描球的位置，</span></span><br><span class="line">        <span class="comment">// 也就是说并不清楚球的位置。</span></span><br><span class="line">        <span class="comment">// 当球信息不可靠时，将视线转向下一个循环的预测球位置。</span></span><br><span class="line">        <span class="comment">// 当球信息可靠性高时，环视周围。</span></span><br><span class="line">        <span class="comment">// 如果存在可以踢除自己以外的球的玩家，则考虑球移动的范围，决定是否注意球。</span></span><br><span class="line">        agent-&gt;<span class="built_in">setNeckAction</span>( <span class="keyword">new</span> <span class="built_in">Neck_TurnToBallOrScan</span>() );</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>（2）一些类和函数</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line">类</span><br><span class="line">BallObject Ball; 球类</span><br><span class="line">AgentObject agentObject; agent类</span><br><span class="line">PlayerObject Teammates[MAX_TEAMMATES]; 球员类，三个数组存放不同的球员</span><br><span class="line">PlayerObject Opponents[MAX_OPPONENTS];</span><br><span class="line">PlayerObject UnknownPlayers[MAX_TEAMMATES+MAX_OPPONENTS];</span><br><span class="line">Time 时间类（int类型属性：周期数，循环次数）</span><br><span class="line">Circle 圆类（圆心，半径）</span><br><span class="line">Line 直线类（包含三个double属性，分别是直线ay + bx + c = 0的三个系数）</span><br><span class="line">VecPosition 坐标信息类（包含两个double属性，分别对应x轴和y轴的坐标值）</span><br><span class="line">ObjectT 枚举类，包括场上可能出现的对象，例如OBJECT_BALL，OBJECT_GOAL_L，球，左侧球门等等</span><br><span class="line"></span><br><span class="line">函数</span><br><span class="line">可通过WM-&gt; 调用函数</span><br><span class="line">（1）球的坐标位置</span><br><span class="line">getGlobalPosition( ObjectT o ) 获取o的坐标（返回类型VecPosition）</span><br><span class="line">getBallPos() 获取球的坐标（通过调用getGlobalPosition间接完成）</span><br><span class="line">getBallPos().getX() 获取球的x轴坐标</span><br><span class="line">getBallPos().getY() 获取球的y轴坐标（均为double类型）</span><br><span class="line">getPosOwnGoal() 获取自己的球门位置（返回VecPosition）</span><br><span class="line">getPosOpponentGoal( ) 获取对手球门的位置（返回VecPosition）</span><br><span class="line"></span><br><span class="line">（2）球的速度，方向</span><br><span class="line">getGlobalVelocity( ObjectT o ) 获取o的速度（返回类型VecPosition）</span><br><span class="line">getBallSpeed() 获取球的速度（返回值为double类型，通过调用getGlobalVelocity()间接完成）</span><br><span class="line">getBallDirection()获取球的运动方向（返回AngDeg（弧度角），也就是double）</span><br><span class="line"></span><br><span class="line">（3）球员，场上的状态</span><br><span class="line">getPlayerNumber() const 获取球员的号码（返回int）</span><br><span class="line">getPlayMode() 获取状态</span><br><span class="line">PlayModeT 枚举类，包含不同的状态，例如PM_BEFORE_KICK_OFF，PM_KICK_OFF_LEFT</span><br><span class="line">getClosestInSetTo这是一个重载函数，根据参数的不同功能的实现也不同</span><br><span class="line"></span><br><span class="line">（4）距离，角度</span><br><span class="line">getPosClosestOpponentTo( double *dDist, ObjectT o ) （返回VecPosition）</span><br><span class="line">getRelAngleOpponentGoal() 获取自己与对方球门之间的相对角（返回double）</span><br><span class="line">getRelativeDistance( ObjectT o )获取自己与o之间的相对距离（返回double）</span><br><span class="line">getRelDistanceOpponentGoal() 获取自己与对方球门之间的相对距离（返回double）</span><br><span class="line"></span><br><span class="line">（5）判断</span><br><span class="line">isBeforeKickOff( PlayModeT pm ) 判断是否在开球之前（返回bool）</span><br><span class="line">isKickOffUs( PlayModeT pm ) 判断当前的play模式下是否由我方开球</span><br><span class="line">isOffsideUs( PlayModeT pm ) 判断当前的play模式下我方是否越位（返回bool）</span><br><span class="line">isBallKickable() 判断球是否可踢（返回bool）</span><br><span class="line">isBallCatchable() 判断球是否可抓（返回bool，该方法只适用于守门员）</span><br><span class="line">isBallHeadingToGoal( )判断当前球是否朝向我方球门（返回bool）</span><br><span class="line">isBallInOurPossesion( ) 判断球是否在我方手中（返回bool）</span><br><span class="line">isBeforeGoal( VecPosition pos )判断位置参数pos是否在对方球门前（返回bool）</span><br><span class="line"></span><br><span class="line">（6）周期</span><br><span class="line">getCurrentTime() 获取当前的时间（返回Time对象）</span><br><span class="line">getCurrentCycle() 获取当前的周期（返回int）</span><br></pre></td></tr></table></figure>
+<h2 id="6-相关开源项目和开发人员"><a href="#6-相关开源项目和开发人员" class="headerlink" title="6. 相关开源项目和开发人员"></a>6. 相关开源项目和开发人员</h2><ul>
+<li>wrighteaglebase <a target="_blank" rel="noopener" href="https://github.com/wrighteagle2d/wrighteaglebase">https://github.com/wrighteagle2d/wrighteaglebase</a> 中科大</li>
+<li>Agent2D <a target="_blank" rel="noopener" href="https://github.com/RCSS-IR/StarterAgent2D">https://github.com/RCSS-IR/StarterAgent2D</a></li>
+<li>CYRUS2014 <a target="_blank" rel="noopener" href="https://github.com/naderzare/CYRUS2014">https://github.com/naderzare/CYRUS2014</a></li>
+<li>Cyrus2D <a target="_blank" rel="noopener" href="https://github.com/Cyrus2D/Cyrus2DBase">https://github.com/Cyrus2D/Cyrus2DBase</a></li>
+<li>helios-base <a target="_blank" rel="noopener" href="https://github.com/helios-base/helios-base">https://github.com/helios-base/helios-base</a></li>
+<li>HFO <a target="_blank" rel="noopener" href="https://github.com/LARG/HFO">https://github.com/LARG/HFO</a></li>
+<li>Q-Learning_MY_RoboCup2DTeam_Dev <a target="_blank" rel="noopener" href="https://github.com/eggegg-wang/Q-Learning_MY_RoboCup2DTeam_Dev">https://github.com/eggegg-wang/Q-Learning_MY_RoboCup2DTeam_Dev</a></li>
+<li>Yunlu <a target="_blank" rel="noopener" href="https://github.com/hfuuss/robcup2D_CSU_Yunlu_2020">https://github.com/hfuuss/robcup2D_CSU_Yunlu_2020</a></li>
+<li>Alice <a target="_blank" rel="noopener" href="https://github.com/hfuuss/alice">https://github.com/hfuuss/alice</a> 合工大 作者：九月大人 联系方式：ss@hfuusec.cn 489435760</li>
+<li>S3miple <a target="_blank" rel="noopener" href="https://github.com/W4xMell/S3miple">https://github.com/W4xMell/S3miple</a></li>
+<li>Oxsy_Core <a target="_blank" rel="noopener" href="https://github.com/rc2dcc/Oxsy_Core">https://github.com/rc2dcc/Oxsy_Core</a></li>
+<li>Bilibili开发人员：bcahlit</li>
+<li>比赛二进制收集 <a target="_blank" rel="noopener" href="https://github.com/romeoonlinesim/soccer-file">https://github.com/romeoonlinesim/soccer-file</a></li>
+</ul>
+<h2 id="7-修改方向"><a href="#7-修改方向" class="headerlink" title="7. 修改方向"></a>7. 修改方向</h2><ul>
+<li>改阵型，配合fedit2来调整</li>
+<li>动作链</li>
+<li>无球跑位策略</li>
+<li>评估器，难度最大</li>
+<li>角色</li>
+<li>其他：原子动作、行为策略、教练</li>
+</ul>
+<h2 id="8-参考文章"><a href="#8-参考文章" class="headerlink" title="8. 参考文章"></a>8. 参考文章</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://www.docin.com/p-2294568740.html">https://www.docin.com/p-2294568740.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://i.getshell.cn/2016/07/17/Helios-base%E4%BB%A3%E7%A0%81%E5%AF%BC%E8%AF%BB/">https://i.getshell.cn/2016/07/17/Helios-base%E4%BB%A3%E7%A0%81%E5%AF%BC%E8%AF%BB/</a></li>
+<li><a target="_blank" rel="noopener" href="https://i.getshell.cn/2016/07/24/Helios-base%E4%BB%A3%E7%A0%81%E4%BF%AE%E6%94%B9/">https://i.getshell.cn/2016/07/24/Helios-base%E4%BB%A3%E7%A0%81%E4%BF%AE%E6%94%B9/</a></li>
+</ul>
+<h2 id="9-总结"><a href="#9-总结" class="headerlink" title="9. 总结"></a>9. 总结</h2><p>比赛给了大家一个月的时间来学习、修改代码，由于种种原因，我们组在前期还取得不错的成绩，但是后期却掉落下来。我们当时大多数的组采用的都是暴力调参，实战对抗，毫无悬念最后也只能在一定范围内提升。动手去修改算法的组还是比较少的。不过有兄弟组采用RL search的方式，使用机器学习模型替代手工调参，最后的确搜索到了很不错的参数组合，最终好像是第一还是第二来着，让人眼前一亮。</p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a href="/tags/">Tag</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/search/">Search</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-%E6%A6%82%E8%BF%B0"><span class="toc-number">1.</span> <span class="toc-text">1. 概述</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-%E8%AF%A6%E8%BF%B0"><span class="toc-number">2.</span> <span class="toc-text">2. 详述</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-%E5%85%B3%E9%94%AE%E9%97%AE%E9%A2%98"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. 关键问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-%E4%BB%BF%E7%9C%9F%E6%A8%A1%E5%9E%8B"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. 仿真模型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-1-%E6%84%9F%E7%9F%A5%E6%A8%A1%E5%9E%8B"><span class="toc-number">2.2.1.</span> <span class="toc-text">2.2.1. 感知模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-2-%E8%BF%90%E5%8A%A8%E6%A8%A1%E5%9E%8B"><span class="toc-number">2.2.2.</span> <span class="toc-text">2.2.2. 运动模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-3-%E5%8A%A8%E4%BD%9C%E6%A8%A1%E5%9E%8B%E5%92%8C%E4%BD%93%E8%83%BD%E6%A8%A1%E5%9E%8B"><span class="toc-number">2.2.3.</span> <span class="toc-text">2.2.3. 动作模型和体能模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-4-%E7%90%83%E5%91%98%E5%BC%82%E6%9E%84%E6%A8%A1%E5%9E%8B"><span class="toc-number">2.2.4.</span> <span class="toc-text">2.2.4. 球员异构模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-5-%E8%A3%81%E5%88%A4%E6%A8%A1%E5%9E%8B"><span class="toc-number">2.2.5.</span> <span class="toc-text">2.2.5. 裁判模型</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E9%98%B5%E5%9E%8B%E8%AE%BE%E8%AE%A1%E5%92%8C%E8%B7%91%E4%BD%8D"><span class="toc-number">2.3.</span> <span class="toc-text">3. 阵型设计和跑位</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E9%98%B5%E5%9E%8B%E5%BB%BA%E6%A8%A1%E6%96%B9%E6%B3%95"><span class="toc-number">2.3.1.</span> <span class="toc-text">3.1. 阵型建模方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E9%98%B5%E5%9E%8B%E5%8F%82%E6%95%B0"><span class="toc-number">2.3.2.</span> <span class="toc-text">3.2. 阵型参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-%E8%B7%91%E4%BD%8D%E7%82%B9"><span class="toc-number">2.3.3.</span> <span class="toc-text">3.3. 跑位点</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E4%BB%A3%E7%A0%81%E8%A7%A3%E8%AF%BB"><span class="toc-number">2.4.</span> <span class="toc-text">4. 代码解读</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-librcsc"><span class="toc-number">2.4.1.</span> <span class="toc-text">4.1. librcsc</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-src"><span class="toc-number">2.4.2.</span> <span class="toc-text">4.2. src</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-formations-dt"><span class="toc-number">2.4.3.</span> <span class="toc-text">4.3. formations-dt</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-chain-action"><span class="toc-number">2.4.4.</span> <span class="toc-text">4.4. chain_action</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-5-%E7%90%83%E5%91%98%E8%A7%92%E8%89%B2%E5%88%86%E9%85%8D"><span class="toc-number">2.4.5.</span> <span class="toc-text">4.5. 球员角色分配</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-6-%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B"><span class="toc-number">2.4.6.</span> <span class="toc-text">4.6. 代码执行流程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E7%A4%BA%E4%BE%8B"><span class="toc-number">2.5.</span> <span class="toc-text">5. 示例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E7%9B%B8%E5%85%B3%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE%E5%92%8C%E5%BC%80%E5%8F%91%E4%BA%BA%E5%91%98"><span class="toc-number">2.6.</span> <span class="toc-text">6. 相关开源项目和开发人员</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-%E4%BF%AE%E6%94%B9%E6%96%B9%E5%90%91"><span class="toc-number">2.7.</span> <span class="toc-text">7. 修改方向</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-%E5%8F%82%E8%80%83%E6%96%87%E7%AB%A0"><span class="toc-number">2.8.</span> <span class="toc-text">8. 参考文章</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9-%E6%80%BB%E7%BB%93"><span class="toc-number">2.9.</span> <span class="toc-text">9. 总结</span></a></li></ol></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://cakgod.github.io/2022/10/09/robocup-2d/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://cakgod.github.io/2022/10/09/robocup-2d/&text=记一次robocup2d比赛"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://cakgod.github.io/2022/10/09/robocup-2d/&title=记一次robocup2d比赛"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://cakgod.github.io/2022/10/09/robocup-2d/&is_video=false&description=记一次robocup2d比赛"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=记一次robocup2d比赛&body=Check out this article: http://cakgod.github.io/2022/10/09/robocup-2d/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://cakgod.github.io/2022/10/09/robocup-2d/&title=记一次robocup2d比赛"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://cakgod.github.io/2022/10/09/robocup-2d/&title=记一次robocup2d比赛"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://cakgod.github.io/2022/10/09/robocup-2d/&title=记一次robocup2d比赛"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://cakgod.github.io/2022/10/09/robocup-2d/&title=记一次robocup2d比赛"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://cakgod.github.io/2022/10/09/robocup-2d/&name=记一次robocup2d比赛&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://cakgod.github.io/2022/10/09/robocup-2d/&t=记一次robocup2d比赛"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2023
+    CAKGOD
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tag</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="//cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+</body>
+</html>
