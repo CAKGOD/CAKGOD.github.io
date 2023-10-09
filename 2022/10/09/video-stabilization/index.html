@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="1. 概述该文章总结了一些视频防抖技术。点播、直播行业的蓬勃发展，使用户生产视频（UGC）逐渐替代了专家生产和平台生产的方式，成为了主流。由于广大用户不可能全都具备专业素质和专业器材，其产出的视频往往质量较差，最明显的特征之一就是存在抖动。视频防抖有很多种技术，各有优劣，主流的目前分为三种： 1.1. 电子图像稳定（Electronic Image Stabilization，EIS）俗称电子防抖">
+<meta property="og:type" content="article">
+<meta property="og:title" content="视频防抖">
+<meta property="og:url" content="http://cakgod.github.io/2022/10/09/video-stabilization/index.html">
+<meta property="og:site_name" content="CAKGOD&#39;s blog">
+<meta property="og:description" content="1. 概述该文章总结了一些视频防抖技术。点播、直播行业的蓬勃发展，使用户生产视频（UGC）逐渐替代了专家生产和平台生产的方式，成为了主流。由于广大用户不可能全都具备专业素质和专业器材，其产出的视频往往质量较差，最明显的特征之一就是存在抖动。视频防抖有很多种技术，各有优劣，主流的目前分为三种： 1.1. 电子图像稳定（Electronic Image Stabilization，EIS）俗称电子防抖">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-10-09T08:42:11.000Z">
+<meta property="article:modified_time" content="2023-10-09T09:05:06.925Z">
+<meta property="article:author" content="CAKGOD">
+<meta property="article:tag" content="视频">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>视频防抖</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="CAKGOD's blog" type="application/atom+xml">
+</head>
+
+<body class="max-width mx-auto px3 ltr">    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tag</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2023/01/07/modern-microprocessor/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2022/10/07/branch-and-optimization/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://cakgod.github.io/2022/10/09/video-stabilization/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://cakgod.github.io/2022/10/09/video-stabilization/&text=视频防抖"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://cakgod.github.io/2022/10/09/video-stabilization/&title=视频防抖"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://cakgod.github.io/2022/10/09/video-stabilization/&is_video=false&description=视频防抖"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=视频防抖&body=Check out this article: http://cakgod.github.io/2022/10/09/video-stabilization/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://cakgod.github.io/2022/10/09/video-stabilization/&title=视频防抖"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://cakgod.github.io/2022/10/09/video-stabilization/&title=视频防抖"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://cakgod.github.io/2022/10/09/video-stabilization/&title=视频防抖"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://cakgod.github.io/2022/10/09/video-stabilization/&title=视频防抖"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://cakgod.github.io/2022/10/09/video-stabilization/&name=视频防抖&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://cakgod.github.io/2022/10/09/video-stabilization/&t=视频防抖"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-%E6%A6%82%E8%BF%B0"><span class="toc-number">1.</span> <span class="toc-text">1. 概述</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-1-%E7%94%B5%E5%AD%90%E5%9B%BE%E5%83%8F%E7%A8%B3%E5%AE%9A%EF%BC%88Electronic-Image-Stabilization%EF%BC%8CEIS%EF%BC%89"><span class="toc-number">1.1.</span> <span class="toc-text">1.1. 电子图像稳定（Electronic Image Stabilization，EIS）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-2-%E5%85%89%E5%AD%A6%E5%9B%BE%E5%83%8F%E7%A8%B3%E5%AE%9A%EF%BC%88Optical-Image-Stabilization%EF%BC%8COIS%EF%BC%89"><span class="toc-number">1.2.</span> <span class="toc-text">1.2. 光学图像稳定（Optical Image Stabilization，OIS）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-3-%E6%B7%B7%E5%90%88%E5%9B%BE%E5%83%8F%E7%A8%B3%E5%AE%9A%EF%BC%88Hybrid-Image-Stabilization%EF%BC%8CHIS%EF%BC%89"><span class="toc-number">1.3.</span> <span class="toc-text">1.3. 混合图像稳定（Hybrid Image Stabilization，HIS）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-4-%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E5%9B%BE%E5%83%8F%E7%A8%B3%E5%AE%9A%EF%BC%88AI-Image-Stabilization%EF%BC%8CAIS%EF%BC%89"><span class="toc-number">1.4.</span> <span class="toc-text">1.4. 人工智能图像稳定（AI Image Stabilization，AIS）</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-%E6%89%8B%E6%9C%BA%E9%98%B2%E6%8A%96%E8%B0%83%E7%A0%94"><span class="toc-number">2.</span> <span class="toc-text">2. 手机防抖调研</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-%E5%8F%82%E8%80%83%E6%96%87%E7%AB%A0"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. 参考文章</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-%E8%AF%A6%E6%83%85"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. 详情</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-OIS"><span class="toc-number">3.</span> <span class="toc-text">3. OIS</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-EIS"><span class="toc-number">4.</span> <span class="toc-text">4. EIS</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#4-1-%E5%9F%BA%E4%BA%8E%E5%9B%BE%E5%83%8F%E7%89%B9%E5%BE%81%E7%82%B9%E6%8A%96%E5%8A%A8%E6%A3%80%E6%B5%8B%E5%8A%A0%E4%BB%A5%E7%BA%A0%E5%81%8F%E7%9A%84%E9%98%B2%E6%8A%96%E6%8A%80%E6%9C%AF"><span class="toc-number">4.1.</span> <span class="toc-text">4.1. 基于图像特征点抖动检测加以纠偏的防抖技术</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-2-%E8%9E%8D%E5%90%88%E9%82%BB%E8%BF%91%E5%B8%A7%E7%9A%84%E5%85%A8%E5%B8%A7%E8%A7%86%E9%A2%91%E7%A8%B3%E5%AE%9A%E6%96%B9%E6%B3%95OVS"><span class="toc-number">4.2.</span> <span class="toc-text">4.2. 融合邻近帧的全帧视频稳定方法OVS</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-3-%E7%94%A8%E4%BA%8E3D%E8%A7%86%E9%A2%91%E7%A8%B3%E5%AE%9A%E7%9A%84%E5%86%85%E5%AE%B9%E4%BF%9D%E7%95%99%E6%89%AD%E6%9B%B2"><span class="toc-number">4.3.</span> <span class="toc-text">4.3. 用于3D视频稳定的内容保留扭曲</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-4-%E5%AD%90%E7%A9%BA%E9%97%B4%E8%A7%86%E9%A2%91%E7%A8%B3%E5%AE%9A"><span class="toc-number">4.4.</span> <span class="toc-text">4.4. 子空间视频稳定</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-5-Codingflow%EF%BC%9A%E5%90%AF%E7%94%A8%E8%A7%86%E9%A2%91%E7%BC%96%E7%A0%81%E4%BB%A5%E5%AE%9E%E7%8E%B0%E8%A7%86%E9%A2%91%E7%A8%B3%E5%AE%9A"><span class="toc-number">4.5.</span> <span class="toc-text">4.5. Codingflow：启用视频编码以实现视频稳定</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-6-%E8%BD%AC%E6%8D%A2%E7%A9%BA%E9%97%B4%E4%B8%AD%E7%9A%84%E6%B5%8B%E5%9C%B0%E7%BA%BF%E8%A7%86%E9%A2%91%E7%A8%B3%E5%AE%9A"><span class="toc-number">4.6.</span> <span class="toc-text">4.6. 转换空间中的测地线视频稳定</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-7-%E8%87%AA%E6%8B%8D%E8%A7%86%E9%A2%91%E9%98%B2%E6%8A%96"><span class="toc-number">4.7.</span> <span class="toc-text">4.7. 自拍视频防抖</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#5-AIS%E7%AE%97%E6%B3%95%E8%A7%A3%E6%9E%90"><span class="toc-number">5.</span> <span class="toc-text">5. AIS算法解析</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#5-1-DUT%EF%BC%9A%E9%80%9A%E8%BF%87%E7%AE%80%E5%8D%95%E5%9C%B0%E8%A7%82%E7%9C%8B%E4%B8%8D%E7%A8%B3%E5%AE%9A%E7%9A%84%E8%A7%86%E9%A2%91%E6%9D%A5%E5%AD%A6%E4%B9%A0%E8%A7%86%E9%A2%91%E7%A8%B3%E5%AE%9A"><span class="toc-number">5.1.</span> <span class="toc-text">5.1. DUT：通过简单地观看不稳定的视频来学习视频稳定</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-2-%E5%85%B7%E6%9C%89%E5%A4%9A%E7%BD%91%E6%A0%BC%E7%BF%98%E6%9B%B2%E5%8F%98%E6%8D%A2%E5%AD%A6%E4%B9%A0%E7%9A%84%E6%B7%B1%E5%BA%A6%E5%9C%A8%E7%BA%BF%E8%A7%86%E9%A2%91%E7%A8%B3%E5%AE%9A"><span class="toc-number">5.2.</span> <span class="toc-text">5.2. 具有多网格翘曲变换学习的深度在线视频稳定</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-3-Pwstablenet%EF%BC%9A%E5%AD%A6%E4%B9%A0%E7%94%A8%E4%BA%8E%E8%A7%86%E9%A2%91%E7%A8%B3%E5%AE%9A%E7%9A%84%E5%83%8F%E7%B4%A0%E7%BA%A7%E7%BF%98%E6%9B%B2%E5%9B%BE"><span class="toc-number">5.3.</span> <span class="toc-text">5.3. Pwstablenet：学习用于视频稳定的像素级翘曲图</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-4-%E4%BD%BF%E7%94%A8%E5%AF%B9%E6%8A%97%E7%BD%91%E7%BB%9C%E7%9A%84%E6%B7%B1%E5%BA%A6%E8%A7%86%E9%A2%91%E7%A8%B3%E5%AE%9A"><span class="toc-number">5.4.</span> <span class="toc-text">5.4. 使用对抗网络的深度视频稳定</span></a></li></ol></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        视频防抖
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">CAKGOD</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2022-10-09T08:42:11.000Z" class="dt-published" itemprop="datePublished">2022-10-09</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/%E8%A7%86%E9%A2%91/" rel="tag">视频</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h1 id="1-概述"><a href="#1-概述" class="headerlink" title="1. 概述"></a>1. 概述</h1><p>该文章总结了一些视频防抖技术。点播、直播行业的蓬勃发展，使用户生产视频（UGC）逐渐替代了专家生产和平台生产的方式，成为了主流。由于广大用户不可能全都具备专业素质和专业器材，其产出的视频往往质量较差，最明显的特征之一就是存在抖动。视频防抖有很多种技术，各有优劣，主流的目前分为三种：</p>
+<h2 id="1-1-电子图像稳定（Electronic-Image-Stabilization，EIS）"><a href="#1-1-电子图像稳定（Electronic-Image-Stabilization，EIS）" class="headerlink" title="1.1. 电子图像稳定（Electronic Image Stabilization，EIS）"></a>1.1. 电子图像稳定（Electronic Image Stabilization，EIS）</h2><p>俗称电子防抖，是通过软件算法实现防抖的。其技术运作原理是通过加速度传感器和陀螺仪模块侦测手机抖动的幅度，从而来动态调节整ISO、快门以及成像算法来做模糊修正。</p>
+<ul>
+<li>优点：成本低</li>
+<li>缺点：画面会被裁切，牺牲图像分辨率</li>
+</ul>
+<h2 id="1-2-光学图像稳定（Optical-Image-Stabilization，OIS）"><a href="#1-2-光学图像稳定（Optical-Image-Stabilization，OIS）" class="headerlink" title="1.2. 光学图像稳定（Optical Image Stabilization，OIS）"></a>1.2. 光学图像稳定（Optical Image Stabilization，OIS）</h2><p>俗称光学防抖，是通过处理器、陀螺仪和相机防抖模组之间的配合，在拍照抖动时用以驱动防抖组件快速向抖动的相反方向移动镜头模组，由此来抵消发生的抖动，进而实现最终的稳定成像。</p>
+<ul>
+<li>优点：画面不会被裁切，原生画质图像效果最好</li>
+<li>缺点：成本较高、镜头非常容易损坏、镜头无法做小</li>
+</ul>
+<h2 id="1-3-混合图像稳定（Hybrid-Image-Stabilization，HIS）"><a href="#1-3-混合图像稳定（Hybrid-Image-Stabilization，HIS）" class="headerlink" title="1.3. 混合图像稳定（Hybrid Image Stabilization，HIS）"></a>1.3. 混合图像稳定（Hybrid Image Stabilization，HIS）</h2><p>俗称混合防抖，结合了EIS和OIS，是智能手机上的综合防抖技术，集OIS和EIS的所有优点于一身，与其他两种技术相比，防抖能力大幅提升，对有效的HDR和夜间拍摄提供了极好的支持。</p>
+<p>目前，HIS混合防抖技术已在谷歌的Pixel系列、三星Galaxy S21 5G以及iPhone11 Pro Max、iPhone12 Pro Max等高端iPhone系列上使用。</p>
+<ul>
+<li>优点：非常好的防抖，适合需要高曝光的拍摄功能。</li>
+<li>缺点：需要在光学防抖（OIS）和电子防抖（EIS）之间进行优化，成本高。</li>
+</ul>
+<h2 id="1-4-人工智能图像稳定（AI-Image-Stabilization，AIS）"><a href="#1-4-人工智能图像稳定（AI-Image-Stabilization，AIS）" class="headerlink" title="1.4. 人工智能图像稳定（AI Image Stabilization，AIS）"></a>1.4. 人工智能图像稳定（AI Image Stabilization，AIS）</h2><p>俗称AI防抖，是一种基于人工智能的图像防抖技术，可以在相机拍摄过程中，减少因为手抖动造成的画面模糊，获得更加稳定，清晰的画面。即使在拍摄视频或者拍摄夜景时，也可取得良好的防抖效果。</p>
+<ul>
+<li>优点：健壮性可以做到很强</li>
+<li>缺点：性能低、尚未普及</li>
+</ul>
+<h1 id="2-手机防抖调研"><a href="#2-手机防抖调研" class="headerlink" title="2. 手机防抖调研"></a>2. 手机防抖调研</h1><h2 id="2-1-参考文章"><a href="#2-1-参考文章" class="headerlink" title="2.1. 参考文章"></a>2.1. 参考文章</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://myfone.blog/smartphone-with-image-stabilization/">文章一</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.iwyv.com/shouji/69642.html">文章二</a></li>
+</ul>
+<h2 id="2-2-详情"><a href="#2-2-详情" class="headerlink" title="2.2. 详情"></a>2.2. 详情</h2><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>型号</th>
+<th>类型</th>
+<th>主打特色</th>
+<th>硬件介绍</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>iphone 14 PM</td>
+<td>OIS</td>
+<td>1、后摄：4800万像素；主摄：第二代传感器位移式光学图像防抖功能，1200万像素；2倍长焦：第二代传感器位移式光学图像防抖功能，1200万像素；3倍长焦：光学图像防抖功能。2、前摄：影院级视频防抖功能 (4K、1080p 和 720p)。3、录像：第二代传感器位移式视频光学图像防抖功能 (主摄) 双摄像头视频光学图像防抖功能 (主摄和长焦)</td>
+<td>将传感器固定在通过电磁效应平行滑动的平台上，利用电磁的迟滞性使传感器在短时间内固定不动，达到防抖的目的。不过，苹果iPhone上的传感器位移式防抖为双轴，仅可抵消X、Y两个反向的抖动，相比目前高端无反相机配备的五轴防抖，有一定的局限性。</td>
+</tr>
+<tr>
+<td>huawei mate 50 pro</td>
+<td>OIS</td>
+<td>1、后摄 5000 万像素超光变摄像头（F1.4-F4 光圈，OIS 光学防抖）6400 万像素潜望式长焦摄像头（F3.5 光圈，OIS 光学防抖）</td>
+<td></td>
+</tr>
+<tr>
+<td>vivo x80 pro</td>
+<td>HIS</td>
+<td>微云台防抖+虚化云台适配算法+人像算法，支持标准防抖（4K）、超级防抖（1080p）、360度地平线防抖。</td>
+<td>搭载的微云台，将摄像头模组做成一个整体，剧烈抖动下，镜片和CMOS传感器始终保持相对静止。沿用五轴VIS视频防抖技术，通过“X轴转动+Y轴转动”的超稳微云台防抖，和 “X轴平移+Y轴平移+Z轴旋转”的电子防抖，实现“五轴视频防抖”效果。</td>
+</tr>
+<tr>
+<td>xiaomi 12s ultra</td>
+<td>OIS</td>
+<td>1、后摄 5000万 1 英寸大底专业主摄 Sony’s IMX989 OIS光学防抖 4800万 潜望式长焦 OIS光学防抖 Zoom EIS防抖 2、录像 视频超级防抖</td>
+<td></td>
+</tr>
+<tr>
+<td>oppo find x5 pro</td>
+<td>OIS</td>
+<td>1、后摄 主摄 5000万像素： f/1.7；FOV 80°；1G6P 镜头；支持 AF；采用闭环对焦马达，支持双 OIS 五轴防抖 2、录像 后置支持视频防抖支持 EIS，4K@60fps/30fps、1080P@60fps/30fps、720P@60fps/30fps 前置支持 视频防抖 1080P/720P@30fps</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h1 id="3-OIS"><a href="#3-OIS" class="headerlink" title="3. OIS"></a>3. OIS</h1><p>TODO</p>
+<h1 id="4-EIS"><a href="#4-EIS" class="headerlink" title="4. EIS"></a>4. EIS</h1><h2 id="4-1-基于图像特征点抖动检测加以纠偏的防抖技术"><a href="#4-1-基于图像特征点抖动检测加以纠偏的防抖技术" class="headerlink" title="4.1. 基于图像特征点抖动检测加以纠偏的防抖技术"></a>4.1. 基于图像特征点抖动检测加以纠偏的防抖技术</h2><p>参考文章：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/hyb1/p/16505121.html">文章一</a> <a target="_blank" rel="noopener" href="https://www.i4k.xyz/article/weixin_45250844/103447430">文章二</a></p>
+<p>（1）关键点检测</p>
+<p>对每一帧（逐帧）图像做角点检测，也就是将图像上所有的关键点角点识别出来。例如下图的<a target="_blank" rel="noopener" href="https://img2022.cnblogs.com/blog/511612/202207/511612-20220722120609670-302553720.png">小祥哥</a>。</p>
+<p>关键点检测算法有很多算法：</p>
+<ul>
+<li>FAST</li>
+<li>Agast</li>
+<li>GFTT</li>
+<li>SimpleBlob</li>
+<li>Affine</li>
+<li>SIFT</li>
+<li>BRISK</li>
+<li>ORB</li>
+<li>MSER</li>
+<li>KAZE</li>
+<li>AKAZE</li>
+</ul>
+<p>（2）仿射变换</p>
+<p>逐一将前后两帧的关键点做比对，计算出两两之间的向量差。如下图<a target="_blank" rel="noopener" href="https://img2022.cnblogs.com/blog/511612/202207/511612-20220722121733171-1462027177.png">小祥哥</a>，红色箭头所示方向，即两帧相比对得到的向量方向。</p>
+<p>具体操作如下：<br>【1】先使用OpenCV里的光流法函数calcOpticalFlowPyrLK()函数得到当前帧相对上一帧的所有关键点变化信息；<br>【2】再使用OpenCV里的estimateRigidTransform()函数传入上一个函数的两帧的结果，可以挑选出前后两帧两个2D点集矩阵之间的最佳仿射变换。</p>
+<p>（3）方向抹平</p>
+<p>将第二步算出的最佳仿射变换矩阵数据的整体平均方向，套用低通滤波或者高斯滤波，抹平突变的波峰波谷。</p>
+<p>在OpenCV里面分成单程稳定器（OnePassStabilizer）和双程稳定器（TwoPassStabilizer），且支持设置两种滤波方式：低通滤波（LpMotionStabilizer）和高斯滤波（GaussianMotionFilter）。</p>
+<p>以上图小祥哥的视频为例，帧方向变化<a target="_blank" rel="noopener" href="https://img2022.cnblogs.com/blog/511612/202207/511612-20220726144151793-67292696.png">曲线</a>。</p>
+<p>其中，横坐标是时间轴；纵坐标轴是视频基于第一帧的画面的水平方向变化的像素位移量；实线是实际根据光流法计算出来的像素位移量；虚线是使用高斯滤波抹平后的相对较为稳定的像素位移量。</p>
+<p>（4）图像裁切</p>
+<p>使用均值滤波抹平之后的仿射变换矩阵数据对视频帧进行图像变换（缩放、旋转、平移等全放射变换）和裁切。</p>
+<p>在OpenCV里面使用invertAffineTransform()和warpAffine()直接对图像进行仿射变换，得到变换后的图像结果。</p>
+<p>比如说视频这一帧，有检测到明显的左移倾向，那么会调用仿射变换，将原视频帧变成下图这样：</p>
+<p><a target="_blank" rel="noopener" href="https://img2022.cnblogs.com/blog/511612/202207/511612-20220726145338226-1421896568.png">图片一</a></p>
+<p><a target="_blank" rel="noopener" href="https://img2022.cnblogs.com/blog/511612/202207/511612-20220726145338292-1880066262.png">图片二</a></p>
+<p>注意到，修正后的画面整体逆时针有偏移，出现一些黑边。</p>
+<p>（5）resize</p>
+<p>将裁切后的视频resize回原视频的大小。此步骤涉及到多种BorderMode（边界模式）：</p>
+<ul>
+<li>CONSTANT</li>
+<li>REPLICATE</li>
+<li>REFLECT</li>
+<li>WRAP</li>
+<li>REFLECT_101</li>
+<li>TRANSPARENT</li>
+</ul>
+<h2 id="4-2-融合邻近帧的全帧视频稳定方法OVS"><a href="#4-2-融合邻近帧的全帧视频稳定方法OVS" class="headerlink" title="4.2. 融合邻近帧的全帧视频稳定方法OVS"></a>4.2. 融合邻近帧的全帧视频稳定方法OVS</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2108.09041">论文地址</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/Annbless/OVS_Stabilization">代码链接</a></li>
+<li><a target="_blank" rel="noopener" href="https://picture.iczhiku.com/weixin/message1630646145615.html">参考文章</a></li>
+</ul>
+<h2 id="4-3-用于3D视频稳定的内容保留扭曲"><a href="#4-3-用于3D视频稳定的内容保留扭曲" class="headerlink" title="4.3. 用于3D视频稳定的内容保留扭曲"></a>4.3. 用于3D视频稳定的内容保留扭曲</h2><p>F. Liu, M. Gleicher, H. Jin, and A. Agarwala, “Content-preserving warps for 3d video stabilization,” ACM Transactions on Graphics, vol. 28, no. 3, pp. 1–9, 2009.</p>
+<h2 id="4-4-子空间视频稳定"><a href="#4-4-子空间视频稳定" class="headerlink" title="4.4. 子空间视频稳定"></a>4.4. 子空间视频稳定</h2><p>F. Liu, M. Gleicher, J. Wang, H. Jin, and A. Agarwala, “Subspace video stabilization,” ACM Transactions on Graphics, vol. 30, no. 1, pp. 1–10, 2011.</p>
+<h2 id="4-5-Codingflow：启用视频编码以实现视频稳定"><a href="#4-5-Codingflow：启用视频编码以实现视频稳定" class="headerlink" title="4.5. Codingflow：启用视频编码以实现视频稳定"></a>4.5. Codingflow：启用视频编码以实现视频稳定</h2><p>S. Liu, M. Li, S. Zhu, and B. Zeng, “Codingflow: Enable video coding for video stabilization,” IEEE Transactions on Image Processing, vol. 26, no. 7, pp. 3291–3302, 2017.</p>
+<h2 id="4-6-转换空间中的测地线视频稳定"><a href="#4-6-转换空间中的测地线视频稳定" class="headerlink" title="4.6. 转换空间中的测地线视频稳定"></a>4.6. 转换空间中的测地线视频稳定</h2><p>L. Zhang, X.-Q. Chen, X.-Y. Kong, and H. Huang, “Geodesic video stabilization in transformation space,” IEEE Transactions on Image Processing, vol. 26, no. 5, pp. 2219–2229, 2017.</p>
+<h2 id="4-7-自拍视频防抖"><a href="#4-7-自拍视频防抖" class="headerlink" title="4.7. 自拍视频防抖"></a>4.7. 自拍视频防抖</h2><p>J. Yu and R. Ramamoorthi, “Selfie video stabilization,” in Proceedings of the European Conference on Computer Vision, 2018, pp. 551–566.</p>
+<h1 id="5-AIS算法解析"><a href="#5-AIS算法解析" class="headerlink" title="5. AIS算法解析"></a>5. AIS算法解析</h1><h2 id="5-1-DUT：通过简单地观看不稳定的视频来学习视频稳定"><a href="#5-1-DUT：通过简单地观看不稳定的视频来学习视频稳定" class="headerlink" title="5.1. DUT：通过简单地观看不稳定的视频来学习视频稳定"></a>5.1. DUT：通过简单地观看不稳定的视频来学习视频稳定</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2011.14574v3.pdf">论文地址</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/Annbless/DUTCode">代码链接</a></li>
+</ul>
+<p>简介：<br>过去基于深度学习的视频稳定器需要大量配对的不稳定和稳定视频进行训练，这些视频很难收集。另一方面，传统的基于轨迹的稳定器将任务分为几个子任务并随后处理它们，这些子任务在无纹理和遮挡区域中对于手工特征的使用很脆弱。在本文中，我们尝试以深度无监督学习的方式解决视频稳定问题，该方法借鉴了传统稳定器的分而治之思想，同时利用DNN的表示能力来应对现实世界场景中的挑战。从技术上讲，DUT由轨迹估计阶段和轨迹平滑阶段组成。在轨迹估计阶段，我们首先估计关键点的运动，分别通过新的多单应性估计策略和运动细化网络初始化和细化网格的运动，并通过时间关联获得基于网格的轨迹。在轨迹平滑阶段，我们设计了一种新颖的网络来预测动态平滑内核以实现平滑轨迹，该网络可以很好地适应具有不同动态模式的轨迹。我们利用关键点和网格顶点的空间和时间一致性来制定训练目标，从而形成无监督的训练方案。公共基准的实验结果表明，DUT在质量和数量上都优于最先进的方法。源代码可在 <a target="_blank" rel="noopener" href="https://github.com/Annbless/DUTCode">https://github.com/Annbless/DUTCode</a> 获得。</p>
+<h2 id="5-2-具有多网格翘曲变换学习的深度在线视频稳定"><a href="#5-2-具有多网格翘曲变换学习的深度在线视频稳定" class="headerlink" title="5.2. 具有多网格翘曲变换学习的深度在线视频稳定"></a>5.2. 具有多网格翘曲变换学习的深度在线视频稳定</h2><p>M. Wang, G.-Y. Yang, J.-K. Lin, S.-H. Zhang, A. Shamir, S.-P. Lu, and S.-M. Hu, “Deep online video stabilization with multi-grid warping transformation learning,” IEEE Transactions on Image Processing, vol. 28, no. 5, pp. 2283–2292, 2018.</p>
+<h2 id="5-3-Pwstablenet：学习用于视频稳定的像素级翘曲图"><a href="#5-3-Pwstablenet：学习用于视频稳定的像素级翘曲图" class="headerlink" title="5.3. Pwstablenet：学习用于视频稳定的像素级翘曲图"></a>5.3. Pwstablenet：学习用于视频稳定的像素级翘曲图</h2><p>M. Zhao and Q. Ling, “Pwstablenet: Learning pixel-wise warping maps for video stabilization,” IEEE Transactions on Image Processing, vol. 29, pp. 3582–3595, 2020.</p>
+<h2 id="5-4-使用对抗网络的深度视频稳定"><a href="#5-4-使用对抗网络的深度视频稳定" class="headerlink" title="5.4. 使用对抗网络的深度视频稳定"></a>5.4. 使用对抗网络的深度视频稳定</h2><p>S.-Z. Xu, J. Hu, M. Wang, T.-J. Mu, and S.-M. Hu, “Deep video stabilization using adversarial networks,” in Computer Graphics Forum, vol. 37, no. 7. Wiley Online Library, 2018, pp. 267–276.</p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a href="/tags/">Tag</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/search/">Search</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-%E6%A6%82%E8%BF%B0"><span class="toc-number">1.</span> <span class="toc-text">1. 概述</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-1-%E7%94%B5%E5%AD%90%E5%9B%BE%E5%83%8F%E7%A8%B3%E5%AE%9A%EF%BC%88Electronic-Image-Stabilization%EF%BC%8CEIS%EF%BC%89"><span class="toc-number">1.1.</span> <span class="toc-text">1.1. 电子图像稳定（Electronic Image Stabilization，EIS）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-2-%E5%85%89%E5%AD%A6%E5%9B%BE%E5%83%8F%E7%A8%B3%E5%AE%9A%EF%BC%88Optical-Image-Stabilization%EF%BC%8COIS%EF%BC%89"><span class="toc-number">1.2.</span> <span class="toc-text">1.2. 光学图像稳定（Optical Image Stabilization，OIS）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-3-%E6%B7%B7%E5%90%88%E5%9B%BE%E5%83%8F%E7%A8%B3%E5%AE%9A%EF%BC%88Hybrid-Image-Stabilization%EF%BC%8CHIS%EF%BC%89"><span class="toc-number">1.3.</span> <span class="toc-text">1.3. 混合图像稳定（Hybrid Image Stabilization，HIS）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-4-%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E5%9B%BE%E5%83%8F%E7%A8%B3%E5%AE%9A%EF%BC%88AI-Image-Stabilization%EF%BC%8CAIS%EF%BC%89"><span class="toc-number">1.4.</span> <span class="toc-text">1.4. 人工智能图像稳定（AI Image Stabilization，AIS）</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-%E6%89%8B%E6%9C%BA%E9%98%B2%E6%8A%96%E8%B0%83%E7%A0%94"><span class="toc-number">2.</span> <span class="toc-text">2. 手机防抖调研</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-%E5%8F%82%E8%80%83%E6%96%87%E7%AB%A0"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. 参考文章</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-%E8%AF%A6%E6%83%85"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. 详情</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-OIS"><span class="toc-number">3.</span> <span class="toc-text">3. OIS</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-EIS"><span class="toc-number">4.</span> <span class="toc-text">4. EIS</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#4-1-%E5%9F%BA%E4%BA%8E%E5%9B%BE%E5%83%8F%E7%89%B9%E5%BE%81%E7%82%B9%E6%8A%96%E5%8A%A8%E6%A3%80%E6%B5%8B%E5%8A%A0%E4%BB%A5%E7%BA%A0%E5%81%8F%E7%9A%84%E9%98%B2%E6%8A%96%E6%8A%80%E6%9C%AF"><span class="toc-number">4.1.</span> <span class="toc-text">4.1. 基于图像特征点抖动检测加以纠偏的防抖技术</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-2-%E8%9E%8D%E5%90%88%E9%82%BB%E8%BF%91%E5%B8%A7%E7%9A%84%E5%85%A8%E5%B8%A7%E8%A7%86%E9%A2%91%E7%A8%B3%E5%AE%9A%E6%96%B9%E6%B3%95OVS"><span class="toc-number">4.2.</span> <span class="toc-text">4.2. 融合邻近帧的全帧视频稳定方法OVS</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-3-%E7%94%A8%E4%BA%8E3D%E8%A7%86%E9%A2%91%E7%A8%B3%E5%AE%9A%E7%9A%84%E5%86%85%E5%AE%B9%E4%BF%9D%E7%95%99%E6%89%AD%E6%9B%B2"><span class="toc-number">4.3.</span> <span class="toc-text">4.3. 用于3D视频稳定的内容保留扭曲</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-4-%E5%AD%90%E7%A9%BA%E9%97%B4%E8%A7%86%E9%A2%91%E7%A8%B3%E5%AE%9A"><span class="toc-number">4.4.</span> <span class="toc-text">4.4. 子空间视频稳定</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-5-Codingflow%EF%BC%9A%E5%90%AF%E7%94%A8%E8%A7%86%E9%A2%91%E7%BC%96%E7%A0%81%E4%BB%A5%E5%AE%9E%E7%8E%B0%E8%A7%86%E9%A2%91%E7%A8%B3%E5%AE%9A"><span class="toc-number">4.5.</span> <span class="toc-text">4.5. Codingflow：启用视频编码以实现视频稳定</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-6-%E8%BD%AC%E6%8D%A2%E7%A9%BA%E9%97%B4%E4%B8%AD%E7%9A%84%E6%B5%8B%E5%9C%B0%E7%BA%BF%E8%A7%86%E9%A2%91%E7%A8%B3%E5%AE%9A"><span class="toc-number">4.6.</span> <span class="toc-text">4.6. 转换空间中的测地线视频稳定</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-7-%E8%87%AA%E6%8B%8D%E8%A7%86%E9%A2%91%E9%98%B2%E6%8A%96"><span class="toc-number">4.7.</span> <span class="toc-text">4.7. 自拍视频防抖</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#5-AIS%E7%AE%97%E6%B3%95%E8%A7%A3%E6%9E%90"><span class="toc-number">5.</span> <span class="toc-text">5. AIS算法解析</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#5-1-DUT%EF%BC%9A%E9%80%9A%E8%BF%87%E7%AE%80%E5%8D%95%E5%9C%B0%E8%A7%82%E7%9C%8B%E4%B8%8D%E7%A8%B3%E5%AE%9A%E7%9A%84%E8%A7%86%E9%A2%91%E6%9D%A5%E5%AD%A6%E4%B9%A0%E8%A7%86%E9%A2%91%E7%A8%B3%E5%AE%9A"><span class="toc-number">5.1.</span> <span class="toc-text">5.1. DUT：通过简单地观看不稳定的视频来学习视频稳定</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-2-%E5%85%B7%E6%9C%89%E5%A4%9A%E7%BD%91%E6%A0%BC%E7%BF%98%E6%9B%B2%E5%8F%98%E6%8D%A2%E5%AD%A6%E4%B9%A0%E7%9A%84%E6%B7%B1%E5%BA%A6%E5%9C%A8%E7%BA%BF%E8%A7%86%E9%A2%91%E7%A8%B3%E5%AE%9A"><span class="toc-number">5.2.</span> <span class="toc-text">5.2. 具有多网格翘曲变换学习的深度在线视频稳定</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-3-Pwstablenet%EF%BC%9A%E5%AD%A6%E4%B9%A0%E7%94%A8%E4%BA%8E%E8%A7%86%E9%A2%91%E7%A8%B3%E5%AE%9A%E7%9A%84%E5%83%8F%E7%B4%A0%E7%BA%A7%E7%BF%98%E6%9B%B2%E5%9B%BE"><span class="toc-number">5.3.</span> <span class="toc-text">5.3. Pwstablenet：学习用于视频稳定的像素级翘曲图</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-4-%E4%BD%BF%E7%94%A8%E5%AF%B9%E6%8A%97%E7%BD%91%E7%BB%9C%E7%9A%84%E6%B7%B1%E5%BA%A6%E8%A7%86%E9%A2%91%E7%A8%B3%E5%AE%9A"><span class="toc-number">5.4.</span> <span class="toc-text">5.4. 使用对抗网络的深度视频稳定</span></a></li></ol></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://cakgod.github.io/2022/10/09/video-stabilization/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://cakgod.github.io/2022/10/09/video-stabilization/&text=视频防抖"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://cakgod.github.io/2022/10/09/video-stabilization/&title=视频防抖"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://cakgod.github.io/2022/10/09/video-stabilization/&is_video=false&description=视频防抖"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=视频防抖&body=Check out this article: http://cakgod.github.io/2022/10/09/video-stabilization/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://cakgod.github.io/2022/10/09/video-stabilization/&title=视频防抖"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://cakgod.github.io/2022/10/09/video-stabilization/&title=视频防抖"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://cakgod.github.io/2022/10/09/video-stabilization/&title=视频防抖"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://cakgod.github.io/2022/10/09/video-stabilization/&title=视频防抖"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://cakgod.github.io/2022/10/09/video-stabilization/&name=视频防抖&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://cakgod.github.io/2022/10/09/video-stabilization/&t=视频防抖"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2023
+    CAKGOD
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tag</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="//cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+</body>
+</html>

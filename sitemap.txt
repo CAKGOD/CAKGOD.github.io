@@ -1,3 +1,7 @@
+http://cakgod.github.io/2022/10/09/video-stabilization/
+http://cakgod.github.io/2021/02/18/image-algorithm/
+http://cakgod.github.io/2019/08/04/hexo-use/
+http://cakgod.github.io/2021/05/10/compiler-optimization/
 http://cakgod.github.io/2023/01/07/modern-microprocessor/
 http://cakgod.github.io/2022/10/07/branch-and-optimization/
 http://cakgod.github.io/2023/09/28/interesting-website/
@@ -14,3 +18,7 @@ http://cakgod.github.io/tags/%E9%97%B2%E6%9D%82/
 http://cakgod.github.io/tags/%E4%BC%98%E5%8C%96/
 http://cakgod.github.io/tags/%E8%AF%BB%E5%90%8E%E6%84%9F/
 http://cakgod.github.io/tags/%E7%A1%AC%E4%BB%B6/
+http://cakgod.github.io/tags/%E7%BC%96%E8%AF%91%E5%99%A8/
+http://cakgod.github.io/tags/%E5%9B%BE%E5%83%8F/
+http://cakgod.github.io/tags/%E9%97%AE%E9%A2%98/
+http://cakgod.github.io/tags/%E8%A7%86%E9%A2%91/
