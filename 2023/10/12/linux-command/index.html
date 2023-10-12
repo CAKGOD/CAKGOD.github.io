@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="1. 概述该文章总结了一些linux系统中常用的命令以及部分软件使用的命令。 2. 详述2.1. arar命令用来制作静态库，一些常用的参数：  -c：禁止在创建库时产生的正常消息。 -r：如果指定的文件已经在库中存在，则替换它。 -s：无论库是否更新都强制重新生成新的符号表。 -d：从库中删除指定的文件。 -o：对压缩文档成员进行排序。 -q：向库中追加指定文件。  -t：打印库中的目标文件。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="linux命令总结">
+<meta property="og:url" content="http://cakgod.github.io/2023/10/12/linux-command/index.html">
+<meta property="og:site_name" content="CAKGOD&#39;s blog">
+<meta property="og:description" content="1. 概述该文章总结了一些linux系统中常用的命令以及部分软件使用的命令。 2. 详述2.1. arar命令用来制作静态库，一些常用的参数：  -c：禁止在创建库时产生的正常消息。 -r：如果指定的文件已经在库中存在，则替换它。 -s：无论库是否更新都强制重新生成新的符号表。 -d：从库中删除指定的文件。 -o：对压缩文档成员进行排序。 -q：向库中追加指定文件。  -t：打印库中的目标文件。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2023-10-12T01:57:31.275Z">
+<meta property="article:modified_time" content="2023-10-12T01:57:31.270Z">
+<meta property="article:author" content="CAKGOD">
+<meta property="article:tag" content="linux">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>linux命令总结</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="CAKGOD's blog" type="application/atom+xml">
+</head>
+
+<body class="max-width mx-auto px3 ltr">    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tag</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2023/10/08/smart-pointer/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://cakgod.github.io/2023/10/12/linux-command/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://cakgod.github.io/2023/10/12/linux-command/&text=linux命令总结"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://cakgod.github.io/2023/10/12/linux-command/&title=linux命令总结"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://cakgod.github.io/2023/10/12/linux-command/&is_video=false&description=linux命令总结"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=linux命令总结&body=Check out this article: http://cakgod.github.io/2023/10/12/linux-command/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://cakgod.github.io/2023/10/12/linux-command/&title=linux命令总结"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://cakgod.github.io/2023/10/12/linux-command/&title=linux命令总结"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://cakgod.github.io/2023/10/12/linux-command/&title=linux命令总结"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://cakgod.github.io/2023/10/12/linux-command/&title=linux命令总结"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://cakgod.github.io/2023/10/12/linux-command/&name=linux命令总结&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://cakgod.github.io/2023/10/12/linux-command/&t=linux命令总结"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-%E6%A6%82%E8%BF%B0"><span class="toc-number">1.</span> <span class="toc-text">1. 概述</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-%E8%AF%A6%E8%BF%B0"><span class="toc-number">2.</span> <span class="toc-text">2. 详述</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-ar"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. ar</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-%E5%85%B3%E6%9C%BA%E3%80%81%E9%87%8D%E5%90%AF%E3%80%81%E7%99%BB%E5%BD%95%E3%80%81%E6%B3%A8%E9%94%80"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. 关机、重启、登录、注销</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-3-%E7%94%A8%E6%88%B7"><span class="toc-number">2.3.</span> <span class="toc-text">2.3. 用户</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-4-%E7%94%A8%E6%88%B7%E7%BB%84"><span class="toc-number">2.4.</span> <span class="toc-text">2.4. 用户组</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-5-%E5%B8%AE%E5%8A%A9%E6%8C%87%E4%BB%A4"><span class="toc-number">2.5.</span> <span class="toc-text">2.5. 帮助指令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-6-%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95%E7%B1%BB"><span class="toc-number">2.6.</span> <span class="toc-text">2.6. 文件目录类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-7-%E6%97%A5%E6%9C%9F%E6%97%B6%E9%97%B4%E7%B1%BB"><span class="toc-number">2.7.</span> <span class="toc-text">2.7. 日期时间类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-8-%E6%90%9C%E7%B4%A2%E6%9F%A5%E6%89%BE%E7%B1%BB"><span class="toc-number">2.8.</span> <span class="toc-text">2.8. 搜索查找类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-9-%E5%8E%8B%E7%BC%A9%E5%92%8C%E8%A7%A3%E5%8E%8B%E7%B1%BB"><span class="toc-number">2.9.</span> <span class="toc-text">2.9. 压缩和解压类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-10-%E7%BB%84%E7%AE%A1%E7%90%86%E5%92%8C%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86"><span class="toc-number">2.10.</span> <span class="toc-text">2.10. 组管理和权限管理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-11-%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86"><span class="toc-number">2.11.</span> <span class="toc-text">2.11. 进程管理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-12-%E5%8F%82%E8%80%83%E6%96%87%E4%BB%B6"><span class="toc-number">2.12.</span> <span class="toc-text">2.12. 参考文件</span></a></li></ol></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        linux命令总结
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">CAKGOD</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2023-10-12T01:57:31.275Z" class="dt-published" itemprop="datePublished">2023-10-12</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/linux/" rel="tag">linux</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h1 id="1-概述"><a href="#1-概述" class="headerlink" title="1. 概述"></a>1. 概述</h1><p>该文章总结了一些linux系统中常用的命令以及部分软件使用的命令。</p>
+<h1 id="2-详述"><a href="#2-详述" class="headerlink" title="2. 详述"></a>2. 详述</h1><h2 id="2-1-ar"><a href="#2-1-ar" class="headerlink" title="2.1. ar"></a>2.1. ar</h2><p>ar命令用来制作静态库，一些常用的参数：</p>
+<ul>
+<li>-c：禁止在创建库时产生的正常消息。</li>
+<li>-r：如果指定的文件已经在库中存在，则替换它。</li>
+<li>-s：无论库是否更新都强制重新生成新的符号表。</li>
+<li>-d：从库中删除指定的文件。</li>
+<li>-o：对压缩文档成员进行排序。</li>
+<li>-q：向库中追加指定文件。 </li>
+<li>-t：打印库中的目标文件。</li>
+<li>-x：解压库中的目标文件。编译器是以源文件为单位编译程序的，链接器在链接过程中逐个对目标文件进行分解组装。</li>
+</ul>
+<h2 id="2-2-关机、重启、登录、注销"><a href="#2-2-关机、重启、登录、注销" class="headerlink" title="2.2. 关机、重启、登录、注销"></a>2.2. 关机、重启、登录、注销</h2><ul>
+<li>shutdown -h now：立即关机</li>
+<li>shutdown -h 1：一分钟后关机</li>
+<li>shutdown -r now：重启</li>
+<li>halt：关机</li>
+<li>reboot：重启</li>
+<li>sync：把内存的数据同步到磁盘</li>
+<li>logout：注销</li>
+</ul>
+<h2 id="2-3-用户"><a href="#2-3-用户" class="headerlink" title="2.3. 用户"></a>2.3. 用户</h2><ul>
+<li>useradd：添加用户</li>
+<li>passwd：更改密码</li>
+<li>userdel username：删除用户</li>
+<li>userdel -r username：删除用户并删除对应的home目录</li>
+<li>id username：查询用户</li>
+<li>su - username：切换用户</li>
+<li>exit或logout：返回原用户</li>
+<li>who am i：显示登入的信息</li>
+</ul>
+<h2 id="2-4-用户组"><a href="#2-4-用户组" class="headerlink" title="2.4. 用户组"></a>2.4. 用户组</h2><ul>
+<li>groupadd groupname：新增组</li>
+<li>groupdel groupname：删除组</li>
+<li>useradd -g groupname username：新增用户时直接加上组</li>
+</ul>
+<h2 id="2-5-帮助指令"><a href="#2-5-帮助指令" class="headerlink" title="2.5. 帮助指令"></a>2.5. 帮助指令</h2><ul>
+<li>man：获取帮助信息</li>
+<li>help：获取shell内置命令的帮助信息</li>
+</ul>
+<h2 id="2-6-文件目录类"><a href="#2-6-文件目录类" class="headerlink" title="2.6. 文件目录类"></a>2.6. 文件目录类</h2><p>pwd：显示当前所在目录</p>
+<p>ls：显示当前目录下文件</p>
+<ul>
+<li>-a或—all：不隐藏任何以. 开始的项目</li>
+<li>-r或—reverse：将排序结果反向输出</li>
+<li>-s或—size：以块数形式显示每个文件分配的尺寸</li>
+<li>-t：以文件修改时间排序（从最新开始排）</li>
+<li>-h：将文件大小以GB MB KB的方式列出</li>
+</ul>
+<p>cd：进入目录</p>
+<ul>
+<li>cd ~：返回自己的home目录</li>
+<li>cd ..：到上级目录</li>
+</ul>
+<p>mkdir：创建目录，默认创建一级目录，</p>
+<ul>
+<li>-p：创建多级目录</li>
+</ul>
+<p>rmdir：删除目录</p>
+<p>touch：创建空文件</p>
+<p>cp src dest：拷贝src文件并命令为dest，加-r选项实现对文件夹的拷贝</p>
+<p>rm：删除文件</p>
+<ul>
+<li>-r：递归删除整个文件夹</li>
+<li>-f：强制删除不提示</li>
+</ul>
+<p>mv：移动</p>
+<ul>
+<li>mv oldFileName newFileName：重命名</li>
+<li>mv oldFilePath newFilePath：移动文件或文件夹</li>
+</ul>
+<p>echo：输出内容到控制台</p>
+<p>head：显示文件的开头部分内容</p>
+<ul>
+<li>-n lineNum：指定显示行数</li>
+</ul>
+<p>tail：显示文件的尾部内容</p>
+<p>>：输出重定向</p>
+<p>>>：内容追加</p>
+<p>ln：建立链接</p>
+<ul>
+<li>-s或—symbolic：对源文件建立软链接（符号连接），而非硬连接</li>
+<li>-d或-F或—directory：建立目录的硬连接</li>
+<li>-f或—force：强行建立文件或目录的连接，不论文件或目录是否存在</li>
+</ul>
+<p>history：查看已经执行过的历史命令</p>
+<h2 id="2-7-日期时间类"><a href="#2-7-日期时间类" class="headerlink" title="2.7. 日期时间类"></a>2.7. 日期时间类</h2><ul>
+<li>date：显示系统当前时间</li>
+<li>date +”%Y-%m-%d %H：%M：%S”：显示年月日时分秒</li>
+<li>date -s time：设置系统当前时间</li>
+<li>cal：显示本月日历</li>
+</ul>
+<h2 id="2-8-搜索查找类"><a href="#2-8-搜索查找类" class="headerlink" title="2.8. 搜索查找类"></a>2.8. 搜索查找类</h2><p>find：将从指定目录向下递归遍历其子目录，将满足条件的文件或目录显示在终端</p>
+<ul>
+<li>-name：按文件名称查找，区分大小写</li>
+<li>-iname：按文件名称查找，不区分字母大小写</li>
+<li>-path：按文件的目录查找</li>
+<li>-size：按文件大小来查找</li>
+<li>-type：按文件类型查找</li>
+</ul>
+<p>其中-type参数如下：</p>
+<ul>
+<li>f：普通文件</li>
+<li>d：目录文件</li>
+<li>l：符号链接文件</li>
+<li>s：套接字文件</li>
+<li>b：块设备文件</li>
+<li>c：字符设备文件</li>
+<li>p：管道文件</li>
+</ul>
+<p>grep：文本搜索工具，根据用户指定的“模式（过滤条件）”对目标文本逐行进行匹配检查，打印匹配到的行</p>
+<ul>
+<li>-i：忽略大小写</li>
+<li>-c：输出匹配行的计数</li>
+<li>-r：递归搜索</li>
+<li>-n：打印包含匹配项的行和行标</li>
+<li>-w：匹配 整个单词</li>
+<li>-q：静默模式，不输出任何信息</li>
+<li>-v： 显示不匹配的行</li>
+</ul>
+<p>|：管道符，将上一条指令的处理结果交给下一条指令来处理</p>
+<p>which：查看某个指令在哪个目录下</p>
+<h2 id="2-9-压缩和解压类"><a href="#2-9-压缩和解压类" class="headerlink" title="2.9. 压缩和解压类"></a>2.9. 压缩和解压类</h2><p>zip：压缩文件</p>
+<ul>
+<li>-r：递归压缩</li>
+<li>-d：指定压缩文件的存放目录</li>
+<li>-q：不显示指令执行过程</li>
+<li>-v：显示指令执行过程或显示版本信息</li>
+</ul>
+<p>unzip：解压文件</p>
+<ul>
+<li>-q：不显示指令执行过程</li>
+</ul>
+<p>tar：归档文件</p>
+<ul>
+<li>-c：建立一个压缩文件的参数指令</li>
+<li>-x：解开一个压缩文件的参数指令</li>
+<li>-t：查看 tarfile 里面的文件</li>
+<li>-r：向压缩归档文件末尾追加文件</li>
+<li>-u：更新原压缩包中的文件</li>
+<li>-z：有gzip属性,即需要用 gzip 压缩</li>
+<li>-j：有bz2属性,即需要用 bzip2 压缩</li>
+<li>-v ：压缩的过程中显示文件（显示所有过程）</li>
+<li>-O：将文件解开到标准输出</li>
+<li>—exclude FILE：在压缩的过程中，不要将 FILE 打包</li>
+<li>-f： 使用档案名字，切记，这个参数是最后一个参数，后面只能接档案名</li>
+</ul>
+<h2 id="2-10-组管理和权限管理"><a href="#2-10-组管理和权限管理" class="headerlink" title="2.10. 组管理和权限管理"></a>2.10. 组管理和权限管理</h2><p>chown：修改文件所有者</p>
+<p>groupadd：组的创建</p>
+<p>chmod：修改权限，可通过数字变更权限，r=4,w=2,x=1,rwx = 4+2+1=7,0则没有权限</p>
+<ul>
+<li>r：可读</li>
+<li>w：可写</li>
+<li>x：可执行</li>
+</ul>
+<h2 id="2-11-进程管理"><a href="#2-11-进程管理" class="headerlink" title="2.11. 进程管理"></a>2.11. 进程管理</h2><p>ps：显示系统执行的进程</p>
+<ul>
+<li>-a：显示当前终端的所有进程信息</li>
+<li>-u：以用户的格式显示进程信息</li>
+<li>-x：显示后台进程运行的参数</li>
+</ul>
+<p>kill：终止进程</p>
+<ul>
+<li>-9表示强制停止进程</li>
+</ul>
+<p>pstree：查看进程树</p>
+<ul>
+<li>-p：显示进程的pid</li>
+<li>-u：显示进程的所属用户</li>
+</ul>
+<h2 id="2-12-参考文件"><a href="#2-12-参考文件" class="headerlink" title="2.12. 参考文件"></a>2.12. 参考文件</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/guorui_java/article/details/117430091">https://blog.csdn.net/guorui_java/article/details/117430091</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/wq1205750492/article/details/124497195">https://blog.csdn.net/wq1205750492/article/details/124497195</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_55316925/article/details/128092949">https://blog.csdn.net/qq_55316925/article/details/128092949</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnbugs.com/post-4092.html">https://www.cnbugs.com/post-4092.html</a></li>
+</ul>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a href="/tags/">Tag</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/search/">Search</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-%E6%A6%82%E8%BF%B0"><span class="toc-number">1.</span> <span class="toc-text">1. 概述</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-%E8%AF%A6%E8%BF%B0"><span class="toc-number">2.</span> <span class="toc-text">2. 详述</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-ar"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. ar</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-%E5%85%B3%E6%9C%BA%E3%80%81%E9%87%8D%E5%90%AF%E3%80%81%E7%99%BB%E5%BD%95%E3%80%81%E6%B3%A8%E9%94%80"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. 关机、重启、登录、注销</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-3-%E7%94%A8%E6%88%B7"><span class="toc-number">2.3.</span> <span class="toc-text">2.3. 用户</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-4-%E7%94%A8%E6%88%B7%E7%BB%84"><span class="toc-number">2.4.</span> <span class="toc-text">2.4. 用户组</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-5-%E5%B8%AE%E5%8A%A9%E6%8C%87%E4%BB%A4"><span class="toc-number">2.5.</span> <span class="toc-text">2.5. 帮助指令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-6-%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95%E7%B1%BB"><span class="toc-number">2.6.</span> <span class="toc-text">2.6. 文件目录类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-7-%E6%97%A5%E6%9C%9F%E6%97%B6%E9%97%B4%E7%B1%BB"><span class="toc-number">2.7.</span> <span class="toc-text">2.7. 日期时间类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-8-%E6%90%9C%E7%B4%A2%E6%9F%A5%E6%89%BE%E7%B1%BB"><span class="toc-number">2.8.</span> <span class="toc-text">2.8. 搜索查找类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-9-%E5%8E%8B%E7%BC%A9%E5%92%8C%E8%A7%A3%E5%8E%8B%E7%B1%BB"><span class="toc-number">2.9.</span> <span class="toc-text">2.9. 压缩和解压类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-10-%E7%BB%84%E7%AE%A1%E7%90%86%E5%92%8C%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86"><span class="toc-number">2.10.</span> <span class="toc-text">2.10. 组管理和权限管理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-11-%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86"><span class="toc-number">2.11.</span> <span class="toc-text">2.11. 进程管理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-12-%E5%8F%82%E8%80%83%E6%96%87%E4%BB%B6"><span class="toc-number">2.12.</span> <span class="toc-text">2.12. 参考文件</span></a></li></ol></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://cakgod.github.io/2023/10/12/linux-command/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://cakgod.github.io/2023/10/12/linux-command/&text=linux命令总结"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://cakgod.github.io/2023/10/12/linux-command/&title=linux命令总结"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://cakgod.github.io/2023/10/12/linux-command/&is_video=false&description=linux命令总结"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=linux命令总结&body=Check out this article: http://cakgod.github.io/2023/10/12/linux-command/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://cakgod.github.io/2023/10/12/linux-command/&title=linux命令总结"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://cakgod.github.io/2023/10/12/linux-command/&title=linux命令总结"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://cakgod.github.io/2023/10/12/linux-command/&title=linux命令总结"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://cakgod.github.io/2023/10/12/linux-command/&title=linux命令总结"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://cakgod.github.io/2023/10/12/linux-command/&name=linux命令总结&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://cakgod.github.io/2023/10/12/linux-command/&t=linux命令总结"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2023
+    CAKGOD
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tag</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="//cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+</body>
+</html>

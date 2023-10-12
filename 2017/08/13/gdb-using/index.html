@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="1. 简介GDB全称GNU symbolic debugger，是GNU开源组织发布的一个强大的Linux下的程序调试工具，GDB主要帮助你完成下面四个方面的功能：  启动你的程序，可以按照你的自定义的要求随心所欲的运行程序。 可让被调试的程序在你所指定的调置的断点处停住（断点可以是条件表达式）。 当程序被停住时，可以检查此时你的程序中所发生的事。 你可以改变你的程序，将一个BUG产生的影响修正从">
+<meta property="og:type" content="article">
+<meta property="og:title" content="gdb使用">
+<meta property="og:url" content="http://cakgod.github.io/2017/08/13/gdb-using/index.html">
+<meta property="og:site_name" content="CAKGOD&#39;s blog">
+<meta property="og:description" content="1. 简介GDB全称GNU symbolic debugger，是GNU开源组织发布的一个强大的Linux下的程序调试工具，GDB主要帮助你完成下面四个方面的功能：  启动你的程序，可以按照你的自定义的要求随心所欲的运行程序。 可让被调试的程序在你所指定的调置的断点处停住（断点可以是条件表达式）。 当程序被停住时，可以检查此时你的程序中所发生的事。 你可以改变你的程序，将一个BUG产生的影响修正从">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2017-08-13T01:33:33.000Z">
+<meta property="article:modified_time" content="2023-10-12T01:43:11.178Z">
+<meta property="article:author" content="CAKGOD">
+<meta property="article:tag" content="linux">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>gdb使用</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="CAKGOD's blog" type="application/atom+xml">
+</head>
+
+<body class="max-width mx-auto px3 ltr">    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tag</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2017/10/12/vim-using/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://cakgod.github.io/2017/08/13/gdb-using/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://cakgod.github.io/2017/08/13/gdb-using/&text=gdb使用"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://cakgod.github.io/2017/08/13/gdb-using/&title=gdb使用"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://cakgod.github.io/2017/08/13/gdb-using/&is_video=false&description=gdb使用"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=gdb使用&body=Check out this article: http://cakgod.github.io/2017/08/13/gdb-using/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://cakgod.github.io/2017/08/13/gdb-using/&title=gdb使用"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://cakgod.github.io/2017/08/13/gdb-using/&title=gdb使用"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://cakgod.github.io/2017/08/13/gdb-using/&title=gdb使用"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://cakgod.github.io/2017/08/13/gdb-using/&title=gdb使用"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://cakgod.github.io/2017/08/13/gdb-using/&name=gdb使用&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://cakgod.github.io/2017/08/13/gdb-using/&t=gdb使用"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-%E7%AE%80%E4%BB%8B"><span class="toc-number">1.</span> <span class="toc-text">1. 简介</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E4%BB%8B%E7%BB%8D"><span class="toc-number">2.</span> <span class="toc-text">2. 常用命令介绍</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-GDB%E7%9A%84%E8%B0%83%E8%AF%95%E6%96%B9%E5%BC%8F"><span class="toc-number">3.</span> <span class="toc-text">3. GDB的调试方式</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-GDB%E7%9A%84%E9%80%80%E5%87%BA"><span class="toc-number">4.</span> <span class="toc-text">4. GDB的退出</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#5-%E5%8F%82%E8%80%83%E6%96%87%E4%BB%B6"><span class="toc-number">5.</span> <span class="toc-text">5. 参考文件</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        gdb使用
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">CAKGOD</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2017-08-13T01:33:33.000Z" class="dt-published" itemprop="datePublished">2017-08-13</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/linux/" rel="tag">linux</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h1 id="1-简介"><a href="#1-简介" class="headerlink" title="1. 简介"></a>1. 简介</h1><p>GDB全称GNU symbolic debugger，是GNU开源组织发布的一个强大的Linux下的程序调试工具，GDB主要帮助你完成下面四个方面的功能：</p>
+<ul>
+<li>启动你的程序，可以按照你的自定义的要求随心所欲的运行程序。</li>
+<li>可让被调试的程序在你所指定的调置的断点处停住（断点可以是条件表达式）。</li>
+<li>当程序被停住时，可以检查此时你的程序中所发生的事。</li>
+<li>你可以改变你的程序，将一个BUG产生的影响修正从而测试其他BUG。</li>
+</ul>
+<h1 id="2-常用命令介绍"><a href="#2-常用命令介绍" class="headerlink" title="2. 常用命令介绍"></a>2. 常用命令介绍</h1><p>r或run：运行一个待调试的程序</p>
+<p>c或contine：让暂停的程序继续运行</p>
+<p>n或next：运行到下一行</p>
+<p>s或step：单步执行，遇到函数会进入</p>
+<p>u或until：运行到指定行</p>
+<p>fi或finish：结束当前调用的函数，回到上一层函数调用处</p>
+<p>return：结束当前调用函数并返回指定值，到上一层函数调用处</p>
+<p>j或jump：将当前程序执行流跳转到指定行</p>
+<ul>
+<li>jump LineNum：跳转到代码的LineNum行的位置</li>
+<li>jump *address：跳转到address地址的代码处，地址前面要加*</li>
+</ul>
+<p>备注：1.跳过的代码不会被执行；2.跳到的位置如果没有断点那么GDB会继续往下执行</p>
+<p>p或print：打印变量或寄存器的值</p>
+<ul>
+<li>print param：用于在调试过程中查看变量的值</li>
+<li>print param = value：用于在调试过程中修改变量的值为value</li>
+<li>print a+b+c：可以进行一定的表达式运算</li>
+<li>print func()：输出func函数的执行结果，常见用途是打印系统函数执行失败的原因：print strerror(errno)</li>
+<li>print *this：在C++对象中，可以输出当前对象的各成员变量的值</li>
+</ul>
+<p>print不同类型的值</p>
+<ul>
+<li>p/x：十六进制显示</li>
+<li>p/d：十进制显示</li>
+<li>p/u：无符号十进制显示</li>
+<li>p/o：八进制显示</li>
+<li>p/t：二进制显示</li>
+<li>p/a：地址格式显示</li>
+<li>p/c：字符串格式显示</li>
+<li>p/f：浮点数格式显示</li>
+<li>p/s：字符串格式显示</li>
+</ul>
+<p>bt或backtrace：查看当前线程的栈调用</p>
+<p>f或frame：切换到当前调用线程的指定堆栈</p>
+<p>thread：切换到指定线程</p>
+<p>b或break：添加断点</p>
+<ul>
+<li>break FuncName，在函数的入口添加断点</li>
+<li>break LineNum，在当前文件行号为LineNum的代码处添加断点</li>
+<li>break FileName：LineNum，在FileName文件的第LineNum行处添加断点</li>
+<li>break FileName：FuncName，在FileName文件的FuncName函数入口处添加断点</li>
+<li>break -/+offset，在当前程序暂停位置的前/后offset行除添加断点</li>
+<li>break … if cond， 添加条件断点</li>
+</ul>
+<p>tb或tbreak：添加临时断点（第一次执行到后会自动清除，使用方法同break）</p>
+<p>d或delete：删除断点</p>
+<p>enable：启用某个断点</p>
+<p>disable：禁用某个断点</p>
+<p>i或info：查看断点或线程信息</p>
+<p>i/info b，显示当前所有断点的信息</p>
+<p>watch：监视某一个变量或内存地址的值是否发生变化</p>
+<p>l或list：显示源码</p>
+<ul>
+<li>list -，显示上一次list命令显示的代码前面的代码</li>
+<li>list LineNum，显示当前代码文件第LineNum行附近的代码</li>
+<li>list FileName：LineNum，显示FileName文件第LineNum行附近的代码</li>
+<li>list FuncName，显示当前文件FuncName函数附近的代码</li>
+<li>list FileName：FuncName，显示FileName文件的Fun从Name函数附近的代码</li>
+<li>list LineNum1,LineNum2，显示LineNum1到LineNum2之间的代码</li>
+</ul>
+<p>备注：list默认只会输出10行源代码，可以通过show listsize确认list命令显示的代码行数，set listsize count设置list命令显示的的代码行数为conut</p>
+<p>ptype：查看变量类型</p>
+<p>dis或disassemble：查看汇编代码</p>
+<p>set args：设置程序启动命令行参数</p>
+<p>show args：查看设置的命令行参数</p>
+<h1 id="3-GDB的调试方式"><a href="#3-GDB的调试方式" class="headerlink" title="3. GDB的调试方式"></a>3. GDB的调试方式</h1><ul>
+<li>直接调试目标程序</li>
+<li>附加进程id</li>
+<li>调试core文件</li>
+</ul>
+<h1 id="4-GDB的退出"><a href="#4-GDB的退出" class="headerlink" title="4. GDB的退出"></a>4. GDB的退出</h1><p>可以输入命令q或quit退出，或者Ctrl+d退出<br>如果GDB attach某个进程，退出GDB之前要用命令detach解除附加进程</p>
+<h1 id="5-参考文件"><a href="#5-参考文件" class="headerlink" title="5. 参考文件"></a>5. 参考文件</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/Jailman/article/details/125847467">https://blog.csdn.net/Jailman/article/details/125847467</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/297925056">https://zhuanlan.zhihu.com/p/297925056</a></li>
+</ul>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a href="/tags/">Tag</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/search/">Search</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-%E7%AE%80%E4%BB%8B"><span class="toc-number">1.</span> <span class="toc-text">1. 简介</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E4%BB%8B%E7%BB%8D"><span class="toc-number">2.</span> <span class="toc-text">2. 常用命令介绍</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-GDB%E7%9A%84%E8%B0%83%E8%AF%95%E6%96%B9%E5%BC%8F"><span class="toc-number">3.</span> <span class="toc-text">3. GDB的调试方式</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-GDB%E7%9A%84%E9%80%80%E5%87%BA"><span class="toc-number">4.</span> <span class="toc-text">4. GDB的退出</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#5-%E5%8F%82%E8%80%83%E6%96%87%E4%BB%B6"><span class="toc-number">5.</span> <span class="toc-text">5. 参考文件</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://cakgod.github.io/2017/08/13/gdb-using/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://cakgod.github.io/2017/08/13/gdb-using/&text=gdb使用"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://cakgod.github.io/2017/08/13/gdb-using/&title=gdb使用"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://cakgod.github.io/2017/08/13/gdb-using/&is_video=false&description=gdb使用"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=gdb使用&body=Check out this article: http://cakgod.github.io/2017/08/13/gdb-using/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://cakgod.github.io/2017/08/13/gdb-using/&title=gdb使用"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://cakgod.github.io/2017/08/13/gdb-using/&title=gdb使用"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://cakgod.github.io/2017/08/13/gdb-using/&title=gdb使用"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://cakgod.github.io/2017/08/13/gdb-using/&title=gdb使用"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://cakgod.github.io/2017/08/13/gdb-using/&name=gdb使用&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://cakgod.github.io/2017/08/13/gdb-using/&t=gdb使用"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2023
+    CAKGOD
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tag</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="//cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+</body>
+</html>

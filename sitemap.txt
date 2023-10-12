@@ -1,5 +1,6 @@
+http://cakgod.github.io/2023/10/12/linux-command/
 http://cakgod.github.io/2017/10/12/vim-using/
-http://cakgod.github.io/2023/10/11/linux-command/
+http://cakgod.github.io/2017/08/13/gdb-using/
 http://cakgod.github.io/2022/10/09/robocup-2d/
 http://cakgod.github.io/2022/10/09/video-stabilization/
 http://cakgod.github.io/2021/02/18/image-algorithm/
