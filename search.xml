@@ -4,6 +4,25 @@
   
     
     <entry>
+      <title>linux命令总结</title>
+      <link href="/2023/10/11/linux-command/"/>
+      <url>/2023/10/11/linux-command/</url>
+      
+        <content type="html"><![CDATA[<h1 id="1-概述"><a href="#1-概述" class="headerlink" title="1. 概述"></a>1. 概述</h1><p>该文章总结了一些linux系统中常用的命令以及部分软件使用的命令。</p><h1 id="2-详述"><a href="#2-详述" class="headerlink" title="2. 详述"></a>2. 详述</h1><h2 id="2-1-ar"><a href="#2-1-ar" class="headerlink" title="2.1. ar"></a>2.1. ar</h2><p>ar命令用来制作静态库，一些常用的参数：</p><ul><li>-c：禁止在创建库时产生的正常消息。</li><li>-r：如果指定的文件已经在库中存在，则替换它。</li><li>-s：无论库是否更新都强制重新生成新的符号表。</li><li>-d：从库中删除指定的文件。</li><li>-o：对压缩文档成员进行排序。</li><li>-q：向库中追加指定文件。 </li><li>-t：打印库中的目标文件。</li><li>-x：解压库中的目标文件。编译器是以源文件为单位编译程序的，链接器在链接过程中逐个对目标文件进行分解组装。</li></ul><h2 id="2-2"><a href="#2-2" class="headerlink" title="2.2."></a>2.2.</h2>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> linux </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>智能指针</title>
       <link href="/2023/10/08/smart-pointer/"/>
       <url>/2023/10/08/smart-pointer/</url>
@@ -192,6 +211,25 @@
         <tags>
             
             <tag> 问题 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>vim常用命令</title>
+      <link href="/2017/10/12/vim-using/"/>
+      <url>/2017/10/12/vim-using/</url>
+      
+        <content type="html"><![CDATA[<h1 id="1-简介"><a href="#1-简介" class="headerlink" title="1. 简介"></a>1. 简介</h1><p>在说vim之前，先说下什么是vi。vi是visual interface的简称，是Linux中最经典的文本编辑器。vi的核心设计思想是：让程序员的手始终保持在键盘的核心区域就能够完成所有的编辑操作。而vim又是从vi发展出来的一个文本编辑器，即vi improved，它在代码补全、编译及错误跳转等方便编程的功能上特别丰富，在程序员中被广泛使用。</p><h1 id="2-vim的工作模式"><a href="#2-vim的工作模式" class="headerlink" title="2. vim的工作模式"></a>2. vim的工作模式</h1><p>vim有三种主要的工作模式</p><ul><li>命令模式（Command mode）：用户启动vim时，首先进入的便是命令模式。命令模式可认为是vim的入口，此模式下敲击键盘的字符都会被当做命令，而非在文本中插入字符。</li><li>插入模式（Insert mode）：此模式下可以正常地编辑文字，与平时使用习惯差别不大。</li><li>底行模式（Last line mode）：此模式下可以执行保存、退出以及其他的一些功能。按下<code>esc+：</code>即可进入底行模式。输入wq为保存退出，输入q!为不保存退出。</li></ul><p>此外，还有其他一些模式，如可视模式（Visual）、替换模式（Replace）等。</p><h1 id="3-常用命令介绍"><a href="#3-常用命令介绍" class="headerlink" title="3. 常用命令介绍"></a>3. 常用命令介绍</h1><h2 id="3-1-移动"><a href="#3-1-移动" class="headerlink" title="3.1 移动"></a>3.1 移动</h2><p>方位移动</p><ul><li>h：光标左移一格</li><li>j：光标下移一格</li><li>k：光标上移一格</li><li>l：光标右移一格</li></ul><p>使用方向键也是允许的。</p><p>行内移动</p><ul><li>0：光标移至行首</li><li>$：光标移至行尾</li><li>^：光标移到当前行的第一个非空字符</li><li><code>g_</code>：光标移到当前行的最后一个非空字符</li><li>b：光标到上一个字的开头</li><li>w：光标到下一个字的开头</li><li>e：光标移到下一个字的结尾</li><li>ge：光标移到上一个字的结尾</li><li>fa：移到下一个a出现的位置（F与之相反）</li><li>ta：移到下一个a出现位置的前一个位置（T与之相反）</li></ul><p>行间移动</p><ul><li>G：光标移至文末</li><li>gg：光标移至开头</li><li>Ngg或NG：光标移至N行开头</li></ul><p>语义移动</p><ul><li>(：光标移至上一句首</li><li>)：光标移至下一句首</li><li>{：光标移至段首</li><li>}：光标移至段尾</li></ul><p>屏幕移动</p><ul><li>H：将光标移到屏幕的最顶行</li><li>M：将光标移到屏幕中间</li><li>L：将光标移到屏幕最底行</li><li>Ctrl+b：向上翻页</li><li>Ctrl+f：向下翻页</li></ul><h2 id="3-2-选择"><a href="#3-2-选择" class="headerlink" title="3.2 选择"></a>3.2 选择</h2><p>此功能需进入可视模式，方法为按下键盘上的v键。然后搭配上面移动的相关命令即可实现文本的选择。常用的有ggvG可实现全选，v$可实现选中某行，Ctrl+v可进入可视块模式，允许垂直方向选择文本。</p><p>可视模式更详细的用法可参考：</p><p>https：//blog.csdn.net/ii1245712564/article/details/46960387</p><h2 id="3-3-复制"><a href="#3-3-复制" class="headerlink" title="3.3 复制"></a>3.3 复制</h2><ul><li>y：复制</li><li>yy：复制一行</li><li>Nyy：复制从光标处起的N行内容</li><li>yw：复制光标处至词尾的内容</li><li>yaw：复制光标所在单词</li><li>ya”：yank around”,复制整个字符串包括引号</li><li>yi”：yank inside”,复制引号之间的内容，不包括引号（类似还有yi（、yi[等）</li></ul><h2 id="3-4-粘贴"><a href="#3-4-粘贴" class="headerlink" title="3.4 粘贴"></a>3.4 粘贴</h2><ul><li>p（小写）：在光标后粘贴复制或剪切的内容</li><li>P（大写）：在光标前粘贴复制或剪切的内容</li></ul><h2 id="3-5-删除（剪切）"><a href="#3-5-删除（剪切）" class="headerlink" title="3.5 删除（剪切）"></a>3.5 删除（剪切）</h2><ul><li>x：删除光标所在字符（cut）</li><li>d：删除（可与移动命令搭配使用，自行探索）</li><li>dd：删除光标所在行</li><li>D：从光标处删至行尾（与d0等同）</li><li>dw：删除光标至词尾的内容</li><li>daw：删除光标所在单词</li></ul><h2 id="3-6-撤销"><a href="#3-6-撤销" class="headerlink" title="3.6 撤销"></a>3.6 撤销</h2><ul><li>u：撤销上次命令（undo）</li></ul><h2 id="3-7-恢复"><a href="#3-7-恢复" class="headerlink" title="3.7 恢复"></a>3.7 恢复</h2><ul><li>Ctrl+r：恢复撤销的命令（redo）</li></ul><h2 id="3-8-查找"><a href="#3-8-查找" class="headerlink" title="3.8 查找"></a>3.8 查找</h2><ul><li>/str：查找字符串str第一次出现的位置</li><li>n：当查找到指定内容后，继续查找下一个</li><li>N：查找上一个</li><li>*：向后查找当前光标所在单词</li><li>#：向前查找当前光标所在单词</li><li>fa：向后查找第一个a出现的位置</li><li>;：重复上一次f查找命令</li></ul><h2 id="3-9-替换（修改）"><a href="#3-9-替换（修改）" class="headerlink" title="3.9 替换（修改）"></a>3.9 替换（修改）</h2><ul><li>r：替换光标所在字符</li><li>R：此时将进入替换模式，每输入一个字符就会替换光标所在字符，并使光标后移一格，以便继续替换。</li><li>s：删除当前字符并插入</li><li>cw： 替换从光标所在位置到当前单词结尾的字符</li><li>caw：删除光标所在单词并插入</li><li>ci”：删除“…”之间的内容并插入（类似还有ci（、ci[等）</li><li>.：重复上一次修改命令</li><li>“.：跳转到上次修改所在行</li><li>`.：跳转到上次修改所在位置</li></ul><h2 id="3-10-缩进"><a href="#3-10-缩进" class="headerlink" title="3.10 缩进"></a>3.10 缩进</h2><ul><li>>>：增加缩进</li><li>&lt;&lt;：减少缩进</li><li>gg=G：自动全文缩进</li></ul><h2 id="3-11-标记"><a href="#3-11-标记" class="headerlink" title="3.11 标记"></a>3.11 标记</h2><ul><li>mx：添加标记x,x可以是a～z或A~Z之间的任意字母</li><li>‘x：定位到标记x所在行行首</li><li>`x：定位到标记的确切位置</li></ul><h2 id="3-12-查看历史"><a href="#3-12-查看历史" class="headerlink" title="3.12 查看历史"></a>3.12 查看历史</h2><ul><li><p>q:：查看历史命令</p></li><li><p>q/：查看搜索历史</p></li></ul><p>补充：查看或编辑某条记录后按Enter可执行该条记录。按Ctrl+c可退出历史编辑</p><h2 id="3-13-进入插入模式"><a href="#3-13-进入插入模式" class="headerlink" title="3.13 进入插入模式"></a>3.13 进入插入模式</h2><ul><li>i：在当前字符前插入文本</li><li>I：在行首插入文本</li><li>a：在当前字符后插入文本</li><li>A：在行尾插入文本</li><li>o：在当前行后面插入空行</li><li>O：在当前行前面插入空行</li></ul><h2 id="3-14-进入底行模式"><a href="#3-14-进入底行模式" class="headerlink" title="3.14 进入底行模式"></a>3.14 进入底行模式</h2><p>esc+:：进入底行模式</p><p>常用</p><ul><li>w filename：保存或重命名当前文件</li><li>wq：保存退出</li><li>saveas <path/to/file>：另存为指定路径下文件</li><li>e <path/to/file>：打开路径下的文件</li><li>q：在未做修改的情况下退出</li><li>q!：不保存退出</li></ul><p>行相关</p><ul><li>N：跳至第N行</li><li>set nu：显示行号（nu即number）</li><li>set nonu：隐藏行号（nonu即no number）</li><li>J：拼接当前行和下一行</li><li>set ts=N：设置Tab键跳过的空格数为N（ts即tabstop）</li></ul><p>基本排版</p><ul><li>ce（nter）：本行文字居中</li><li>le（ft）：本行文字左对齐</li><li>ri（ght）：本行文字右对齐</li></ul><p>标签页</p><ul><li>tabnew filename：新建标签页</li><li>tabn：跳到下个标签页</li><li>tabp：跳到上个标签页</li><li>tabc：关闭当前标签页</li></ul><p>分屏</p><ul><li>sp：左右分屏</li><li>vsp：上下分屏</li></ul><p>补充：可使用Ctrl+w+w实现不同窗口的转动切换，方向为逆时针旋转；也可使用Ctrl+w搭配h、i、j、k或方向键实现窗口切换。</p><h2 id="3-15-其他tips"><a href="#3-15-其他tips" class="headerlink" title="3.15 其他tips"></a>3.15 其他tips</h2><p>复制、粘贴、剪切快捷键</p><ul><li>Ctrl+Insert：复制</li><li>Shift+Insert：粘贴</li><li>Shift+delete：剪切</li></ul><p>自动补全快捷键：</p><ul><li>Ctrl+n</li><li>Ctrl+p</li></ul><p>数字自增（减）1</p><ul><li>Ctrl+a：使光标所在处的数字加1</li><li>Ctrl+x：使光标所在处的数字减1</li><li>.：重复上次命令</li><li>~：对光标下的字母大小写转换</li><li>N<Cmd>：重复Cmd命令N次，可与复制、删除以及其他很多命令搭配使用</li></ul><h1 id="4-参考文件"><a href="#4-参考文件" class="headerlink" title="4. 参考文件"></a>4. 参考文件</h1><p>https：//blog.csdn.net/qq_30748863/article/details/84669058</p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> linux </tag>
             
         </tags>
       

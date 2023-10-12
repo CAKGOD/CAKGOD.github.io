@@ -1,3 +1,5 @@
+http://cakgod.github.io/2017/10/12/vim-using/
+http://cakgod.github.io/2023/10/11/linux-command/
 http://cakgod.github.io/2022/10/09/robocup-2d/
 http://cakgod.github.io/2022/10/09/video-stabilization/
 http://cakgod.github.io/2021/02/18/image-algorithm/
@@ -24,3 +26,4 @@ http://cakgod.github.io/tags/%E5%9B%BE%E5%83%8F/
 http://cakgod.github.io/tags/%E9%97%AE%E9%A2%98/
 http://cakgod.github.io/tags/%E8%A7%86%E9%A2%91/
 http://cakgod.github.io/tags/%E6%AF%94%E8%B5%9B/
+http://cakgod.github.io/tags/linux/
