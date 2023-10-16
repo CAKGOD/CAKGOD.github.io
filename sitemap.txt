@@ -1,3 +1,5 @@
+http://cakgod.github.io/2018/10/16/got-plt/
+http://cakgod.github.io/2020/01/02/link_static_dynamic/
 http://cakgod.github.io/2017/10/16/hexo-live/
 http://cakgod.github.io/2023/09/28/interesting-website/
 http://cakgod.github.io/2018/03/12/ass-using/
@@ -13,7 +15,6 @@ http://cakgod.github.io/2021/05/10/compiler-optimization/
 http://cakgod.github.io/2023/01/07/modern-microprocessor/
 http://cakgod.github.io/2022/10/07/branch-and-optimization/
 http://cakgod.github.io/2023/10/08/smart-pointer/
-http://cakgod.github.io/2020/01/02/static-link/
 http://cakgod.github.io/categories/index.html
 http://cakgod.github.io/search/index.html
 http://cakgod.github.io/tags/index.html
