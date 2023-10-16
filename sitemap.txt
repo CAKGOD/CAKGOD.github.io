@@ -1,3 +1,7 @@
+http://cakgod.github.io/2017/10/16/hexo-live/
+http://cakgod.github.io/2023/09/28/interesting-website/
+http://cakgod.github.io/2018/03/12/ass-using/
+http://cakgod.github.io/2023/10/12/git-using/
 http://cakgod.github.io/2023/10/12/linux-command/
 http://cakgod.github.io/2017/10/12/vim-using/
 http://cakgod.github.io/2017/08/13/gdb-using/
@@ -8,7 +12,6 @@ http://cakgod.github.io/2019/08/04/hexo-use/
 http://cakgod.github.io/2021/05/10/compiler-optimization/
 http://cakgod.github.io/2023/01/07/modern-microprocessor/
 http://cakgod.github.io/2022/10/07/branch-and-optimization/
-http://cakgod.github.io/2023/09/28/interesting-website/
 http://cakgod.github.io/2023/10/08/smart-pointer/
 http://cakgod.github.io/2020/01/02/static-link/
 http://cakgod.github.io/categories/index.html
@@ -28,3 +31,4 @@ http://cakgod.github.io/tags/%E9%97%AE%E9%A2%98/
 http://cakgod.github.io/tags/%E8%A7%86%E9%A2%91/
 http://cakgod.github.io/tags/%E6%AF%94%E8%B5%9B/
 http://cakgod.github.io/tags/linux/
+http://cakgod.github.io/tags/%E6%B1%87%E7%BC%96/
