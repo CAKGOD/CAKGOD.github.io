@@ -6,7 +6,7 @@
   <link href="http://cakgod.github.io/atom.xml" rel="self"/>
   
   <link href="http://cakgod.github.io/"/>
-  <updated>2023-10-12T05:42:36.173Z</updated>
+  <updated>2023-10-20T05:47:18.256Z</updated>
   <id>http://cakgod.github.io/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>如何访问dark web</title>
+    <link href="http://cakgod.github.io/2023/10/19/dark-web/"/>
+    <id>http://cakgod.github.io/2023/10/19/dark-web/</id>
+    <published>2023-10-19T03:56:58.000Z</published>
+    <updated>2023-10-20T05:47:18.256Z</updated>
+    
+    <content type="html"><![CDATA[<p>我认为没有必要将DW妖魔化，只记录一下如何访问。</p><p>首先下载洋葱浏览器，这个可以自行搜索。</p><p>之后在洋葱浏览器中配置网络，最好有一个科学上网的app，能查看开放端口的那种。把端口和ip输入进去，回到主页点击连接就可以了。</p><p>至于有什么网站可以访问，这个自行探索比较好。</p><p>遵纪守法，保护自己。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;我认为没有必要将DW妖魔化，只记录一下如何访问。&lt;/p&gt;
+&lt;p&gt;首先下载洋葱浏览器，这个可以自行搜索。&lt;/p&gt;
+&lt;p&gt;之后在洋葱浏览器中配置网络，最好有一个科学上网的app，能查看开放端口的那种。把端口和ip输入进去，回到主页点击连接就可以了。&lt;/p&gt;
+&lt;p&gt;至于有什么网站</summary>
+      
+    
+    
+    
+    
+    <category term="问题" scheme="http://cakgod.github.io/tags/%E9%97%AE%E9%A2%98/"/>
+    
+  </entry>
   
   <entry>
     <title>git使用总结</title>
@@ -127,6 +152,29 @@
     <category term="读后感" scheme="http://cakgod.github.io/tags/%E8%AF%BB%E5%90%8E%E6%84%9F/"/>
     
     <category term="硬件" scheme="http://cakgod.github.io/tags/%E7%A1%AC%E4%BB%B6/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>神威芯片汇编指令运行情况</title>
+    <link href="http://cakgod.github.io/2022/10/17/sw-ass/"/>
+    <id>http://cakgod.github.io/2022/10/17/sw-ass/</id>
+    <published>2022-10-17T09:25:15.000Z</published>
+    <updated>2023-10-18T02:26:43.184Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="1-概述"><a href="#1-概述" class="headerlink" title="1. 概述"></a>1. 概述</h1><p>本文分析了神威芯片的指令运行情况，会通过几个例子中来查看。</p><h1 id="2-详述"><a href="#2-详述" class="headerlink" title="2. 详述"></a>2. 详述</h1><h2 id="2-1-示例一"><a href="#2-1-示例一" class="headerlink" title="2.1. 示例一"></a>2.1. 示例一</h2><p>首先看一个简单的加法例子，代码如下：</p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// test.c</span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">test</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> a = <span class="number">1</span>;</span><br><span class="line">    <span class="type">int</span> b = <span class="number">2</span>;</span><br><span class="line">    <span class="type">int</span> c = a + b;</span><br><span class="line">    <span class="keyword">return</span> c;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>使用如下命令编译出.o并进行反汇编：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">tecocc -c -device-only -ffp-contract=fast test.c -O0</span><br><span class="line">tecoobjdump -Dr test.o</span><br></pre></td></tr></table></figure><p>注意使用了O0优化度，可以查看最原始的汇编，代码如下：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">0000000000000000 &lt;slave_test&gt;:</span><br><span class="line">       0: e0 ff 9e e7   ldi     $30, -32($30)</span><br><span class="line">       4: 1d 00 de c3   stl     $15, 24($30)</span><br><span class="line">       8: 20 00 de e3   ldi     $15, 32($30)</span><br><span class="line">       c: f7 ff 0f b4   stw     $16, -12($15)</span><br><span class="line">      10: f3 ff 4f b4   stw     $17, -16($15)</span><br><span class="line">      14: f6 ff 4f b0   ldw     $1, -12($15)</span><br><span class="line">      18: f2 ff 8f b0   ldw     $2, -16($15)</span><br><span class="line">      1c: 01 00 42 40   addw    $1, $2, $1</span><br><span class="line">      20: ef ff 4f b0   stw     $1, -20($15)</span><br><span class="line">      24: ee ff 0f b0   ldw     $0, -20($15)</span><br><span class="line">      28: e0 ff 8f e7   ldi     $30, -32($15)</span><br><span class="line">      2c: 1c 00 de c3   ldl     $15, 24($30)</span><br><span class="line">      30: 20 00 9e e7   ldi     $30, 32($30)</span><br><span class="line">      34: 01 60 da 07   call    $31, ($26), 1</span><br></pre></td></tr></table></figure><p>其中，<code>$30</code>为栈指针，<code>$15</code>为帧指针，<code>$31</code>为默认0，<code>$26</code>为返回地址，<code>$0</code>为整数类型返回值。栈变化如下图所示：</p><p><img src="/images/sw_test_0.png" alt=""></p><p>这个例子还是比较简单的，看一个调用的例子。</p><h2 id="2-2-示例二"><a href="#2-2-示例二" class="headerlink" title="2.2. 示例二"></a>2.2. 示例二</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">add</span><span class="params">(<span class="type">int</span> a, <span class="type">int</span> b)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> c = a + b;</span><br><span class="line">    <span class="keyword">return</span> c;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">test</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> a = <span class="number">1</span>;</span><br><span class="line">    <span class="type">int</span> b = <span class="number">2</span>;</span><br><span class="line">    <span class="type">int</span> c = add(a, b);</span><br><span class="line">    <span class="keyword">return</span> c;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>汇编代码如下：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">0000000000000000 &lt;slave_add&gt;:</span><br><span class="line">       0: e0 ff 9e e7  ldi$30, -32($30)</span><br><span class="line">       4: 1d 00 de c3  stl$15, 24($30)</span><br><span class="line">       8: 20 00 de e3  ldi$15, 32($30)</span><br><span class="line">       c: f7 ff 0f b4  stw$16, -12($15)</span><br><span class="line">      10: f3 ff 4f b4  stw$17, -16($15)</span><br><span class="line">      14: f6 ff 4f b0  ldw$1, -12($15)</span><br><span class="line">      18: f2 ff 8f b0  ldw$2, -16($15)</span><br><span class="line">      1c: 01 00 42 40  addw$1, $2, $1</span><br><span class="line">      20: ef ff 4f b0  stw$1, -20($15)</span><br><span class="line">      24: ee ff 0f b0  ldw$0, -20($15)</span><br><span class="line">      28: e0 ff 8f e7  ldi$30, -32($15)</span><br><span class="line">      2c: 1c 00 de c3  ldl$15, 24($30)</span><br><span class="line">      30: 20 00 9e e7  ldi$30, 32($30)</span><br><span class="line">      34: 01 60 da 07  call$31, ($26), 1</span><br><span class="line"></span><br><span class="line">0000000000000000 &lt;slave_test&gt;:</span><br><span class="line">       0: 00 00 5b f7  ldih$29, 0($27)</span><br><span class="line">0000000000000000:  R_SWAI_GPDISP.text1.slave_test+0x4</span><br><span class="line">       4: 00 00 5d e7  ldi$29, 0($29)</span><br><span class="line">       8: e0 ff 9e e7  ldi$30, -32($30)</span><br><span class="line">       c: 1d 00 9e c6  stl$26, 24($30)</span><br><span class="line">      10: 15 00 de c3  stl$15, 16($30)</span><br><span class="line">      14: 20 00 de e3  ldi$15, 32($30)</span><br><span class="line">      18: 01 00 5f e0  ldi$1, 1($31)</span><br><span class="line">      1c: ef ff 4f b0  stw$1, -20($15)</span><br><span class="line">      20: 02 00 5f e0  ldi$1, 2($31)</span><br><span class="line">      24: eb ff 4f b0  stw$1, -24($15)</span><br><span class="line">      28: ee ff 0f b4  ldw$16, -20($15)</span><br><span class="line">      2c: ea ff 4f b4  ldw$17, -24($15)</span><br><span class="line">      30: 04 00 5d c0  ldl$1, 0($29)</span><br><span class="line">0000000000000030:  R_SWAI_LITERALslave_add</span><br><span class="line">      34: 1b 4e 5f 40  or$1, $31, $27</span><br><span class="line">      38: 00 60 9b 06  call$26, ($27), 0</span><br><span class="line">0000000000000038:  R_SWAI_LITUSEslave_add+0x3</span><br><span class="line">      3c: 00 00 5a f7  ldih$29, 0($26)</span><br><span class="line">000000000000003c:  R_SWAI_GPDISP.text1.slave_test+0x4</span><br><span class="line">      40: 00 00 5d e7  ldi$29, 0($29)</span><br><span class="line">      44: e7 ff 0f b0  stw$0, -28($15)</span><br><span class="line">      48: e6 ff 0f b0  ldw$0, -28($15)</span><br><span class="line">      4c: e0 ff 8f e7  ldi$30, -32($15)</span><br><span class="line">      50: 14 00 de c3  ldl$15, 16($30)</span><br><span class="line">      54: 1c 00 9e c6  ldl$26, 24($30)</span><br><span class="line">      58: 20 00 9e e7  ldi$30, 32($30)</span><br><span class="line">      5c: 01 60 da 07  call$31, ($26), 1</span><br></pre></td></tr></table></figure><p>可以看到<code>slave_add</code>跟刚刚示例一中的汇编代码完全一致，就不多看了，主要关注<code>slave_test</code>。其中，<code>$16</code>和<code>$17</code>为参数寄存器。栈变化图如下所示：</p><p><img src="/images/sw_test_1.png" alt=""></p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;1-概述&quot;&gt;&lt;a href=&quot;#1-概述&quot; class=&quot;headerlink&quot; title=&quot;1. 概述&quot;&gt;&lt;/a&gt;1. 概述&lt;/h1&gt;&lt;p&gt;本文分析了神威芯片的指令运行情况，会通过几个例子中来查看。&lt;/p&gt;
+&lt;h1 id=&quot;2-详述&quot;&gt;&lt;a href=&quot;#2-</summary>
+      
+    
+    
+    
+    
+    <category term="编译" scheme="http://cakgod.github.io/tags/%E7%BC%96%E8%AF%91/"/>
     
   </entry>
   
@@ -246,6 +294,30 @@
   </entry>
   
   <entry>
+    <title>如何将chrome网页背景彻底变成黑色</title>
+    <link href="http://cakgod.github.io/2020/10/19/chrome-dark/"/>
+    <id>http://cakgod.github.io/2020/10/19/chrome-dark/</id>
+    <published>2020-10-19T02:28:01.000Z</published>
+    <updated>2023-10-19T02:37:22.833Z</updated>
+    
+    <content type="html"><![CDATA[<p>黑色对于长时间看电脑屏幕来说不会那么刺眼，因此相对舒服一些。chrome默认的黑色主题只会改变状态栏的颜色，对于网页背景却不会生效。</p><p>chrome提供了一个选项可以实现这一点。首先在搜索框中输入：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chrome://flags/#enable-force-dark</span><br></pre></td></tr></table></figure><p>找到<code>Auto Dark Mode for Web Contents</code>这项功能，将<code>Default</code>改为<code>Enabled</code>，重启浏览器后即可看到黑色网页效果已经生效。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;黑色对于长时间看电脑屏幕来说不会那么刺眼，因此相对舒服一些。chrome默认的黑色主题只会改变状态栏的颜色，对于网页背景却不会生效。&lt;/p&gt;
+&lt;p&gt;chrome提供了一个选项可以实现这一点。首先在搜索框中输入：&lt;/p&gt;
+&lt;figure class=&quot;highlight pl</summary>
+      
+    
+    
+    
+    
+    <category term="问题" scheme="http://cakgod.github.io/tags/%E9%97%AE%E9%A2%98/"/>
+    
+  </entry>
+  
+  <entry>
     <title>静态链接和动态链接</title>
     <link href="http://cakgod.github.io/2020/01/02/link_static_dynamic/"/>
     <id>http://cakgod.github.io/2020/01/02/link_static_dynamic/</id>
@@ -268,11 +340,36 @@
   </entry>
   
   <entry>
-    <title>hexo_use</title>
+    <title>linux如何删除乱码文件</title>
+    <link href="http://cakgod.github.io/2019/10/17/delele-garbled-file/"/>
+    <id>http://cakgod.github.io/2019/10/17/delele-garbled-file/</id>
+    <published>2019-10-17T03:10:14.000Z</published>
+    <updated>2023-10-17T08:49:00.086Z</updated>
+    
+    <content type="html"><![CDATA[<p>有时候由于程序运行错误或者一些其他原因，会产生一些乱码的文件，这时候我们想删除这些文件的时候，会因为无法选中导致删除失败。因此可以采用如下方式：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ls -ilrt</span><br><span class="line"></span><br><span class="line">100985 -rw-r--r-- 1 tbcs   users      0 Apr 18 11:32 -MXV9.log</span><br></pre></td></tr></table></figure><p>列出乱码文件的详细信息，查看第一列的序号。然后使用find命令，并配合其他命令来删除。</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$find ./ -inum 100985 -exec rm &#123;&#125; \;</span><br></pre></td></tr></table></figure><p>这时候就可以删除掉了。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;有时候由于程序运行错误或者一些其他原因，会产生一些乱码的文件，这时候我们想删除这些文件的时候，会因为无法选中导致删除失败。因此可以采用如下方式：&lt;/p&gt;
+&lt;figure class=&quot;highlight plaintext&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gu</summary>
+      
+    
+    
+    
+    
+    <category term="问题" scheme="http://cakgod.github.io/tags/%E9%97%AE%E9%A2%98/"/>
+    
+    <category term="linux" scheme="http://cakgod.github.io/tags/linux/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>如何在hexo中支持公式</title>
     <link href="http://cakgod.github.io/2019/08/04/hexo-use/"/>
     <id>http://cakgod.github.io/2019/08/04/hexo-use/</id>
     <published>2019-08-04T06:56:25.000Z</published>
-    <updated>2023-10-09T08:05:18.073Z</updated>
+    <updated>2023-10-17T08:50:17.685Z</updated>
     
     <content type="html"><![CDATA[<h1 id="1-概述"><a href="#1-概述" class="headerlink" title="1. 概述"></a>1. 概述</h1><p>本文介绍了在各种hexo主题上支持markdown公式的方法。</p><h1 id="2-参考文章"><a href="#2-参考文章" class="headerlink" title="2. 参考文章"></a>2. 参考文章</h1><p>感谢大神！<a href="https://myblackboxrecorder.com/use-math-in-hexo/">在任意的hexo主题支持数学公式</a></p><h1 id="3-详述"><a href="#3-详述" class="headerlink" title="3. 详述"></a>3. 详述</h1><h2 id="3-1-安装MathJax"><a href="#3-1-安装MathJax" class="headerlink" title="3.1. 安装MathJax"></a>3.1. 安装MathJax</h2><p>MathJax就是用来渲染数学公式的js引擎。在这之前需要卸载自带的hexo-math以避免冲突。</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm uninstall hexo-math --save</span><br><span class="line">npm install hexo-renderer-mathjax --save</span><br></pre></td></tr></table></figure><h2 id="3-2-更新MathJax的CDN链接"><a href="#3-2-更新MathJax的CDN链接" class="headerlink" title="3.2. 更新MathJax的CDN链接"></a>3.2. 更新MathJax的CDN链接</h2><p>打开<code>node_modules/hexo-renderer-mathjax/mathjax.html</code>，将最后一行CDN地址修改为：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script src=&quot;//cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-MML-AM_CHTML&quot;&gt;&lt;/script&gt;</span><br></pre></td></tr></table></figure><h2 id="3-3-更换默认渲染引擎"><a href="#3-3-更换默认渲染引擎" class="headerlink" title="3.3. 更换默认渲染引擎"></a>3.3. 更换默认渲染引擎</h2><p>Hexo默认的渲染引擎hexo-renderer-marked对MathJax的支持很不好，修改为kramed引擎：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm uninstall hexo-renderer-marked --save</span><br><span class="line">npm install hexo-renderer-kramed --save</span><br></pre></td></tr></table></figure><h2 id="3-4-更改转移规则"><a href="#3-4-更改转移规则" class="headerlink" title="3.4. 更改转移规则"></a>3.4. 更改转移规则</h2><p>因为hexo默认的转义规则会将一些字符进行转义，比如<code>_</code>转为<code>&lt;em&gt;</code>，所以需要对默认的规则进行修改。</p><p>打开<code>node_modules/kramed/lib/rules/inline.js</code>，把：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">escape: /^\\([\\`*&#123;&#125;\[\]()#$+\-.!_&gt;])/,</span><br></pre></td></tr></table></figure><p>修改为：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">escape: /^\\([`*\[\]()# +\-.!_&gt;])/,</span><br></pre></td></tr></table></figure><p>把：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">em: /^\b_((?:__|[\s\S])+?)_\b|^\*((?:\*\*|[\s\S])+?)\*(?!\*)/,</span><br></pre></td></tr></table></figure><p>修改为：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">em: /^\*((?:\*\*|[\s\S])+?)\*(?!\*)/,</span><br></pre></td></tr></table></figure><h2 id="3-5-使用hexo-filter-mathjax"><a href="#3-5-使用hexo-filter-mathjax" class="headerlink" title="3.5. 使用hexo-filter-mathjax"></a>3.5. 使用hexo-filter-mathjax</h2><p>安装<a href="https://github.com/next-theme/hexo-filter-mathjax">hexo-filter-mathjax</a>：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-filter-mathjax --save</span><br></pre></td></tr></table></figure><p>对于需要开启公式支持的博文，在开头处添加<code>mathjax: true</code>这行即可。</p>]]></content>
     
@@ -371,28 +468,6 @@
       
       
     <summary type="html">&lt;h1 id=&quot;1-简介&quot;&gt;&lt;a href=&quot;#1-简介&quot; class=&quot;headerlink&quot; title=&quot;1. 简介&quot;&gt;&lt;/a&gt;1. 简介&lt;/h1&gt;&lt;p&gt;在说vim之前，先说下什么是vi。vi是visual interface的简称，是Linux中最经典的文本编辑器。vi的</summary>
-      
-    
-    
-    
-    
-    <category term="linux" scheme="http://cakgod.github.io/tags/linux/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>gdb使用</title>
-    <link href="http://cakgod.github.io/2017/08/13/gdb-using/"/>
-    <id>http://cakgod.github.io/2017/08/13/gdb-using/</id>
-    <published>2017-08-13T01:33:33.000Z</published>
-    <updated>2023-10-12T01:43:11.178Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="1-简介"><a href="#1-简介" class="headerlink" title="1. 简介"></a>1. 简介</h1><p>GDB全称GNU symbolic debugger，是GNU开源组织发布的一个强大的Linux下的程序调试工具，GDB主要帮助你完成下面四个方面的功能：</p><ul><li>启动你的程序，可以按照你的自定义的要求随心所欲的运行程序。</li><li>可让被调试的程序在你所指定的调置的断点处停住（断点可以是条件表达式）。</li><li>当程序被停住时，可以检查此时你的程序中所发生的事。</li><li>你可以改变你的程序，将一个BUG产生的影响修正从而测试其他BUG。</li></ul><h1 id="2-常用命令介绍"><a href="#2-常用命令介绍" class="headerlink" title="2. 常用命令介绍"></a>2. 常用命令介绍</h1><p>r或run：运行一个待调试的程序</p><p>c或contine：让暂停的程序继续运行</p><p>n或next：运行到下一行</p><p>s或step：单步执行，遇到函数会进入</p><p>u或until：运行到指定行</p><p>fi或finish：结束当前调用的函数，回到上一层函数调用处</p><p>return：结束当前调用函数并返回指定值，到上一层函数调用处</p><p>j或jump：将当前程序执行流跳转到指定行</p><ul><li>jump LineNum：跳转到代码的LineNum行的位置</li><li>jump *address：跳转到address地址的代码处，地址前面要加*</li></ul><p>备注：1.跳过的代码不会被执行；2.跳到的位置如果没有断点那么GDB会继续往下执行</p><p>p或print：打印变量或寄存器的值</p><ul><li>print param：用于在调试过程中查看变量的值</li><li>print param = value：用于在调试过程中修改变量的值为value</li><li>print a+b+c：可以进行一定的表达式运算</li><li>print func()：输出func函数的执行结果，常见用途是打印系统函数执行失败的原因：print strerror(errno)</li><li>print *this：在C++对象中，可以输出当前对象的各成员变量的值</li></ul><p>print不同类型的值</p><ul><li>p/x：十六进制显示</li><li>p/d：十进制显示</li><li>p/u：无符号十进制显示</li><li>p/o：八进制显示</li><li>p/t：二进制显示</li><li>p/a：地址格式显示</li><li>p/c：字符串格式显示</li><li>p/f：浮点数格式显示</li><li>p/s：字符串格式显示</li></ul><p>bt或backtrace：查看当前线程的栈调用</p><p>f或frame：切换到当前调用线程的指定堆栈</p><p>thread：切换到指定线程</p><p>b或break：添加断点</p><ul><li>break FuncName，在函数的入口添加断点</li><li>break LineNum，在当前文件行号为LineNum的代码处添加断点</li><li>break FileName：LineNum，在FileName文件的第LineNum行处添加断点</li><li>break FileName：FuncName，在FileName文件的FuncName函数入口处添加断点</li><li>break -/+offset，在当前程序暂停位置的前/后offset行除添加断点</li><li>break … if cond， 添加条件断点</li></ul><p>tb或tbreak：添加临时断点（第一次执行到后会自动清除，使用方法同break）</p><p>d或delete：删除断点</p><p>enable：启用某个断点</p><p>disable：禁用某个断点</p><p>i或info：查看断点或线程信息</p><p>i/info b，显示当前所有断点的信息</p><p>watch：监视某一个变量或内存地址的值是否发生变化</p><p>l或list：显示源码</p><ul><li>list -，显示上一次list命令显示的代码前面的代码</li><li>list LineNum，显示当前代码文件第LineNum行附近的代码</li><li>list FileName：LineNum，显示FileName文件第LineNum行附近的代码</li><li>list FuncName，显示当前文件FuncName函数附近的代码</li><li>list FileName：FuncName，显示FileName文件的Fun从Name函数附近的代码</li><li>list LineNum1,LineNum2，显示LineNum1到LineNum2之间的代码</li></ul><p>备注：list默认只会输出10行源代码，可以通过show listsize确认list命令显示的代码行数，set listsize count设置list命令显示的的代码行数为conut</p><p>ptype：查看变量类型</p><p>dis或disassemble：查看汇编代码</p><p>set args：设置程序启动命令行参数</p><p>show args：查看设置的命令行参数</p><h1 id="3-GDB的调试方式"><a href="#3-GDB的调试方式" class="headerlink" title="3. GDB的调试方式"></a>3. GDB的调试方式</h1><ul><li>直接调试目标程序</li><li>附加进程id</li><li>调试core文件</li></ul><h1 id="4-GDB的退出"><a href="#4-GDB的退出" class="headerlink" title="4. GDB的退出"></a>4. GDB的退出</h1><p>可以输入命令q或quit退出，或者Ctrl+d退出<br>如果GDB attach某个进程，退出GDB之前要用命令detach解除附加进程</p><h1 id="5-参考文件"><a href="#5-参考文件" class="headerlink" title="5. 参考文件"></a>5. 参考文件</h1><ul><li><a href="https://blog.csdn.net/Jailman/article/details/125847467">https://blog.csdn.net/Jailman/article/details/125847467</a></li><li><a href="https://zhuanlan.zhihu.com/p/297925056">https://zhuanlan.zhihu.com/p/297925056</a></li></ul>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;h1 id=&quot;1-简介&quot;&gt;&lt;a href=&quot;#1-简介&quot; class=&quot;headerlink&quot; title=&quot;1. 简介&quot;&gt;&lt;/a&gt;1. 简介&lt;/h1&gt;&lt;p&gt;GDB全称GNU symbolic debugger，是GNU开源组织发布的一个强大的Linux下的程序调试工具，GDB</summary>
       
     
     

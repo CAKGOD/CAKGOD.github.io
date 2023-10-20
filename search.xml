@@ -4,6 +4,25 @@
   
     
     <entry>
+      <title>如何访问dark web</title>
+      <link href="/2023/10/19/dark-web/"/>
+      <url>/2023/10/19/dark-web/</url>
+      
+        <content type="html"><![CDATA[<p>我认为没有必要将DW妖魔化，只记录一下如何访问。</p><p>首先下载洋葱浏览器，这个可以自行搜索。</p><p>之后在洋葱浏览器中配置网络，最好有一个科学上网的app，能查看开放端口的那种。把端口和ip输入进去，回到主页点击连接就可以了。</p><p>至于有什么网站可以访问，这个自行探索比较好。</p><p>遵纪守法，保护自己。</p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> 问题 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>git使用总结</title>
       <link href="/2023/10/12/git-using/"/>
       <url>/2023/10/12/git-using/</url>
@@ -93,6 +112,25 @@
             <tag> 读后感 </tag>
             
             <tag> 硬件 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>神威芯片汇编指令运行情况</title>
+      <link href="/2022/10/17/sw-ass/"/>
+      <url>/2022/10/17/sw-ass/</url>
+      
+        <content type="html"><![CDATA[<h1 id="1-概述"><a href="#1-概述" class="headerlink" title="1. 概述"></a>1. 概述</h1><p>本文分析了神威芯片的指令运行情况，会通过几个例子中来查看。</p><h1 id="2-详述"><a href="#2-详述" class="headerlink" title="2. 详述"></a>2. 详述</h1><h2 id="2-1-示例一"><a href="#2-1-示例一" class="headerlink" title="2.1. 示例一"></a>2.1. 示例一</h2><p>首先看一个简单的加法例子，代码如下：</p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// test.c</span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">test</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> a = <span class="number">1</span>;</span><br><span class="line">    <span class="type">int</span> b = <span class="number">2</span>;</span><br><span class="line">    <span class="type">int</span> c = a + b;</span><br><span class="line">    <span class="keyword">return</span> c;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>使用如下命令编译出.o并进行反汇编：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">tecocc -c -device-only -ffp-contract=fast test.c -O0</span><br><span class="line">tecoobjdump -Dr test.o</span><br></pre></td></tr></table></figure><p>注意使用了O0优化度，可以查看最原始的汇编，代码如下：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">0000000000000000 &lt;slave_test&gt;:</span><br><span class="line">       0: e0 ff 9e e7   ldi     $30, -32($30)</span><br><span class="line">       4: 1d 00 de c3   stl     $15, 24($30)</span><br><span class="line">       8: 20 00 de e3   ldi     $15, 32($30)</span><br><span class="line">       c: f7 ff 0f b4   stw     $16, -12($15)</span><br><span class="line">      10: f3 ff 4f b4   stw     $17, -16($15)</span><br><span class="line">      14: f6 ff 4f b0   ldw     $1, -12($15)</span><br><span class="line">      18: f2 ff 8f b0   ldw     $2, -16($15)</span><br><span class="line">      1c: 01 00 42 40   addw    $1, $2, $1</span><br><span class="line">      20: ef ff 4f b0   stw     $1, -20($15)</span><br><span class="line">      24: ee ff 0f b0   ldw     $0, -20($15)</span><br><span class="line">      28: e0 ff 8f e7   ldi     $30, -32($15)</span><br><span class="line">      2c: 1c 00 de c3   ldl     $15, 24($30)</span><br><span class="line">      30: 20 00 9e e7   ldi     $30, 32($30)</span><br><span class="line">      34: 01 60 da 07   call    $31, ($26), 1</span><br></pre></td></tr></table></figure><p>其中，<code>$30</code>为栈指针，<code>$15</code>为帧指针，<code>$31</code>为默认0，<code>$26</code>为返回地址，<code>$0</code>为整数类型返回值。栈变化如下图所示：</p><p><img src="/images/sw_test_0.png" alt=""></p><p>这个例子还是比较简单的，看一个调用的例子。</p><h2 id="2-2-示例二"><a href="#2-2-示例二" class="headerlink" title="2.2. 示例二"></a>2.2. 示例二</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">add</span><span class="params">(<span class="type">int</span> a, <span class="type">int</span> b)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> c = a + b;</span><br><span class="line">    <span class="keyword">return</span> c;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">test</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> a = <span class="number">1</span>;</span><br><span class="line">    <span class="type">int</span> b = <span class="number">2</span>;</span><br><span class="line">    <span class="type">int</span> c = add(a, b);</span><br><span class="line">    <span class="keyword">return</span> c;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>汇编代码如下：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">0000000000000000 &lt;slave_add&gt;:</span><br><span class="line">       0: e0 ff 9e e7  ldi$30, -32($30)</span><br><span class="line">       4: 1d 00 de c3  stl$15, 24($30)</span><br><span class="line">       8: 20 00 de e3  ldi$15, 32($30)</span><br><span class="line">       c: f7 ff 0f b4  stw$16, -12($15)</span><br><span class="line">      10: f3 ff 4f b4  stw$17, -16($15)</span><br><span class="line">      14: f6 ff 4f b0  ldw$1, -12($15)</span><br><span class="line">      18: f2 ff 8f b0  ldw$2, -16($15)</span><br><span class="line">      1c: 01 00 42 40  addw$1, $2, $1</span><br><span class="line">      20: ef ff 4f b0  stw$1, -20($15)</span><br><span class="line">      24: ee ff 0f b0  ldw$0, -20($15)</span><br><span class="line">      28: e0 ff 8f e7  ldi$30, -32($15)</span><br><span class="line">      2c: 1c 00 de c3  ldl$15, 24($30)</span><br><span class="line">      30: 20 00 9e e7  ldi$30, 32($30)</span><br><span class="line">      34: 01 60 da 07  call$31, ($26), 1</span><br><span class="line"></span><br><span class="line">0000000000000000 &lt;slave_test&gt;:</span><br><span class="line">       0: 00 00 5b f7  ldih$29, 0($27)</span><br><span class="line">0000000000000000:  R_SWAI_GPDISP.text1.slave_test+0x4</span><br><span class="line">       4: 00 00 5d e7  ldi$29, 0($29)</span><br><span class="line">       8: e0 ff 9e e7  ldi$30, -32($30)</span><br><span class="line">       c: 1d 00 9e c6  stl$26, 24($30)</span><br><span class="line">      10: 15 00 de c3  stl$15, 16($30)</span><br><span class="line">      14: 20 00 de e3  ldi$15, 32($30)</span><br><span class="line">      18: 01 00 5f e0  ldi$1, 1($31)</span><br><span class="line">      1c: ef ff 4f b0  stw$1, -20($15)</span><br><span class="line">      20: 02 00 5f e0  ldi$1, 2($31)</span><br><span class="line">      24: eb ff 4f b0  stw$1, -24($15)</span><br><span class="line">      28: ee ff 0f b4  ldw$16, -20($15)</span><br><span class="line">      2c: ea ff 4f b4  ldw$17, -24($15)</span><br><span class="line">      30: 04 00 5d c0  ldl$1, 0($29)</span><br><span class="line">0000000000000030:  R_SWAI_LITERALslave_add</span><br><span class="line">      34: 1b 4e 5f 40  or$1, $31, $27</span><br><span class="line">      38: 00 60 9b 06  call$26, ($27), 0</span><br><span class="line">0000000000000038:  R_SWAI_LITUSEslave_add+0x3</span><br><span class="line">      3c: 00 00 5a f7  ldih$29, 0($26)</span><br><span class="line">000000000000003c:  R_SWAI_GPDISP.text1.slave_test+0x4</span><br><span class="line">      40: 00 00 5d e7  ldi$29, 0($29)</span><br><span class="line">      44: e7 ff 0f b0  stw$0, -28($15)</span><br><span class="line">      48: e6 ff 0f b0  ldw$0, -28($15)</span><br><span class="line">      4c: e0 ff 8f e7  ldi$30, -32($15)</span><br><span class="line">      50: 14 00 de c3  ldl$15, 16($30)</span><br><span class="line">      54: 1c 00 9e c6  ldl$26, 24($30)</span><br><span class="line">      58: 20 00 9e e7  ldi$30, 32($30)</span><br><span class="line">      5c: 01 60 da 07  call$31, ($26), 1</span><br></pre></td></tr></table></figure><p>可以看到<code>slave_add</code>跟刚刚示例一中的汇编代码完全一致，就不多看了，主要关注<code>slave_test</code>。其中，<code>$16</code>和<code>$17</code>为参数寄存器。栈变化图如下所示：</p><p><img src="/images/sw_test_1.png" alt=""></p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> 编译 </tag>
             
         </tags>
       
@@ -200,6 +238,25 @@
     
     
     <entry>
+      <title>如何将chrome网页背景彻底变成黑色</title>
+      <link href="/2020/10/19/chrome-dark/"/>
+      <url>/2020/10/19/chrome-dark/</url>
+      
+        <content type="html"><![CDATA[<p>黑色对于长时间看电脑屏幕来说不会那么刺眼，因此相对舒服一些。chrome默认的黑色主题只会改变状态栏的颜色，对于网页背景却不会生效。</p><p>chrome提供了一个选项可以实现这一点。首先在搜索框中输入：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chrome://flags/#enable-force-dark</span><br></pre></td></tr></table></figure><p>找到<code>Auto Dark Mode for Web Contents</code>这项功能，将<code>Default</code>改为<code>Enabled</code>，重启浏览器后即可看到黑色网页效果已经生效。</p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> 问题 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>静态链接和动态链接</title>
       <link href="/2020/01/02/link_static_dynamic/"/>
       <url>/2020/01/02/link_static_dynamic/</url>
@@ -219,7 +276,28 @@
     
     
     <entry>
-      <title>hexo_use</title>
+      <title>linux如何删除乱码文件</title>
+      <link href="/2019/10/17/delele-garbled-file/"/>
+      <url>/2019/10/17/delele-garbled-file/</url>
+      
+        <content type="html"><![CDATA[<p>有时候由于程序运行错误或者一些其他原因，会产生一些乱码的文件，这时候我们想删除这些文件的时候，会因为无法选中导致删除失败。因此可以采用如下方式：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ls -ilrt</span><br><span class="line"></span><br><span class="line">100985 -rw-r--r-- 1 tbcs   users      0 Apr 18 11:32 -MXV9.log</span><br></pre></td></tr></table></figure><p>列出乱码文件的详细信息，查看第一列的序号。然后使用find命令，并配合其他命令来删除。</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$find ./ -inum 100985 -exec rm &#123;&#125; \;</span><br></pre></td></tr></table></figure><p>这时候就可以删除掉了。</p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> 问题 </tag>
+            
+            <tag> linux </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>如何在hexo中支持公式</title>
       <link href="/2019/08/04/hexo-use/"/>
       <url>/2019/08/04/hexo-use/</url>
       

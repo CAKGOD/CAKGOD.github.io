@@ -1,3 +1,8 @@
+http://cakgod.github.io/2023/10/19/dark-web/
+http://cakgod.github.io/2020/10/19/chrome-dark/
+http://cakgod.github.io/2022/10/17/sw-ass/
+http://cakgod.github.io/2019/08/04/hexo-use/
+http://cakgod.github.io/2019/10/17/delele-garbled-file/
 http://cakgod.github.io/2018/10/16/got-plt/
 http://cakgod.github.io/2020/01/02/link_static_dynamic/
 http://cakgod.github.io/2017/10/16/hexo-live/
@@ -10,7 +15,6 @@ http://cakgod.github.io/2017/08/13/gdb-using/
 http://cakgod.github.io/2022/10/09/robocup-2d/
 http://cakgod.github.io/2022/10/09/video-stabilization/
 http://cakgod.github.io/2021/02/18/image-algorithm/
-http://cakgod.github.io/2019/08/04/hexo-use/
 http://cakgod.github.io/2021/05/10/compiler-optimization/
 http://cakgod.github.io/2023/01/07/modern-microprocessor/
 http://cakgod.github.io/2022/10/07/branch-and-optimization/

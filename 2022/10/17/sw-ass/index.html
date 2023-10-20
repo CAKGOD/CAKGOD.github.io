@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="1. 概述本文分析了神威芯片的指令运行情况，会通过几个例子中来查看。 2. 详述2.1. 示例一首先看一个简单的加法例子，代码如下： 123456789&#x2F;&#x2F; test.cint test()&amp;#123;    int a &#x3D; 1;    int b &#x3D; 2;    int c &#x3D; a + b;    return c;&amp;#125; 使用如下命令编译出.o并进行反汇编： 12tecocc -c -d">
+<meta property="og:type" content="article">
+<meta property="og:title" content="神威芯片汇编指令运行情况">
+<meta property="og:url" content="http://cakgod.github.io/2022/10/17/sw-ass/index.html">
+<meta property="og:site_name" content="CAKGOD&#39;s blog">
+<meta property="og:description" content="1. 概述本文分析了神威芯片的指令运行情况，会通过几个例子中来查看。 2. 详述2.1. 示例一首先看一个简单的加法例子，代码如下： 123456789&#x2F;&#x2F; test.cint test()&amp;#123;    int a &#x3D; 1;    int b &#x3D; 2;    int c &#x3D; a + b;    return c;&amp;#125; 使用如下命令编译出.o并进行反汇编： 12tecocc -c -d">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://cakgod.github.io/images/sw_test_0.png">
+<meta property="og:image" content="http://cakgod.github.io/images/sw_test_1.png">
+<meta property="article:published_time" content="2022-10-17T09:25:15.000Z">
+<meta property="article:modified_time" content="2023-10-18T02:26:43.184Z">
+<meta property="article:author" content="CAKGOD">
+<meta property="article:tag" content="编译">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://cakgod.github.io/images/sw_test_0.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>神威芯片汇编指令运行情况</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="CAKGOD's blog" type="application/atom+xml">
+</head>
+
+<body class="max-width mx-auto px3 ltr">    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tag</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2023/01/07/modern-microprocessor/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2022/10/09/robocup-2d/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://cakgod.github.io/2022/10/17/sw-ass/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://cakgod.github.io/2022/10/17/sw-ass/&text=神威芯片汇编指令运行情况"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://cakgod.github.io/2022/10/17/sw-ass/&title=神威芯片汇编指令运行情况"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://cakgod.github.io/2022/10/17/sw-ass/&is_video=false&description=神威芯片汇编指令运行情况"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=神威芯片汇编指令运行情况&body=Check out this article: http://cakgod.github.io/2022/10/17/sw-ass/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://cakgod.github.io/2022/10/17/sw-ass/&title=神威芯片汇编指令运行情况"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://cakgod.github.io/2022/10/17/sw-ass/&title=神威芯片汇编指令运行情况"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://cakgod.github.io/2022/10/17/sw-ass/&title=神威芯片汇编指令运行情况"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://cakgod.github.io/2022/10/17/sw-ass/&title=神威芯片汇编指令运行情况"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://cakgod.github.io/2022/10/17/sw-ass/&name=神威芯片汇编指令运行情况&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://cakgod.github.io/2022/10/17/sw-ass/&t=神威芯片汇编指令运行情况"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-%E6%A6%82%E8%BF%B0"><span class="toc-number">1.</span> <span class="toc-text">1. 概述</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-%E8%AF%A6%E8%BF%B0"><span class="toc-number">2.</span> <span class="toc-text">2. 详述</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-%E7%A4%BA%E4%BE%8B%E4%B8%80"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. 示例一</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-%E7%A4%BA%E4%BE%8B%E4%BA%8C"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. 示例二</span></a></li></ol></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        神威芯片汇编指令运行情况
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">CAKGOD</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2022-10-17T09:25:15.000Z" class="dt-published" itemprop="datePublished">2022-10-17</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/%E7%BC%96%E8%AF%91/" rel="tag">编译</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h1 id="1-概述"><a href="#1-概述" class="headerlink" title="1. 概述"></a>1. 概述</h1><p>本文分析了神威芯片的指令运行情况，会通过几个例子中来查看。</p>
+<h1 id="2-详述"><a href="#2-详述" class="headerlink" title="2. 详述"></a>2. 详述</h1><h2 id="2-1-示例一"><a href="#2-1-示例一" class="headerlink" title="2.1. 示例一"></a>2.1. 示例一</h2><p>首先看一个简单的加法例子，代码如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// test.c</span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">test</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> a = <span class="number">1</span>;</span><br><span class="line">    <span class="type">int</span> b = <span class="number">2</span>;</span><br><span class="line">    <span class="type">int</span> c = a + b;</span><br><span class="line">    <span class="keyword">return</span> c;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>使用如下命令编译出.o并进行反汇编：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">tecocc -c -device-only -ffp-contract=fast test.c -O0</span><br><span class="line">tecoobjdump -Dr test.o</span><br></pre></td></tr></table></figure>
+<p>注意使用了O0优化度，可以查看最原始的汇编，代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">0000000000000000 &lt;slave_test&gt;:</span><br><span class="line">       0: e0 ff 9e e7   ldi     $30, -32($30)</span><br><span class="line">       4: 1d 00 de c3   stl     $15, 24($30)</span><br><span class="line">       8: 20 00 de e3   ldi     $15, 32($30)</span><br><span class="line">       c: f7 ff 0f b4   stw     $16, -12($15)</span><br><span class="line">      10: f3 ff 4f b4   stw     $17, -16($15)</span><br><span class="line">      14: f6 ff 4f b0   ldw     $1, -12($15)</span><br><span class="line">      18: f2 ff 8f b0   ldw     $2, -16($15)</span><br><span class="line">      1c: 01 00 42 40   addw    $1, $2, $1</span><br><span class="line">      20: ef ff 4f b0   stw     $1, -20($15)</span><br><span class="line">      24: ee ff 0f b0   ldw     $0, -20($15)</span><br><span class="line">      28: e0 ff 8f e7   ldi     $30, -32($15)</span><br><span class="line">      2c: 1c 00 de c3   ldl     $15, 24($30)</span><br><span class="line">      30: 20 00 9e e7   ldi     $30, 32($30)</span><br><span class="line">      34: 01 60 da 07   call    $31, ($26), 1</span><br></pre></td></tr></table></figure>
+<p>其中，<code>$30</code>为栈指针，<code>$15</code>为帧指针，<code>$31</code>为默认0，<code>$26</code>为返回地址，<code>$0</code>为整数类型返回值。栈变化如下图所示：</p>
+<p><img src="/images/sw_test_0.png" alt=""></p>
+<p>这个例子还是比较简单的，看一个调用的例子。</p>
+<h2 id="2-2-示例二"><a href="#2-2-示例二" class="headerlink" title="2.2. 示例二"></a>2.2. 示例二</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">add</span><span class="params">(<span class="type">int</span> a, <span class="type">int</span> b)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> c = a + b;</span><br><span class="line">    <span class="keyword">return</span> c;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">test</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> a = <span class="number">1</span>;</span><br><span class="line">    <span class="type">int</span> b = <span class="number">2</span>;</span><br><span class="line">    <span class="type">int</span> c = add(a, b);</span><br><span class="line">    <span class="keyword">return</span> c;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>汇编代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">0000000000000000 &lt;slave_add&gt;:</span><br><span class="line">       0: e0 ff 9e e7  	ldi	$30, -32($30)</span><br><span class="line">       4: 1d 00 de c3  	stl	$15, 24($30)</span><br><span class="line">       8: 20 00 de e3  	ldi	$15, 32($30)</span><br><span class="line">       c: f7 ff 0f b4  	stw	$16, -12($15)</span><br><span class="line">      10: f3 ff 4f b4  	stw	$17, -16($15)</span><br><span class="line">      14: f6 ff 4f b0  	ldw	$1, -12($15)</span><br><span class="line">      18: f2 ff 8f b0  	ldw	$2, -16($15)</span><br><span class="line">      1c: 01 00 42 40  	addw	$1, $2, $1</span><br><span class="line">      20: ef ff 4f b0  	stw	$1, -20($15)</span><br><span class="line">      24: ee ff 0f b0  	ldw	$0, -20($15)</span><br><span class="line">      28: e0 ff 8f e7  	ldi	$30, -32($15)</span><br><span class="line">      2c: 1c 00 de c3  	ldl	$15, 24($30)</span><br><span class="line">      30: 20 00 9e e7  	ldi	$30, 32($30)</span><br><span class="line">      34: 01 60 da 07  	call	$31, ($26), 1</span><br><span class="line"></span><br><span class="line">0000000000000000 &lt;slave_test&gt;:</span><br><span class="line">       0: 00 00 5b f7  	ldih	$29, 0($27)</span><br><span class="line">		0000000000000000:  R_SWAI_GPDISP	.text1.slave_test+0x4</span><br><span class="line">       4: 00 00 5d e7  	ldi	$29, 0($29)</span><br><span class="line">       8: e0 ff 9e e7  	ldi	$30, -32($30)</span><br><span class="line">       c: 1d 00 9e c6  	stl	$26, 24($30)</span><br><span class="line">      10: 15 00 de c3  	stl	$15, 16($30)</span><br><span class="line">      14: 20 00 de e3  	ldi	$15, 32($30)</span><br><span class="line">      18: 01 00 5f e0  	ldi	$1, 1($31)</span><br><span class="line">      1c: ef ff 4f b0  	stw	$1, -20($15)</span><br><span class="line">      20: 02 00 5f e0  	ldi	$1, 2($31)</span><br><span class="line">      24: eb ff 4f b0  	stw	$1, -24($15)</span><br><span class="line">      28: ee ff 0f b4  	ldw	$16, -20($15)</span><br><span class="line">      2c: ea ff 4f b4  	ldw	$17, -24($15)</span><br><span class="line">      30: 04 00 5d c0  	ldl	$1, 0($29)</span><br><span class="line">		0000000000000030:  R_SWAI_LITERAL	slave_add</span><br><span class="line">      34: 1b 4e 5f 40  	or	$1, $31, $27</span><br><span class="line">      38: 00 60 9b 06  	call	$26, ($27), 0</span><br><span class="line">		0000000000000038:  R_SWAI_LITUSE	slave_add+0x3</span><br><span class="line">      3c: 00 00 5a f7  	ldih	$29, 0($26)</span><br><span class="line">		000000000000003c:  R_SWAI_GPDISP	.text1.slave_test+0x4</span><br><span class="line">      40: 00 00 5d e7  	ldi	$29, 0($29)</span><br><span class="line">      44: e7 ff 0f b0  	stw	$0, -28($15)</span><br><span class="line">      48: e6 ff 0f b0  	ldw	$0, -28($15)</span><br><span class="line">      4c: e0 ff 8f e7  	ldi	$30, -32($15)</span><br><span class="line">      50: 14 00 de c3  	ldl	$15, 16($30)</span><br><span class="line">      54: 1c 00 9e c6  	ldl	$26, 24($30)</span><br><span class="line">      58: 20 00 9e e7  	ldi	$30, 32($30)</span><br><span class="line">      5c: 01 60 da 07  	call	$31, ($26), 1</span><br></pre></td></tr></table></figure>
+<p>可以看到<code>slave_add</code>跟刚刚示例一中的汇编代码完全一致，就不多看了，主要关注<code>slave_test</code>。其中，<code>$16</code>和<code>$17</code>为参数寄存器。栈变化图如下所示：</p>
+<p><img src="/images/sw_test_1.png" alt=""></p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a href="/tags/">Tag</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/search/">Search</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-%E6%A6%82%E8%BF%B0"><span class="toc-number">1.</span> <span class="toc-text">1. 概述</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-%E8%AF%A6%E8%BF%B0"><span class="toc-number">2.</span> <span class="toc-text">2. 详述</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-%E7%A4%BA%E4%BE%8B%E4%B8%80"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. 示例一</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-%E7%A4%BA%E4%BE%8B%E4%BA%8C"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. 示例二</span></a></li></ol></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://cakgod.github.io/2022/10/17/sw-ass/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://cakgod.github.io/2022/10/17/sw-ass/&text=神威芯片汇编指令运行情况"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://cakgod.github.io/2022/10/17/sw-ass/&title=神威芯片汇编指令运行情况"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://cakgod.github.io/2022/10/17/sw-ass/&is_video=false&description=神威芯片汇编指令运行情况"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=神威芯片汇编指令运行情况&body=Check out this article: http://cakgod.github.io/2022/10/17/sw-ass/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://cakgod.github.io/2022/10/17/sw-ass/&title=神威芯片汇编指令运行情况"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://cakgod.github.io/2022/10/17/sw-ass/&title=神威芯片汇编指令运行情况"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://cakgod.github.io/2022/10/17/sw-ass/&title=神威芯片汇编指令运行情况"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://cakgod.github.io/2022/10/17/sw-ass/&title=神威芯片汇编指令运行情况"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://cakgod.github.io/2022/10/17/sw-ass/&name=神威芯片汇编指令运行情况&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://cakgod.github.io/2022/10/17/sw-ass/&t=神威芯片汇编指令运行情况"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2023
+    CAKGOD
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tag</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="//cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/tororo.model.json"},"display":{"position":"right","width":145,"height":315},"mobile":{"show":true,"scale":0.5},"react":{"opacityDefault":0.7,"opacityOnHover":0.8},"log":false});</script></body>
+</html>
