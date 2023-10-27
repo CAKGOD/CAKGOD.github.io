@@ -6,15 +6,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="1. 参考文章Modern Microprocessors. A 90-Minute Guide! 本文绝对是一篇非常好的文章，以本人的垃圾水平暂时只能读懂部分，并且有点看不下去，先挖个坑。">
+    <meta name="description" content="1. 参考文章Modern Microprocessors. A 90-Minute Guide! 本文绝对是一篇非常好的文章，以本人的垃圾水平暂时只能读懂部分，并且有点看不下去，先挖个坑。 2. 阅读笔记作者首先罗列了一些具有不同时钟速度的处理器（MIPS R10000 195MHz，Alpha 21164 400MHz，UltraSPARC 300MHz，Pentium II 300MHz，P">
 <meta property="og:type" content="article">
 <meta property="og:title" content="现代微处理器">
 <meta property="og:url" content="http://cakgod.github.io/2023/01/07/modern-microprocessor/index.html">
 <meta property="og:site_name" content="CAKGOD&#39;s blog">
-<meta property="og:description" content="1. 参考文章Modern Microprocessors. A 90-Minute Guide! 本文绝对是一篇非常好的文章，以本人的垃圾水平暂时只能读懂部分，并且有点看不下去，先挖个坑。">
+<meta property="og:description" content="1. 参考文章Modern Microprocessors. A 90-Minute Guide! 本文绝对是一篇非常好的文章，以本人的垃圾水平暂时只能读懂部分，并且有点看不下去，先挖个坑。 2. 阅读笔记作者首先罗列了一些具有不同时钟速度的处理器（MIPS R10000 195MHz，Alpha 21164 400MHz，UltraSPARC 300MHz，Pentium II 300MHz，P">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2023-01-07T02:08:38.000Z">
-<meta property="article:modified_time" content="2023-10-09T07:05:13.790Z">
+<meta property="article:modified_time" content="2023-10-26T07:42:45.934Z">
 <meta property="article:author" content="CAKGOD">
 <meta property="article:tag" content="读后感">
 <meta property="article:tag" content="硬件">
@@ -118,7 +118,7 @@
     
     
       <div id="toc">
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-%E5%8F%82%E8%80%83%E6%96%87%E7%AB%A0"><span class="toc-number">1.</span> <span class="toc-text">1. 参考文章</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-%E5%8F%82%E8%80%83%E6%96%87%E7%AB%A0"><span class="toc-number">1.</span> <span class="toc-text">1. 参考文章</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0"><span class="toc-number">2.</span> <span class="toc-text">2. 阅读笔记</span></a></li></ol>
       </div>
     
   </span>
@@ -165,6 +165,53 @@
   <div class="content e-content" itemprop="articleBody">
     <h1 id="1-参考文章"><a href="#1-参考文章" class="headerlink" title="1. 参考文章"></a>1. 参考文章</h1><p><a target="_blank" rel="noopener" href="https://www.lighterra.com/papers/modernmicroprocessors/">Modern Microprocessors. A 90-Minute Guide!</a></p>
 <p>本文绝对是一篇非常好的文章，以本人的垃圾水平暂时只能读懂部分，并且有点看不下去，先挖个坑。</p>
+<h1 id="2-阅读笔记"><a href="#2-阅读笔记" class="headerlink" title="2. 阅读笔记"></a>2. 阅读笔记</h1><p>作者首先罗列了一些具有不同时钟速度的处理器（MIPS R10000 195MHz，Alpha 21164 400MHz，UltraSPARC 300MHz，Pentium II 300MHz，PowerPC G3 300MHz，POWER2 135MHz）在处理int和float数据时的耗时对比。对比结论：并不是时钟速度越快，处理数据的能力越强，而是要关注每个时钟内做了多少事情。</p>
+<p>（1）作者开始介绍<strong>流水线和指令级别并行</strong>。</p>
+<p>通常来说，处理器都是执行完一条指令完成后再执行下一条指令。事实上，自1980年代中期之后，处理器就不是这么做的了，而是多条指令并行执行。指令分为fetch、decode、execute、writeback四个阶段，最简单的做法是一条指令的四个阶段执行完成后才会执行下一条指令，这样CPI（cycles per instruction）就是4。现代处理器会将几个阶段并行处理。例如指令a已经fetch完成正在decode，指令b就可以开始fetch了，这样CPI就是1了。</p>
+<p>指令的不同阶段被latch（闩锁，shuan suo）分开，所有的latch根据一个公用的时钟信号进行同步。换句话说，时钟信号pump（泵送）指令在pipeline上的操作。由于指令经过execute阶段后已经可以被其他指令使用了，因此无需等到指令结果写回到目的寄存器再取用。现代处理器增加了bypasses（旁路）手段来实现该效果，不仅在execute阶段向后传递数据，也可以在writeback阶段先后传递数据。</p>
+<p>另外需要注意，execute阶段是由多个执行单元组成的，例如处理int类型的单元、处理float类型的单元、处理跳转的单元等。</p>
+<p>（2）作者继续深入流水线，介绍<strong>superpipelining</strong>。</p>
+<p>由于时钟速度受限于管道中最长、执行时间最慢的阶段，所以现代处理器将每个阶段进一步划分为更小的阶段。例如execute阶段划分为e0、e1、e2，当执行到指令a的e1阶段时，指令b可以开始执行e0阶段，这样每个时钟周期可以执行更多的指令。现代处理器每个阶段大约有12-25个小阶段，latch本身也有3-5个小阶段，这样构成的整体pipeline就会特别深。</p>
+<p>（3）作者开始介绍新的问题<strong>Superscalar</strong></p>
+<p>前面说了execute单元有多个不同类型处理单元组成。为了支撑这些工作，decode单元通常也需要具有并行解码多条指令的能力。在execute阶段中，不同的单元通常具有不同的阶段。例如整数执行单元包括10个stage，浮点执行单元包括15个stage，内存访问单元包括13个stage。根据execute阶段内不同单元的组成情况，处理器也具有不同的指令处理能力。例如同时执行三个整数指令（CPI=0.33，instructions per cycle IPC=3，instruction-level parallelism ILP=3），或者两个浮点指令（CPI=0.5），或者一个整数指令、一个浮点指令、一个内存指令（CPI=0.33）等。不同的产品根据其不同的需求会设计出不同的功能单元组合，并非固定一致。</p>
+<p>当然superscalar和superpipelining可以组合起来，进一步提高每个指令周期可执行的指令数量。当前几乎所有的处理都是superpipelined-superscalar的，只不过是简称为superscalar。</p>
+<p>（4）作者开始介绍<strong>Explict Parallelism-VLIW（very long instruction word）</strong></p>
+<p>由于上文提到的bypasses能力，数据向后传输不是问题，因此一条指令可以由多个小指令组成。具体可以参考文章中该部分图片理解，即fetch、decode、writeback阶段均为一个，execute阶段由多个单元组成，看上去比较类似superscalar。这种指令称为超长指令集，每条指令包含多个可并行执行的操作。不过，VLIW通常存在由于cache miss导致指令卡住的情况。作为主力CPU，尚无比较成功的VILW商业实现。</p>
+<p>（5）作者开始介绍<strong>Instruction Dependencies &amp; Latency</strong></p>
+<p>为什么不设计一个suuuuuuuuuuuuuuuuuuperpipelining-suuuuuuuuuuuuuuuuperscalar的硬件呢，这里要考虑两点：指令依赖和latency。首先说指令依赖，对于以下的代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">a = b * c;</span><br><span class="line">d = a + 1;</span><br></pre></td></tr></table></figure>
+<p>第二条指令的计算依赖第一条指令的计算结果，这样superpipelining的策略就不能使用了。另外，通常来说整数类型的指令execute通常比较快，乘法会慢一些，除法会更慢。因此当第一条指令未执行完时，处理器指令只能在第二条指令之前加入空泡，直到第一条指令执行完。从指令进入execute阶段到计算结果可以使用的这个过程叫做指令的latency，pipeline越长，latency越大。这时候，superpipelining策略就没那么有效了，因为pipeline上充满了解决上边数据依赖问题的空泡。</p>
+<p>注意，以上说的latency是从编译器视角来看的。从硬件工程师的视角来看，通常认为latency是指令的execute阶段需要多少个cycle。</p>
+<p>（6）作者开始介绍<strong>Branch &amp; Branch Prediction</strong></p>
+<p>考虑以下代码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// source</span></span><br><span class="line"><span class="keyword">if</span> (a &gt; <span class="number">7</span>) &#123;</span><br><span class="line">    b = c;</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    b = d;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ass</span></span><br><span class="line">    cmp a, <span class="number">7</span>    ; a &gt; <span class="number">7</span> ?</span><br><span class="line">    ble L1</span><br><span class="line">    mov c, b    ; b = c</span><br><span class="line">    br L2</span><br><span class="line">L1: mov d, b    ; b = d</span><br><span class="line">L2: ...</span><br></pre></td></tr></table></figure>
+<p>当<code>ble L1</code>这条指令执行到execute阶段时，可以开始fetch下一条指令了。但是应该fetch<code>mov c, b</code>和<code>br L2</code>还是fetch<code>mov d, b</code>呢，这个只能根据上一条指令的结果才能得出判断。但是如果此时一直等待，就会阻塞整个流水线的进行。经过统计，每6条指令中就有一条是跳转指令，因此不能一直等待。处理器选择了guess方法，猜测下一条要执行哪条指令，并开始处理。如果猜错了，指令的所有cycle将被浪费；但是如果猜对了，流水线就会全速前进。</p>
+<p>如何进行猜测呢？有三种方法：一是<em>static branch prediction</em>，即编译器标记分支应该往哪边走。对于存在标记位的指令容易做到，但是对于某些没有这种标记位的指令就不容易做到了。二是使用根据上一条指令判断下一条指令。不过这对于循环比较好实现，对于普通的if-else分支还是不好实现。三是处理器使用片上branch prediction table在runtime阶段进行预测。分支预测表上存储了过去分支的地址，并提供一个或两个bit位来指示是否采用过去的分支。尽管占用了宝贵的片上空间，但是这对于性能提升还是有收益的。不幸的是，即使最好的分支预测技术有时也会出错，对于较长的流水线来说许多指令将会被取消，这被称为mispredict penalty。</p>
+<p>现代处理器还会使用许多更先进的方法。例如除了记录分支的走向，还会记录通往该分支的其他指令，这种称为two-level adaptive predictor。再例如保留全局分支历史，用来分析当前分支，即使其他分支跟当前分支相隔很远，这种称为gshare或gselect预测器。更高级的处理器会同时实现多种分支预测器，并看哪一种对于单一分支效果更好。</p>
+<p>（7）作者开始介绍<strong>Eliminating Branches with Predication</strong></p>
+<p>与其进行复杂的分支预测，不如直接将跳转指令进行elimate。对于上边的汇编指令，可以转化为以下指令：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cmp a, <span class="number">7</span>       ; a &gt; <span class="number">7</span> ?</span><br><span class="line">mov c, b       ; b = c</span><br><span class="line">cmovle d, b    ; <span class="keyword">if</span> le, then b = d</span><br></pre></td></tr></table></figure>
+<p>这里引入了一条cmovle指令。这样一次性删除了两个跳转指令，毫无疑问会提高软件性能。不过这同样存在一个问题，b=c和b=d都会执行，而之前的分支只需要执行一条。是否要进行这种优化，应该根据跳转指令后的指令量大小。如果指令量比较大，会增加所有要执行的指令数量，这样反而会降低了软件性能。</p>
+<p>（8）作者开始介绍<strong>Instruction Scheduling, Register Renaming &amp; OOO</strong></p>
+<p>前文中说的由于数据依赖、latency等问题导致pipeline中存在额外的空泡，这些空泡可以利用起来插入其他计算指令来减少总执行时间。有两种方法可以实现，分别介绍。</p>
+<p>第一种是在运行时在硬件中对指令重新排序。在处理器中进行dynamic instruction scheduling（reordering）意味着必须增强调度逻辑，以查看指令组并尽可能无序地调度它们，以充分利用处理器的功能单元。这种方法称为out-of-order excution（乱序执行），或简称为OOO（有时写为OoO或OOE）。如果处理器要OOO，则需要记住这些指令之间的依赖关系。通过不处理原始架构定义的寄存器，而是使用一组重命名的寄存器，可以使这变得更容易。例如，将寄存器存储到内存中，然后将其他一些内存片段加载到同一寄存器中，代表不同的值，并且不需要进入同一物理寄存器。此外，如果这些不同的指令被映射到不同的物理寄存器，它们就可以并行执行，这就是OOO执行的全部要点。因此，处理器必须保留随时运行的指令及其使用的物理寄存器的映射。这个过程称为register renaming。作为额外的好处，可以使用可能更大的实际寄存器集来尝试从代码中提取更多并行性。</p>
+<p>另一种方法是让编译器通过重新排列指令来优化代码。这称为static instruction scheduling或compile-time instruction scheduling。然后，重新排列的指令流可以被馈送到具有更简单的有序多发出逻辑的处理器，依靠编译器以最佳指令流spoon feed处理器。避免对复杂OOO逻辑的需求应该会使处理器更容易设计，耗电更少并且更小，这意味着可以将更多的内核或额外的缓存放置在相同数量的芯片区域。与OOO硬件相比，编译器方法还具有其他一些优势：它可以比硬件更深入地了解程序；它可以推测多条路径而不是仅一条路径，如果分支不可预测，这将是一个大问题。另一方面，不能指望编译器具有完美的能力。如果没有 OOO 硬件，当编译器无法预测缓存未命中等情况时，管道将会停止。</p>
+<p>关于采用哪种方式更合适，作者在下一节的<strong>The Brainiac Debate</strong>一节中调研了不同处理器的发展历程，还是比较有意思的。总结一下自己的理解，面对功耗墙的问题，使用片上OOO是未来的趋势。</p>
+<p>（9）作者开始介绍<strong>The Power Wall &amp; The ILP Wall</strong></p>
+<p>TODO</p>
+<p>（10）作者开始介绍<strong>Threads – SMT, Hyper-Threading &amp; Multi-Core</strong></p>
+<p>TODO</p>
+<p>（11）作者开始介绍<strong>Data parallelism-SIMD Vector Instructions</strong></p>
+<p>TODO</p>
+<p>（12）作者开始介绍<strong>Memory &amp; The Memory Wall</strong></p>
+<p>TODO</p>
+<p>（13）作者开始介绍<strong>Caches &amp; The Memory Hierarchy</strong></p>
+<p>TODO</p>
+<p>（14）作者开始介绍<strong>Cache Conflicts &amp; Associativity</strong></p>
+<p>TODO</p>
+<p>（15）作者开始介绍<strong>Memory Bandwidth vs Latency</strong></p>
+<p>TODO</p>
+<p>（16）</p>
 
   </div>
 </article>
@@ -194,7 +241,7 @@
     
     
       <div id="toc-footer" style="display: none">
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-%E5%8F%82%E8%80%83%E6%96%87%E7%AB%A0"><span class="toc-number">1.</span> <span class="toc-text">1. 参考文章</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-%E5%8F%82%E8%80%83%E6%96%87%E7%AB%A0"><span class="toc-number">1.</span> <span class="toc-text">1. 参考文章</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0"><span class="toc-number">2.</span> <span class="toc-text">2. 阅读笔记</span></a></li></ol>
       </div>
     
 
