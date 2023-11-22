@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="1. 格式内联汇编的基本格式如下： 1__asm__ __volatile__(&quot;汇编语句&quot;:输出部分:输入部分:破坏描述部分); 其中：  __asm__为内联汇编语句关键词。通常也会使用别名asm来代替。 __volatile__表示编译器不要优化代码，指令保持原样。通常也会使用别名volatile来代替。 汇编语句必不可少，语法和汇编语言程序中基本相同，多个汇编语句需要使">
+<meta property="og:type" content="article">
+<meta property="og:title" content="内嵌汇编">
+<meta property="og:url" content="http://cakgod.github.io/2020/05/01/inline-assembly/index.html">
+<meta property="og:site_name" content="CAKGOD&#39;s blog">
+<meta property="og:description" content="1. 格式内联汇编的基本格式如下： 1__asm__ __volatile__(&quot;汇编语句&quot;:输出部分:输入部分:破坏描述部分); 其中：  __asm__为内联汇编语句关键词。通常也会使用别名asm来代替。 __volatile__表示编译器不要优化代码，指令保持原样。通常也会使用别名volatile来代替。 汇编语句必不可少，语法和汇编语言程序中基本相同，多个汇编语句需要使">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-05-01T03:19:58.000Z">
+<meta property="article:modified_time" content="2023-10-31T06:45:09.710Z">
+<meta property="article:author" content="CAKGOD">
+<meta property="article:tag" content="c++">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>内嵌汇编</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="CAKGOD's blog" type="application/atom+xml">
+</head>
+
+<body class="max-width mx-auto px3 ltr">    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tag</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2020/10/19/chrome-dark/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2020/01/02/link_static_dynamic/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://cakgod.github.io/2020/05/01/inline-assembly/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://cakgod.github.io/2020/05/01/inline-assembly/&text=内嵌汇编"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://cakgod.github.io/2020/05/01/inline-assembly/&title=内嵌汇编"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://cakgod.github.io/2020/05/01/inline-assembly/&is_video=false&description=内嵌汇编"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=内嵌汇编&body=Check out this article: http://cakgod.github.io/2020/05/01/inline-assembly/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://cakgod.github.io/2020/05/01/inline-assembly/&title=内嵌汇编"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://cakgod.github.io/2020/05/01/inline-assembly/&title=内嵌汇编"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://cakgod.github.io/2020/05/01/inline-assembly/&title=内嵌汇编"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://cakgod.github.io/2020/05/01/inline-assembly/&title=内嵌汇编"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://cakgod.github.io/2020/05/01/inline-assembly/&name=内嵌汇编&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://cakgod.github.io/2020/05/01/inline-assembly/&t=内嵌汇编"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-%E6%A0%BC%E5%BC%8F"><span class="toc-number">1.</span> <span class="toc-text">1. 格式</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-%E4%B8%BE%E4%BE%8B"><span class="toc-number">2.</span> <span class="toc-text">2. 举例</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-%E4%BE%8B%E4%B8%80"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. 例一</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-%E4%BE%8B%E4%BA%8C"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. 例二</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-3-%E4%BE%8B%E4%B8%89"><span class="toc-number">2.3.</span> <span class="toc-text">2.3. 例三</span></a></li></ol></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        内嵌汇编
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">CAKGOD</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2020-05-01T03:19:58.000Z" class="dt-published" itemprop="datePublished">2020-05-01</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/c/" rel="tag">c++</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h1 id="1-格式"><a href="#1-格式" class="headerlink" title="1. 格式"></a>1. 格式</h1><p>内联汇编的基本格式如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">__asm__ __volatile__(&quot;汇编语句&quot;:输出部分:输入部分:破坏描述部分);</span><br></pre></td></tr></table></figure>
+<p>其中：</p>
+<ul>
+<li><code>__asm__</code>为内联汇编语句关键词。通常也会使用别名asm来代替。</li>
+<li><code>__volatile__</code>表示编译器不要优化代码，指令保持原样。通常也会使用别名volatile来代替。</li>
+<li>汇编语句必不可少，语法和汇编语言程序中基本相同，多个汇编语句需要使用<code>;</code>、<code>\n</code>或<code>\n\t</code>隔开。</li>
+<li>输出部分可以缺省。</li>
+<li>输入部分可以缺省。</li>
+<li>破坏描述部分可以缺省。破坏描述符用于通知编译器我们使用了哪些寄存器或内存，由逗号格开的字符串组成，每个字符串描述一种情况，一般是寄存器名；除寄存器外还有”memory”。</li>
+</ul>
+<h1 id="2-举例"><a href="#2-举例" class="headerlink" title="2. 举例"></a>2. 举例</h1><h2 id="2-1-例一"><a href="#2-1-例一" class="headerlink" title="2.1. 例一"></a>2.1. 例一</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">__asm__ __violate__ (&quot;movl %1,%0&quot; : &quot;=r&quot; (result) : &quot;m&quot; (input));</span><br></pre></td></tr></table></figure>
+<p>其中：</p>
+<ul>
+<li><p><code>movl %1,%0</code>是指令模板，<code>%0</code>和<code>%1</code>代表指令的操作数，称为占位符，内嵌汇编靠它们将C语言表达式与指令操作数相对应。指令模板后面用小括号括起来的是C语言表达式，本例中只有两个：<code>result</code>和<code>input</code>，他们按照出现的顺序分别与指令操作数<code>%0</code>，<code>%1</code>对应；注意对应顺序：第一个C表达式对应<code>%0</code>；第二个表达式对应<code>%1</code>，依次类推，操作数至多有10个，分别用<code>%0</code>,<code>%1</code>….<code>%9</code>表示。</p>
+</li>
+<li><p>在每个操作数前面有一个用引号括起来的字符串，字符串的内容是对该操作数的限制或者说要求。<code>result</code>前面的限制字符串是<code>=r</code>，其中<code>=</code>表示<code>result</code>是输出操作数，<code>r</code>表示需要将<code>result</code>与某个通用寄存器相关联，先将操作数的值读入寄存器，然后在指令中使用相应寄存器，而不是<code>result</code>本身，当然指令执行完后需要将寄存器中的值存入变量<code>result</code>，从表面上看好像是指令直接对<code>result</code>进行操作，实际上GCC做了隐式处理，这样我们可以少写一些指令。<code>input</code>前的<code>m</code>表示操作数在内存中，而不是在寄存器中。</p>
+</li>
+</ul>
+<h2 id="2-2-例二"><a href="#2-2-例二" class="headerlink" title="2.2. 例二"></a>2.2. 例二</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">__asm__ __volatile__(&quot;cli&quot;: : :&quot;memory&quot;)</span><br></pre></td></tr></table></figure>
+<p>cli部分不用多介绍。memory描述符告知编译器：</p>
+<ul>
+<li>不要将该段内嵌汇编指令与前面的指令重新排序；也就是在执行内嵌汇编代码之前，它前面的指令都执行完毕</li>
+<li>不要将变量缓存到寄存器，因为这段代码可能会用到内存变量，而这些内存变量会以不可预知的方式发生改变，因此GCC插入必要的代码先将缓存到寄存器的变量值写回内存，如果后面又访问这些变量，需要重新访问内存。</li>
+</ul>
+<h2 id="2-3-例三"><a href="#2-3-例三" class="headerlink" title="2.3. 例三"></a>2.3. 例三</h2>
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a href="/tags/">Tag</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/search/">Search</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-%E6%A0%BC%E5%BC%8F"><span class="toc-number">1.</span> <span class="toc-text">1. 格式</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-%E4%B8%BE%E4%BE%8B"><span class="toc-number">2.</span> <span class="toc-text">2. 举例</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-%E4%BE%8B%E4%B8%80"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. 例一</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-%E4%BE%8B%E4%BA%8C"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. 例二</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-3-%E4%BE%8B%E4%B8%89"><span class="toc-number">2.3.</span> <span class="toc-text">2.3. 例三</span></a></li></ol></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://cakgod.github.io/2020/05/01/inline-assembly/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://cakgod.github.io/2020/05/01/inline-assembly/&text=内嵌汇编"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://cakgod.github.io/2020/05/01/inline-assembly/&title=内嵌汇编"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://cakgod.github.io/2020/05/01/inline-assembly/&is_video=false&description=内嵌汇编"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=内嵌汇编&body=Check out this article: http://cakgod.github.io/2020/05/01/inline-assembly/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://cakgod.github.io/2020/05/01/inline-assembly/&title=内嵌汇编"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://cakgod.github.io/2020/05/01/inline-assembly/&title=内嵌汇编"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://cakgod.github.io/2020/05/01/inline-assembly/&title=内嵌汇编"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://cakgod.github.io/2020/05/01/inline-assembly/&title=内嵌汇编"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://cakgod.github.io/2020/05/01/inline-assembly/&name=内嵌汇编&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://cakgod.github.io/2020/05/01/inline-assembly/&t=内嵌汇编"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2023
+    CAKGOD
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tag</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="//cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/tororo.model.json"},"display":{"position":"right","width":145,"height":315},"mobile":{"show":true,"scale":0.5},"react":{"opacityDefault":0.7,"opacityOnHover":0.8},"log":false});</script></body>
+</html>
