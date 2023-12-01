@@ -1,3 +1,4 @@
+http://cakgod.github.io/2023/12/01/unicode-encoding/
 http://cakgod.github.io/2023/09/28/interesting-website/
 http://cakgod.github.io/2023/10/31/gdb-using-1/
 http://cakgod.github.io/2020/05/01/inline-assembly/
@@ -40,3 +41,4 @@ http://cakgod.github.io/tags/%E8%A7%86%E9%A2%91/
 http://cakgod.github.io/tags/%E6%AF%94%E8%B5%9B/
 http://cakgod.github.io/tags/linux/
 http://cakgod.github.io/tags/%E6%B1%87%E7%BC%96/
+http://cakgod.github.io/tags/%E7%BC%96%E7%A0%81/
