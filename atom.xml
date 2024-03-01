@@ -6,7 +6,7 @@
   <link href="http://cakgod.github.io/atom.xml" rel="self"/>
   
   <link href="http://cakgod.github.io/"/>
-  <updated>2023-12-01T03:58:50.235Z</updated>
+  <updated>2024-03-01T03:32:17.470Z</updated>
   <id>http://cakgod.github.io/</id>
   
   <author>
@@ -15,6 +15,23 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>寄存器分配</title>
+    <link href="http://cakgod.github.io/2024/03/01/register-allocation/"/>
+    <id>http://cakgod.github.io/2024/03/01/register-allocation/</id>
+    <published>2024-03-01T03:30:56.000Z</published>
+    <updated>2024-03-01T03:32:17.470Z</updated>
+    
+    
+    
+    
+    
+    <category term="读后感" scheme="http://cakgod.github.io/tags/%E8%AF%BB%E5%90%8E%E6%84%9F/"/>
+    
+    <category term="编译器" scheme="http://cakgod.github.io/tags/%E7%BC%96%E8%AF%91%E5%99%A8/"/>
+    
+  </entry>
   
   <entry>
     <title>Unicode编码</title>
@@ -442,29 +459,6 @@
     <category term="问题" scheme="http://cakgod.github.io/tags/%E9%97%AE%E9%A2%98/"/>
     
     <category term="linux" scheme="http://cakgod.github.io/tags/linux/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>如何在hexo中支持公式</title>
-    <link href="http://cakgod.github.io/2019/08/04/hexo-use/"/>
-    <id>http://cakgod.github.io/2019/08/04/hexo-use/</id>
-    <published>2019-08-04T06:56:25.000Z</published>
-    <updated>2023-10-17T08:50:17.685Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="1-概述"><a href="#1-概述" class="headerlink" title="1. 概述"></a>1. 概述</h1><p>本文介绍了在各种hexo主题上支持markdown公式的方法。</p><h1 id="2-参考文章"><a href="#2-参考文章" class="headerlink" title="2. 参考文章"></a>2. 参考文章</h1><p>感谢大神！<a href="https://myblackboxrecorder.com/use-math-in-hexo/">在任意的hexo主题支持数学公式</a></p><h1 id="3-详述"><a href="#3-详述" class="headerlink" title="3. 详述"></a>3. 详述</h1><h2 id="3-1-安装MathJax"><a href="#3-1-安装MathJax" class="headerlink" title="3.1. 安装MathJax"></a>3.1. 安装MathJax</h2><p>MathJax就是用来渲染数学公式的js引擎。在这之前需要卸载自带的hexo-math以避免冲突。</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm uninstall hexo-math --save</span><br><span class="line">npm install hexo-renderer-mathjax --save</span><br></pre></td></tr></table></figure><h2 id="3-2-更新MathJax的CDN链接"><a href="#3-2-更新MathJax的CDN链接" class="headerlink" title="3.2. 更新MathJax的CDN链接"></a>3.2. 更新MathJax的CDN链接</h2><p>打开<code>node_modules/hexo-renderer-mathjax/mathjax.html</code>，将最后一行CDN地址修改为：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script src=&quot;//cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-MML-AM_CHTML&quot;&gt;&lt;/script&gt;</span><br></pre></td></tr></table></figure><h2 id="3-3-更换默认渲染引擎"><a href="#3-3-更换默认渲染引擎" class="headerlink" title="3.3. 更换默认渲染引擎"></a>3.3. 更换默认渲染引擎</h2><p>Hexo默认的渲染引擎hexo-renderer-marked对MathJax的支持很不好，修改为kramed引擎：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm uninstall hexo-renderer-marked --save</span><br><span class="line">npm install hexo-renderer-kramed --save</span><br></pre></td></tr></table></figure><h2 id="3-4-更改转移规则"><a href="#3-4-更改转移规则" class="headerlink" title="3.4. 更改转移规则"></a>3.4. 更改转移规则</h2><p>因为hexo默认的转义规则会将一些字符进行转义，比如<code>_</code>转为<code>&lt;em&gt;</code>，所以需要对默认的规则进行修改。</p><p>打开<code>node_modules/kramed/lib/rules/inline.js</code>，把：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">escape: /^\\([\\`*&#123;&#125;\[\]()#$+\-.!_&gt;])/,</span><br></pre></td></tr></table></figure><p>修改为：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">escape: /^\\([`*\[\]()# +\-.!_&gt;])/,</span><br></pre></td></tr></table></figure><p>把：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">em: /^\b_((?:__|[\s\S])+?)_\b|^\*((?:\*\*|[\s\S])+?)\*(?!\*)/,</span><br></pre></td></tr></table></figure><p>修改为：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">em: /^\*((?:\*\*|[\s\S])+?)\*(?!\*)/,</span><br></pre></td></tr></table></figure><h2 id="3-5-使用hexo-filter-mathjax"><a href="#3-5-使用hexo-filter-mathjax" class="headerlink" title="3.5. 使用hexo-filter-mathjax"></a>3.5. 使用hexo-filter-mathjax</h2><p>安装<a href="https://github.com/next-theme/hexo-filter-mathjax">hexo-filter-mathjax</a>：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-filter-mathjax --save</span><br></pre></td></tr></table></figure><p>对于需要开启公式支持的博文，在开头处添加<code>mathjax: true</code>这行即可。</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;h1 id=&quot;1-概述&quot;&gt;&lt;a href=&quot;#1-概述&quot; class=&quot;headerlink&quot; title=&quot;1. 概述&quot;&gt;&lt;/a&gt;1. 概述&lt;/h1&gt;&lt;p&gt;本文介绍了在各种hexo主题上支持markdown公式的方法。&lt;/p&gt;
-&lt;h1 id=&quot;2-参考文章&quot;&gt;&lt;a href=</summary>
-      
-    
-    
-    
-    
-    <category term="问题" scheme="http://cakgod.github.io/tags/%E9%97%AE%E9%A2%98/"/>
     
   </entry>
   
